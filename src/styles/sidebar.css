@@ -1,0 +1,164 @@
+/* Sidebar container */
+a {
+  text-decoration: none;
+}
+
+.sidebar__wrap {
+  width: 250px;
+  height: 100vh;
+  background-color: #e1c16e;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: fixed;
+}
+
+.sidebar {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar__head {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.sidebar__head img {
+  width: 80px;
+  height: auto;
+  border-radius: 50%;
+}
+
+.sidebar__body {
+  flex-grow: 1;
+  padding: 18px;
+}
+
+.title__main {
+  font-size: 16px;
+  color: #000000;
+  margin-bottom: 15px;
+  text-align: left;
+  margin: 20px 0 30px 0;
+}
+
+.sidebar__content {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar__link {
+  text-decoration: none;
+  margin-bottom: 15px;
+}
+
+.sidebar__link.active {
+  text-decoration: none;
+  margin-bottom: 15px;
+  background-color: white;
+}
+
+.menu__list {
+  display: flex;
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: all ease-in-out 0.2s;
+  cursor: pointer;
+  position: relative;
+  align-items: start;
+}
+
+.menu__list:hover {
+  background-color: #FFF4E6;
+}
+.menu__list.active {
+  background-color: #fff7e0; /* Highlight color */
+  font-weight: bold;
+  display: flex;
+  padding-left: 15px;
+}
+
+.icon__down {
+  position: absolute;
+  right: 15px;
+  transition: transform 0.3s ease;
+  color: #000000;
+}
+
+/* Rotate the arrow when the menu is open */
+.rotate {
+  transform: rotate(180deg);
+  transition: all ease-in-out 0.2s;
+}
+
+.list__icon {
+  color: #000000;
+  font-size: 24px;
+  margin-right: 15px;
+  display: inline-block;
+  position: relative;
+}
+
+.list__title {
+  color: #000000;
+  font-size: 18px;
+  margin: 0;
+  display: inline-block;
+}
+
+.list__subitems {
+  padding-left: 30px;
+  display: flex;
+  flex-direction: column;
+  transition: all ease-in-out 0.2s;
+  margin-top: 10px;
+}
+
+.item__cate {
+  color: #000000;
+  font-size: 16px;
+  padding: 5px 0;
+  cursor: pointer;
+}
+
+.item__cate:hover {
+  color: #FFF4E6;
+  transition: all ease-in-out 0.2s;
+}
+
+/* Sidebar footer */
+.sidebar__footer {
+  padding: 18px;
+  text-align: left;
+  color: #000000;
+}
+
+.sidebar__footer a {
+  text-decoration: none;
+  color: #000000;
+}
+
+.footer__list {
+  display: flex;
+  padding: 10px 15px ;
+  align-items: center;
+}
+
+.footer__list .footer__icon {
+  font-size: 24px;
+  margin-right: 15px;
+}
+
+.footer__list .footer__title {
+  margin: 0;
+  font-size: 18px;
+}
+
+.footer__list:hover {
+  background-color: #4A3B2C;
+  color: #ffffff;
+  transition: all ease-in-out 0.2s;
+  border-radius: 10px;
+}
