@@ -20,10 +20,15 @@ function Sidebar() {
   const handleMenuClick = (menuName) => {
     // Check if there is a selected item inside the current dropdown
     const selectedItems = {
-      customer: ["manage_customer", "banned_customer", "deleted_customer"],
-      catalog: ["category", "product"],
-      sales: ["order", "canceled_order", "coupons"],
-      report: ["report", "statistic"],
+      customer: [
+        "customer",
+        "manage_customer",
+        "banned_customer",
+        "deleted_customer",
+      ],
+      catalog: ["catalog", "category", "product"],
+      sales: ["sales", "order", "canceled_order", "coupons"],
+      report: ["report", "report", "statistic"],
     };
 
     const isSelectedInMenu =
@@ -71,7 +76,12 @@ function Sidebar() {
                 className="sidebar__link"
                 onClick={() => handleMenuClick("customer")}
               >
-                <div className="menu__list">
+                <div
+                  className={`menu__list ${
+                    selected === "customer" ? "active" : ""
+                  }`}
+                  onClick={() => handleSelected("customer")}
+                >
                   <FaUsers className="list__icon" />
                   <h3 className="list__title">Customer</h3>
                   <FaAngleDown
@@ -118,7 +128,12 @@ function Sidebar() {
                 className="sidebar__link"
                 onClick={() => handleMenuClick("catalog")}
               >
-                <div className="menu__list">
+                <div
+                  className={`menu__list ${
+                    selected === "catalog" ? "active" : ""
+                  }`}
+                  onClick={() => handleSelected("catalog")}
+                >
                   <FaDatabase className="list__icon" />
                   <h3 className="list__title">Catalog</h3>
                   <FaAngleDown
@@ -156,7 +171,12 @@ function Sidebar() {
                 className="sidebar__link"
                 onClick={() => handleMenuClick("sales")}
               >
-                <div className="menu__list">
+                <div
+                  className={`menu__list ${
+                    selected === "sales" ? "active" : ""
+                  }`}
+                  onClick={() => handleSelected("sales")}
+                >
                   <FaMoneyBillTransfer className="list__icon" />
                   <h3 className="list__title">Sales</h3>
                   <FaAngleDown
@@ -215,7 +235,12 @@ function Sidebar() {
                 className="sidebar__link"
                 onClick={() => handleMenuClick("report")}
               >
-                <div className="menu__list">
+                <div
+                  className={`menu__list ${
+                    selected === "reports" ? "active" : ""
+                  }`}
+                  onClick={() => handleSelected("reports")}
+                >
                   <FaChartSimple className="list__icon" />
                   <h3 className="list__title">Reports</h3>
                   <FaAngleDown
