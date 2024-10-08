@@ -1,11 +1,11 @@
-import Sidebar from "./Sidebar/sidebar";
 import "./App.css";
-import 'bootstrap/dist/css/bootstrap.min.css'
+import Product from "./components/admin-product";
+
 function App() {
   return (
-    <>
-      <Sidebar />
-    </>
+    <div className="App">
+      <Product />
+    </div>
   );
 }
 

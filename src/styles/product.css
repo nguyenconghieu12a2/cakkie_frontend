@@ -1,0 +1,11 @@
+.main__wrap {
+    display: flex;
+}
+
+.product__wrap {
+    margin-left: 250px;
+}
+
+.product__wrap .haha {
+    margin: 0;
+}
