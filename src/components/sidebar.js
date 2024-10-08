@@ -28,7 +28,7 @@ function Sidebar() {
       ],
       catalog: ["catalog", "category", "product"],
       sales: ["sales", "order", "canceled_order", "coupons"],
-      report: ["report", "report", "statistic"],
+      report: ["reports", "report", "statistic"],
     };
 
     const isSelectedInMenu =
