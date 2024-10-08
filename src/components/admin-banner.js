@@ -11,6 +11,8 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 
+
+
 const Banners = () => {
   const banners = [
     {

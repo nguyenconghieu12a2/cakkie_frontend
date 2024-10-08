@@ -1,4 +1,8 @@
 /* Sidebar container */
+body {
+  overflow-y: auto;
+}
+
 a {
   text-decoration: none;
 }
@@ -42,6 +46,7 @@ a {
   margin-bottom: 15px;
   text-align: left;
   margin: 20px 0 30px 0;
+  font-weight: 600;
 }
 
 .sidebar__content {
@@ -58,7 +63,7 @@ a {
   text-decoration: none;
   margin-bottom: 15px;
   background-color: white;
-  /* border-radius: 20px; */
+  border-radius: 10px;
 }
 
 .menu__list {
@@ -74,8 +79,10 @@ a {
 .menu__list:hover {
   background-color: #FFF4E6;
 }
+
 .menu__list.active {
-  background-color: #fff7e0; /* Highlight color */
+  background-color: #fff7e0;
+  /* Highlight color */
   font-weight: bold;
   display: flex;
   padding-left: 15px;
@@ -111,27 +118,28 @@ a {
 
 .list__subitems {
   padding-top: 12px;
-  margin-left: 30px;
+  margin-left: 20px;
   display: flex;
   flex-direction: column;
-  transition: all ease-in-out 0.2s;
   margin-top: 10px;
-  border: 2px solid #8b6636;
 }
 
 .item__cate {
   color: #000000;
   font-size: 16px;
-  padding: 10px 0;
   cursor: pointer;
-  margin-bottom: 3px;
+  margin: 0;
+  padding: 10px 0;
+  transition: all ease-in-out 0.2s;
+  text-align: left;
+  padding-left: 10px;
 }
 
 .item__cate:hover {
-  color: #8C7052;
   transition: all ease-in-out 0.2s;
+  border-left: 2px solid #4A3B2C;
+  color: #4A3B2C;
 }
-
 
 /* Sidebar footer */
 .sidebar__footer {
@@ -147,7 +155,7 @@ a {
 
 .footer__list {
   display: flex;
-  padding: 10px 15px ;
+  padding: 10px 15px;
   align-items: center;
 }
 

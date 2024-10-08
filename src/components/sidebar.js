@@ -13,6 +13,9 @@ import {
 
 import { AiOutlineLogout } from "react-icons/ai";
 
+//import link
+import Product from "./admin-product";
+
 function Sidebar() {
   const [openMenu, setOpenMenu] = useState(""); // Track which menu is open
   const [selected, setSelected] = useState("");
@@ -158,7 +161,7 @@ function Sidebar() {
                         selected === "product" ? "active" : ""
                       }`}
                       onClick={() => handleSelected("product")}
-                      href="#"
+                      href="./admin-product.js"
                     >
                       <h4 className="item__cate">Product</h4>
                     </a>
