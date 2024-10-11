@@ -3,11 +3,12 @@ import "./App.css";
 import Login from "./components/admin-login";
 import Sidebar from "./components/sidebar";
 import Banners from "./components/admin-test";
+import Cart from "./components/Cart.jsx"
 
 function App() {
   return (
     <div className="App">
-      <Sidebar />
+      <Cart />
     </div>
   );
 }
