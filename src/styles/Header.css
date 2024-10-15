@@ -1,0 +1,26 @@
+.custom-navbar {
+    background-color: #DBB15F;
+    margin: 0;
+
+}
+
+.header {
+    background-color: #dbb15f;
+    margin: 0 5vw;
+    font-family: "kurale";
+}
+
+.navbar-nav {
+    padding: 0 1rem;
+    align-items: center;
+}
+.navbar-nav:not(:last-child){
+    border-right: solid 1px #000;
+
+}
+
+.logo {
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+}

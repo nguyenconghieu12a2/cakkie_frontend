@@ -6,23 +6,22 @@ import "bootstrap/dist/js/bootstrap.bundle";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import "./Header.css";
+import "../styles/Header.css";
 
-const MyComponent = () => {
+const Header = ({ Title }) => {
   return (
     <Navbar className="custom-navbar" data-bs-theme="dark">
-      <Container>
+      <Container className="header">
         <Navbar.Brand href="#home">
-          <img src="./images/logo.jpg" className="logo"></img>
+          <img src="./images/logos.jpg" className="logo" href="#"></img>
         </Navbar.Brand>
-        <Nav className="me-auto">
-          <Nav.Link href="#home">Cakkie</Nav.Link>
-          <Nav.Link href="#features">Features</Nav.Link>
-          <Nav.Link href="#pricing">Pricing</Nav.Link>
+        <Nav className="me-auto    nav">
+          <Nav href="#home" className="logoName">CAKKIE</Nav>
+          <Nav href="#Title">{Title}</Nav>
         </Nav>
       </Container>
     </Navbar>
   );
 };
 
-export default MyComponent;
+export default Header;

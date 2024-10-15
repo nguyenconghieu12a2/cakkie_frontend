@@ -1,7 +1,5 @@
 import React from "react";
 import "../styles/login.css";
-import "@fortawesome/fontawesome-free/css/all.min.css";
-
 const Login = () => {
   return (
     <div className="login-container">
