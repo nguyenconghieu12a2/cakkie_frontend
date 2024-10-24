@@ -8,7 +8,6 @@ const api = 'http://localhost:8080/api/profile'; // Backend API route
 const Profile = ({ onLogout }) => {
     const [profileData, setProfileData] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
-    const [selectedImage, setSelectedImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
     const navigate = useNavigate();
 
@@ -40,45 +39,6 @@ const Profile = ({ onLogout }) => {
         fetchProfile();
     }, [navigate]);
 
-    // Handle image selection
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setSelectedImage(file);
-            setImagePreview(URL.createObjectURL(file)); // Show image preview
-        }
-    };
-
-    // Handle image upload
-    const handleImageUpload = async () => {
-        if (!selectedImage) {
-            setErrorMessage('Please select an image to upload.');
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('image', selectedImage);
-
-        let token = localStorage.getItem('jwt') || sessionStorage.getItem('jwt');
-
-        try {
-            const response = await axios.post(`${api}/upload`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            setProfileData((prevData) => ({
-                ...prevData,
-                image: response.data.imageUrl, // Update profile with new image URL
-            }));
-            setErrorMessage(''); // Clear errors on success
-        } catch (error) {
-            console.error('Error uploading image:', error);
-            setErrorMessage('Failed to upload image.');
-        }
-    };
-
     const handleLogoutClick = () => {
         onLogout();
         navigate('/');
@@ -98,8 +58,6 @@ const Profile = ({ onLogout }) => {
             <div className="profile-sidebar">
                 <img src={imagePreview || profileData.image} alt="Profile" className="profile-avatar" />
                 <h2 className="username">{profileData.username}</h2>
-                <input type="file" accept="image/*" onChange={handleImageChange} />
-                <button onClick={handleImageUpload}>Upload Image</button>
                 <button onClick={handleLogoutClick} className="logout-btn">LOGOUT</button>
             </div>
 
