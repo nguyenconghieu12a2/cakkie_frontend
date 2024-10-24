@@ -11,3 +11,87 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+header {
+  background-color: #e1c16e;
+  color: #3b3b3b;
+  padding: 1rem; /* Make the header fixed */
+  top: 0; /* Stay at the top of the page */
+  width: 100%; /* Full width */
+  position: sticky;
+  z-index: 1;
+}
+
+.navbar {
+  display: flex; /* Use flexbox for layout */
+  justify-content: space-between; /* Space between logo and nav links */
+  align-items: center; /* Center items vertically */
+}
+
+.logo a {
+  display: flex;
+  color: #3b3b3b;
+  text-decoration: none;
+  font-size: 1.5rem; 
+  align-items: center;
+  justify-content: space-around;
+}
+
+.logo a img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.nav-links {
+  list-style: none; /* Remove bullet points */
+  display: flex; /* Display links in a row */
+  gap: 1rem; /* Space between links */
+}
+
+.nav-links li a {
+  color: #3b3b3b;
+  text-decoration: none;
+}
+
+.profile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* Round profile image */
+  cursor: pointer; /* Pointer cursor for clickable icon */
+  transition: transform 0.3s ease; /* Smooth scaling effect */
+}
+
+.profile-icon:hover {
+  transform: scale(1.1); /* Slight zoom on hover */
+}
+
+.product-card {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  text-align: center;
+}
+
+.product-card img {
+  width: 100%;
+  max-width: 200px;
+}
+
+.banner {
+  background-color: #f4f4f4;
+  padding: 2rem;
+  text-align: center;
+  margin-top: 70px; /* Add margin to prevent content from hiding under fixed header */
+}
+
+.products {
+  padding: 2rem;
+}
+
+footer {
+  padding: 1rem;
+  text-align: center;
+  background-color: #333;
+  color: white;
+}
