@@ -1,0 +1,120 @@
+.checkout-page {
+    
+}
+
+.order-page {
+    width: 80%;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+table {
+    border-collapse: collapse;
+    border: none;
+}
+
+td,
+th,
+tr {
+    border: none;
+}
+
+h3 {
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.product-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+
+
+.product-info {
+    display: flex;
+    align-items: center;
+}
+
+.product-info img {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+
+.order-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    border-top: 2px solid #ddd;
+    padding-top: 20px;
+}
+
+.message-for-shop,
+.shipping-option {
+    flex: 1;
+}
+
+.message-for-shop input {
+    width: 100%;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+.shipping-option {
+    text-align: right;
+}
+
+.order-summary {
+    text-align: right;
+    margin-top: 10px;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+}
+
+.coupon-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 2px solid #ddd;
+    padding: 10px 0;
+    margin-top: 20px;
+}
+
+.coupon-section span {
+    font-size: 16px;
+}
+
+button {
+    background: none;
+    border: none;
+    color: blue;
+    cursor: pointer;
+}
+
+.checkout-address {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem;
+    background-color: crimson;
+}
+
+.shipping-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.shipping-info p {
+    text-align: center;
+    margin: 0;
+}
+
+.user-address {
+    width: 100%;
+}

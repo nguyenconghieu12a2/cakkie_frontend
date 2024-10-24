@@ -13,7 +13,7 @@ const Header = ({ Title }) => {
     <Navbar className="custom-navbar" data-bs-theme="dark">
       <Container className="header">
         <Navbar.Brand href="#home">
-          <img src="./images/logos.jpg" className="logo" href="#"></img>
+          <img src="./images/logos.jpg" className="logo" href="#" alt="a pic"/>
         </Navbar.Brand>
         <Nav className="me-auto    nav">
           <Nav href="#home" className="logoName">CAKKIE</Nav>

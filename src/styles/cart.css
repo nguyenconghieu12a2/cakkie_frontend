@@ -1,5 +1,76 @@
 .cart-title {
-    width: 100%;
+    width: calc(100% - 4rem);
     display: flex;
     justify-content: space-around;
+    padding: 0.5rem 2rem;
+    background-color: crimson;
+    margin: 0 2rem;
+
+}
+
+.cart-list {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    background-color: aqua;
+    border-radius: 20px;
+    margin: 4rem 2rem;
+
+}
+
+.checkbox {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #007bff;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+    position: relative;
+}
+
+.checkbox:checked {
+    background-color: #007bff;
+    border: 2px solid #007bff;
+}
+
+.checkbox:checked::after {
+    content: '';
+    position: absolute;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    top: 2px;
+    left: 6px;
+    transform: rotate(45deg);
+}
+
+.Allbar {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 2rem;
+    background-color: #007bff;
+    padding: 1rem;
+    border-radius: 20px;
+}
+
+.Allbar div {
+    flex: 1;
+}
+
+.Allbar .Checkout {
+    flex: 5;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.Allbar .Checkout h3 {
+    margin: 0;
+    margin-right: 4rem;
+
 }

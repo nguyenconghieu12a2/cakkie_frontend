@@ -1,15 +1,15 @@
-import logo from "./logo.svg";
 import "./App.css";
-import Login from "./components/admin-login";
-import Sidebar from "./components/sidebar";
-import Banners from "./components/admin-test";
-import Cart from "./components/Cart";
-
+import Cart from "./Cart/Cart";
+import Checkout from "./Checkout/Checkout";
+import Order from "./Order/Order";
+import Product from "./Product/Product";
 function App() {
   return (
     <div className="App">
+      <Product />
       <Cart />
-     
+      <Checkout />
+      <Order />
     </div>
   );
 }
