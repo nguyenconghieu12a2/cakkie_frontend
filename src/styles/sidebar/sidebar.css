@@ -58,12 +58,9 @@ a {
   text-decoration: none;
   margin-bottom: 15px;
   background-color: white;
-<<<<<<< HEAD:src/styles/sidebar/sidebar.css
   border-radius: 10px;
   /* border-radius: 20px; */
-=======
   border-radius: 20px;
->>>>>>> parent of 03634bc (update):src/styles/sidebar.css
 }
 
 .menu__list {
