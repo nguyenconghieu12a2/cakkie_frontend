@@ -1,0 +1,42 @@
+.report-table-container {
+    width: 100%;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+  }
+  .profile-header1{
+    margin-left: 0px;
+  }
+  
+  .profile-header1 h2 {
+    margin: 0px;
+    padding-top: 10px;
+    text-align: start;
+    font-size: 30px;
+    font-weight: bold;
+  }
+  
+  .profile-header1 p {
+    color: gray;
+    margin-top: 5px;
+  }
+
+  .hrr{
+    margin-top:0rem;
+  }
+
+  .card{
+    border: 1px solid rgb(213, 211, 211);
+    border-radius: 5px;
+  }
+
+  .card-title{
+    padding: 10px 15px;
+    background-color: rgb(241, 240, 240);
+    margin: 0;
+    border-radius: 5px 5px 0px 0px;
+  }
+
+  .card-body{
+    background-color: white;
+    border-radius: 0px 0px 5px 5px;
+  }
