@@ -4,55 +4,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../../styles/customers/detail-customer.css";
 import Sidebar from "../sidebar/sidebar";
 import { BsArrowLeftSquareFill } from "react-icons/bs";
+import customers from "./data-customer";
 
 const DetailCustomer = () => {
   const { id } = useParams();
   const [customer, setCustomer] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
-    const customers = [
-      {
-        id: 1,
-        firstname: "Bach",
-        lastname: "Cong Tu",
-        username: "congtubaclieu",
-        gender: "male",
-        birthday: "20/09/1999",
-        image: "",
-        email: "congtubaclieu123@gmail.com",
-        phone: "0985342783",
-        createDate: "13/09/2023",
-        address: ["address 1", "address 2"],
-      },
-      {
-        id: 2,
-        firstname: "Bach",
-        lastname: "Cong Tu",
-        username: "congtubaclieu",
-        gender: "male",
-        birthday: "20/09/1999",
-        image: "",
-        email: "congtubaclieu123@gmail.com",
-        phone: "0985342783",
-        createDate: "13/09/2023",
-        address: ["address 3", "address 4"],
-      },
-      {
-        id: 3,
-        firstname: "Bach",
-        lastname: "Cong Tu",
-        username: "congtubaclieu",
-        gender: "male",
-        birthday: "20/09/1999",
-        image: "",
-        email: "congtubaclieu123@gmail.com",
-        phone: "0985342783",
-        createDate: "13/09/2023",
-        address: ["address 5", "address 6"],
-      },
-      // Add more customer objects here as needed
-    ];
-
     const foundCustomer = customers.find((cust) => cust.id === parseInt(id));
     setCustomer(foundCustomer);
   }, [id]);
@@ -199,19 +157,6 @@ const DetailCustomer = () => {
 
             {/* Profile Image and Address */}
             <div className="col-md-4 text-center">
-              <div>
-                <div className="profile-img">
-                  <label>Profile Image:</label>
-                </div>
-                <div className="profile-image mb-3">
-                  <img
-                    src="https://via.placeholder.com/150" // fix cho nay display image
-                    alt="Profile"
-                    className="img-fluid rounded-circle"
-                  />
-                </div>
-              </div>
-
               <div className="address">
                 <label>Customer Address:</label>
                 <table className="table table-bordered mt-2">

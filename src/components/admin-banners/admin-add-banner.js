@@ -1,9 +1,12 @@
 import React, { useState } from "react";
+import axios from "axios";
 import "../../styles/banner/add-banner.css";
 
-const AddBanner = ({ onClose }) => {
+const api = "http://localhost:8080/api/add-banners"; // Adjust backend URL
+
+const AddBanner = ({ onClose, onAdd }) => {
   const [title, setTitle] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(null); // Store the actual file
   const [link, setLink] = useState("#");
   const [error, setError] = useState("");
   const [imageError, setImageError] = useState("");
@@ -13,37 +16,82 @@ const AddBanner = ({ onClose }) => {
     if (file) {
       const fileType = file.type;
       if (fileType === "image/jpeg" || fileType === "image/png") {
-        setImage(URL.createObjectURL(file));
+        setImage(file); // Store the actual image file
         setImageError("");
       } else {
         setImageError("Only .jpg and .png files are allowed.");
-        setImage(""); // Clear the image preview if invalid file is uploaded
+        setImage(null); // Clear the image if invalid
       }
     }
   };
 
-  const handleSubmit = (e) => {
+  // Function to validate the link
+  const isValidLink = (link) => {
+    const fullUrlPattern = /^http:\/\/localhost:3000\/banners$/;
+    const relativeUrlPattern = /^\/banners$/;
+    const noneURL = /^#$/;
+    return (
+      fullUrlPattern.test(link) ||
+      relativeUrlPattern.test(link) ||
+      noneURL.test(link)
+    );
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title || !image) {
+    if (!title.trim() || !image) {
       setError(
         "Missing information at these fields (Title, Image). Please fill in!"
       );
       return;
     }
-    console.log({ title, image, link });
-    onClose();
+
+    // Validate Link
+    if (!isValidLink(link)) {
+      setError(
+        "Invalid link! Please provide a link in the format 'localhost:3000/banners' or '/banners' or '#'."
+      );
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("image", image); // Append the actual image file
+      formData.append("link", link);
+      formData.append("isDeleted", 1);
+
+      const response = await axios.post(`${api}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Set proper headers for file upload
+        },
+      });
+      onAdd(response.data);
+
+      console.log(response.data);
+      onClose();
+    } catch (error) {
+      console.error("Error uploading banner:", error);
+      setError("Failed to upload banner. Please try again.");
+    }
   };
+
   return (
-    <div className="popup-overlay">
+    <div className="popup-overlayy">
       <div className="popup-content">
-        <h2>Edit Banner</h2>
-        <form onSubmit={handleSubmit}>
+        <h2>Add Banner</h2>
+        <form
+          // onSubmit={addBanner}
+          onSubmit={handleSubmit}
+        >
           <label>
             Title:
             <input
               required
               type="text"
+              name="title"
               value={title}
+              // onChange={handleInputChange}
               onChange={(e) => setTitle(e.target.value)}
               className="input-field"
             />
@@ -54,13 +102,19 @@ const AddBanner = ({ onClose }) => {
             <input
               required
               type="file"
+              name="image"
               accept=".jpg, .png"
+              // onChange={handleInputChange}
               onChange={handleImageChange}
               className="input-field"
             />
             {imageError && <p className="error-text">{imageError}</p>}
             {image && (
-              <img src={image} alt="Preview" className="image-preview" />
+              <img
+                src={URL.createObjectURL(image)}
+                alt="Preview"
+                className="image-preview"
+              />
             )}
           </label>
 
@@ -68,7 +122,9 @@ const AddBanner = ({ onClose }) => {
             Link:
             <input
               type="text"
+              name="link"
               value={link}
+              // onChange={handleInputChange}
               onChange={(e) => setLink(e.target.value)}
               className="input-field"
             />

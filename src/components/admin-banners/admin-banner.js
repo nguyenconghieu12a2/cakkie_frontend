@@ -5,17 +5,19 @@ import { useNavigate, Link } from "react-router-dom";
 import Sidebar from "../sidebar/sidebar";
 import AdminEditBanner from "./admin-edit-banner";
 import AdminAddBanner from "./admin-add-banner";
+import AvatarHeader from "../header/admin-header";
 
 import { FaEdit, FaTrashAlt, FaPlusCircle } from "react-icons/fa";
 
 const api = "http://localhost:8080/api/banners";
+const deleteApi = "http://localhost:8080/api/delete-banners";
 
 const Banners = () => {
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
   const [isAddPopupOpen, setIsAddPopupOpen] = useState(false);
   const [selectedBanner, setSelectedBanner] = useState(null);
-  // const [currentBanner, setCurrentBanner] = useState(banners.length);
   const [banners, setBanners] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     fetchAllBanners();
@@ -31,6 +33,15 @@ const Banners = () => {
     }
   };
 
+  const deleteBanners = async (id) => {
+    try {
+      await axios.put(`${deleteApi}/${id}`);
+      fetchAllBanners();
+    } catch (error) {
+      console.log("catch error: ", error);
+    }
+  };
+
   const openEditPopup = (banner) => {
     setIsEditPopupOpen(true);
     setSelectedBanner(banner);
@@ -41,10 +52,21 @@ const Banners = () => {
   };
 
   const openAddPopup = () => {
-    setIsAddPopupOpen(true);
+    if (banners.length < 10) {
+      setIsAddPopupOpen(true);
+      setErrorMessage(""); // Clear any previous error messages
+    } else {
+      setErrorMessage("You cannot add more than 10 banners.");
+    }
   };
+
   const closeAddPopup = () => {
     setIsAddPopupOpen(false);
+  };
+
+  const addNewBanner = (newBanner) => {
+    setBanners((prevBanners) => [...prevBanners, newBanner]);
+    closeAddPopup();
   };
 
   return (
@@ -60,21 +82,16 @@ const Banners = () => {
               <Link to="/dashboard">Home</Link> / Banners
             </p>
           </div>
-          <div className="avatar-circle">
-            <Link to="/admin-profile">
-              <img
-                src={`/images/low_HD.jpg`}
-                alt="Avatar"
-                className="avatar-img"
-              />
-            </Link>
-          </div>
+          <AvatarHeader />
         </div>
         <hr className="hrr" />
 
         <div className="lower">
           <FaPlusCircle onClick={openAddPopup} className="add-icon" />
-          {isAddPopupOpen && <AdminAddBanner onClose={closeAddPopup} />}
+          {isAddPopupOpen && (
+            <AdminAddBanner onClose={closeAddPopup} onAdd={addNewBanner} />
+          )}
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
         </div>
         <table className="banners-table">
           <thead>
@@ -110,10 +127,14 @@ const Banners = () => {
                     <AdminEditBanner
                       banner={selectedBanner}
                       onClose={closeEditPopup}
+                      onUpdate={fetchAllBanners}
                     />
-                  )}{" "}
+                  )}
                   &emsp;|&emsp;
-                  <FaTrashAlt className="delete-icon" />
+                  <FaTrashAlt
+                    className="delete-icon"
+                    onClick={() => deleteBanners(banner.id)}
+                  />
                 </td>
               </tr>
             ))}

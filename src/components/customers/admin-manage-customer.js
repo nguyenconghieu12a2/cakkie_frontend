@@ -7,6 +7,7 @@ import Pagination from "react-bootstrap/Pagination";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../styles/customers/customer-table.css";
 import customers from "../customers/data-customer";
+import AvatarHeader from "../header/admin-header";
 
 const ManageCustomer = () => {
   const [showModal, setShowModal] = useState(false);
@@ -77,15 +78,7 @@ const ManageCustomer = () => {
                 <Link to="/dashboard">Home</Link> / Manage Customers
               </p>
             </div>
-            <div className="avatar-circle">
-              <Link to="/admin-profile">
-                <img
-                  src={`/images/low_HD.jpg`}
-                  alt="Avatar"
-                  className="avatar-img"
-                />
-              </Link>
-            </div>
+            <AvatarHeader />
           </div>
           <hr className="hrr" />
           <div className="search-container">

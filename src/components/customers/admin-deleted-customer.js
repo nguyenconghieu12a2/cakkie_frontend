@@ -5,6 +5,7 @@ import Pagination from "react-bootstrap/Pagination";
 import "../../styles/customers/deleted-customer.css";
 import { BsSearch } from "react-icons/bs";
 import customers from "../customers/data-customer";
+import AvatarHeader from "../header/admin-header";
 
 const DeletedCustomer = () => {
   const [showModal, setShowModal] = useState(false);
@@ -64,15 +65,7 @@ const DeletedCustomer = () => {
                 <Link to="/dashboard">Home</Link> / Deleted Customers
               </p>
             </div>
-            <div className="avatar-circle">
-              <Link to="/admin-profile">
-                <img
-                  src={`/images/low_HD.jpg`}
-                  alt="Avatar"
-                  className="avatar-img"
-                />
-              </Link>
-            </div>
+            <AvatarHeader />
           </div>
           <hr className="hrr" />
           <div className="search-container">

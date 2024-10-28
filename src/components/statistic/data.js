@@ -5,6 +5,5 @@ const statistics = [
   { name: "Orders Other", value: "0.0000" },
   { name: "Returns", value: "105.0000" },
   { name: "Out of stock products", value: "0.0000" },
-  { name: "Pending Reviews", value: "0.0000" },
 ];
 export default statistics;

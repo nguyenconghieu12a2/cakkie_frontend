@@ -6,6 +6,7 @@ import Sidebar from "../sidebar/sidebar";
 import Pagination from "react-bootstrap/Pagination";
 import "../../styles/customers/banned-customer.css";
 import customers from "../customers/data-customer";
+import AvatarHeader from "../header/admin-header";
 
 const BannedCustomer = () => {
   const [showModal, setShowModal] = useState(false);
@@ -72,15 +73,7 @@ const BannedCustomer = () => {
                 <Link to="/dashboard">Home</Link> / Banned Customers
               </p>
             </div>
-            <div className="avatar-circle">
-              <Link to="/admin-profile">
-                <img
-                  src={`/images/low_HD.jpg`}
-                  alt="Avatar"
-                  className="avatar-img"
-                />
-              </Link>
-            </div>
+            <AvatarHeader />
           </div>
           <hr className="hrr" />
           <div className="search-container">

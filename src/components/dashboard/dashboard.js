@@ -9,6 +9,7 @@ import { Row, Col } from "react-bootstrap";
 import "../../styles/dashboard/dashboard.css";
 import customerData from "./data/customer";
 import ordersData from "./data/order";
+import AvatarHeader from "../header/admin-header";
 
 const Dashboard = ({ onLogout }) => {
   const navigate = useNavigate();
@@ -144,15 +145,7 @@ const Dashboard = ({ onLogout }) => {
               <Link to="/dashboard">Home</Link> / Dashboard
             </p>
           </div>
-          <div className="avatar-circle">
-            <Link to="/admin-profile">
-              <img
-                src={`/images/low_HD.jpg`}
-                alt="Avatar"
-                className="avatar-img"
-              />
-            </Link>
-          </div>
+          <AvatarHeader />
         </div>
         <hr className="hrr" />
         <div className="d-flex flex-wrap justify-content-between">
