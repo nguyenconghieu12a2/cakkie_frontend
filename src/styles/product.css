@@ -123,6 +123,7 @@ h1 {
     border: none;
     padding: 10px 20px;
     cursor: pointer;
+    border-radius: 20px;
 }
 
 .add-to-cart {
@@ -131,6 +132,7 @@ h1 {
     border: none;
     padding: 10px 20px;
     cursor: pointer;
+    border-radius: 20px;
 }
 
 .product-description {
@@ -153,4 +155,15 @@ h1 {
 .tab-content {
     border-top: 1px solid #ddd;
     padding-top: 10px;
+}
+
+.quantity-control button {
+    border-radius: 20px;
+    border: none;
+    padding: 10px 20px;
+    background-color: #c7c7c7;
+}
+
+.quantity-control button:active {
+    background-color: #ffe281;
 }

@@ -39,6 +39,7 @@ h1 {
 .product-item {
     display: flex;
     justify-content: space-between;
+    flex-direction: row;
     align-items: center;
     padding: 10px;
     margin: 1rem;
@@ -46,9 +47,11 @@ h1 {
     background-color: #fdf2e9;
 }
 
-.product-info {
+.order-list-page .product-info {
     display: flex;
     align-items: center;
+    flex-direction: row;
+    flex: 1;
 }
 
 .product-info img {
@@ -59,8 +62,10 @@ h1 {
 
 .product-details {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    flex: 2;
+    justify-content: space-around;
 }
 
 .review-button {

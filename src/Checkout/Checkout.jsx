@@ -35,7 +35,7 @@ const Checkout = () => {
     <div className="checkout-page">
       <Header Title={"Products Ordered"} />
       <div className="order-page">
-        <div class="checkout-address">
+        <div className="checkout-address">
           <div className="user-address">
             <h1>Delivery Address</h1>
             <div className="shipping-info">

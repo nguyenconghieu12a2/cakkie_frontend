@@ -1,8 +1,8 @@
 import { useState } from "react";
 import "../styles/cartItem.css";
-
 function CartItem({ product_image, product_name, product_qty, price }) {
   const [quantity, setQuantity] = useState(product_qty);
+  
 
   const handleInputChange = (event) => {
     const newValue = event.target.value.replace(/[^0-9]/g, "");
@@ -27,7 +27,10 @@ function CartItem({ product_image, product_name, product_qty, price }) {
         <p>{product_name}</p>
       </div>
       <div className="item qty">
-        <button class="fa-solid fa-plus icon" onClick={increaseQty}></button>
+        <button
+          className="fa-solid fa-plus icon"
+          onClick={increaseQty}
+        ></button>
         <input
           className="quantity"
           type="number"
@@ -35,7 +38,10 @@ function CartItem({ product_image, product_name, product_qty, price }) {
           min="1"
           onChange={handleInputChange}
         />
-        <button class="fa-solid fa-minus icon" onClick={decreaseQty}></button>
+        <button
+          className="fa-solid fa-minus icon"
+          onClick={decreaseQty}
+        ></button>
       </div>
       <div className="item price">{price} VND</div>
       <div className="item total">{quantity * price}</div>
