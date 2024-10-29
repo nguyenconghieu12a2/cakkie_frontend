@@ -72,5 +72,9 @@
 .Allbar .Checkout h3 {
     margin: 0;
     margin-right: 4rem;
+}
 
+.cart-list {
+    display: flex;
+    flex-direction: row;
 }

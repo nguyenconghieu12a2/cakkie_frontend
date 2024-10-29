@@ -70,6 +70,7 @@ const Cart = () => {
     const updatedProducts = productList.map((product) =>
       product.productItemId === id ? { ...product, selected: !product.selected } : product
     );
+    setProductList(updatedProducts);
 
     const allSelected = updatedProducts.every((product) => product.selected);
     setCheckAll(allSelected);
