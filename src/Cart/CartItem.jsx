@@ -2,7 +2,6 @@ import { useState } from "react";
 import "../styles/cartItem.css";
 function CartItem({ product_image, product_name, product_qty, price }) {
   const [quantity, setQuantity] = useState(product_qty);
-  
 
   const handleInputChange = (event) => {
     const newValue = event.target.value.replace(/[^0-9]/g, "");
