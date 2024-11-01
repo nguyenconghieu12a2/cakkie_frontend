@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Register.css';
+import './style/Register.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -47,131 +47,111 @@ const Register = () => {
 
   return (
     <div className="register-container">
-      <div className="form-section">
-        <h1>Welcome!</h1>
+      <div className="register-form-section">
+        <h1 className="register-heading">Welcome!</h1>
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>
-              <i className="icon user-icon"></i>
-              <input
-                type="text"
-                name="firstname"
-                value={formData.firstname}
-                onChange={handleChange}
-                placeholder="First Name"
-                required
-              />
-            </label>
+          {message && <p className="register-message">{message}</p>}
+          <div className="register-form-group">
+            <i className="register-icon fas fa-user"></i>
+            <input
+              type="text"
+              name="firstname"
+              value={formData.firstname}
+              onChange={handleChange}
+              placeholder="First Name"
+              required
+            />
           </div>
-          <div className="form-group">
-            <label>
-              <i className="icon user-icon"></i>
-              <input
-                type="text"
-                name="lastname"
-                value={formData.lastname}
-                onChange={handleChange}
-                placeholder="Last Name"
-                required
-              />
-            </label>
+          <div className="register-form-group">
+            <i className="register-icon fas fa-user"></i>
+            <input
+              type="text"
+              name="lastname"
+              value={formData.lastname}
+              onChange={handleChange}
+              placeholder="Last Name"
+              required
+            />
           </div>
-          <div className="form-group">
-            <label>
-              <i className="icon user-icon"></i>
-              <input
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                placeholder="Username"
-                required
-              />
-            </label>
+          <div className="register-form-group">
+            <i className="register-icon fas fa-user"></i>
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="Username"
+              required
+            />
           </div>
-          <div className="form-group gender-birthday">
-            <label className="gender-label">
-              <i className="icon gender-icon"></i>
+          <div className="register-form-group register-gender-birthday">
+            <div className="register-gender-label">
+              <i className="register-icon fas fa-venus-mars"></i>
               <select
                 name="gender"
                 value={formData.gender}
                 onChange={handleChange}
                 required
               >
-                <option value="" disabled>
-                  Gender
-                </option>
+                <option value="" disabled>Gender</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
                 <option value="other">Other</option>
               </select>
-            </label>
-            <label className="birthday-label">
-              <i className="icon calendar-icon"></i>
+            </div>
+            <div className="register-birthday-label">
               <input
                 type="date"
                 name="birthday"
                 value={formData.birthday}
                 onChange={handleChange}
-                placeholder="Birthday"
                 required
               />
-            </label>
+            </div>
           </div>
-          <div className="form-group">
-            <label>
-              <i className="icon email-icon"></i>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Email"
-                required
-              />
-            </label>
+          <div className="register-form-group">
+            <i className="register-icon fas fa-envelope"></i>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Email"
+              required
+            />
           </div>
-          <div className="form-group">
-            <label>
-              <i className="icon phone-icon"></i>
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="Phone"
-                required
-              />
-            </label>
+          <div className="register-form-group">
+            <i className="register-icon fas fa-phone"></i>
+            <input
+              type="tel"
+              name="phone"
+              pattern="[0-9]{10}"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="Phone"
+              required
+            />
           </div>
-          <div className="form-group">
-            <label>
-              <i className="icon lock-icon"></i>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Password"
-                required
-              />
-            </label>
+          <div className="register-form-group">
+            <i className="register-icon fas fa-lock"></i>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Password"
+              pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$"
+              required
+            />
           </div>
-          {message && <p>{message}</p>}
-          <button type="submit" className="register-btn">
-            REGISTER
-          </button>
-
-          <div className="back-to-login">
+          <button type="submit" className="register-btn">REGISTER</button>
+          <div className="register-back-to-login">
             <a href="/login">Back to Login</a>
           </div>
         </form>
-
-        
       </div>
-
-      <div className="right-section">
-        <div className="image-section">
+      <div className="register-right-section">
+        <div className="register-image-section">
           <img src="/images/logos.jpg" alt="Dessert" />
         </div>
       </div>
