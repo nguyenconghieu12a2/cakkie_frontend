@@ -5,11 +5,13 @@ import "../styles/cart.css";
 import CartItem from "./CartItem";
 import axios from "axios";
 import { get } from "../utils/request";
+import { useLocation } from "react-router-dom";
 const Cart = () => {
   //useState
+  const location = useLocation();
   const [quantity, setQuantity] = useState(0);
   const [id, setId] = useState(1);
-  const [userId, setUserId] = useState(1);
+  const [userId, setUserId] = useState(location.state?.userId || 1);
   const [checkAll, setCheckAll] = useState(false);
   const [productList, setProductList] = useState([]);
   const [cart, setCart] = useState([]);
@@ -226,7 +228,7 @@ const Cart = () => {
         "Do you want to remove this item from the cart?"
       );
       if (confirmRemoval) {
-        removeCartItem(itemToDecrease.id);
+        removeCartItem(itemToDecrease.productItemId);
       }
     } else {
       const updatedCart = cart.map((car) =>
@@ -327,13 +329,18 @@ const Cart = () => {
                       </div>
                     </td>
                     <td class="px-6 py-4 font-semibold text-gray-900 dark:text-red-400 text-center">
-                      {product.price - product.price * (product.discount / 100)}{" "}
+                      {(
+                        product.price -
+                        product.price * (product.discount / 100)
+                      ).toLocaleString("vi-VN")}{" "}
                       VND
                     </td>
                     <td class="px-6 py-4 font-semibold text-gray-900 dark:text-black text-center">
-                      {getQuantity(product.productItemId) *
+                      {(
+                        getQuantity(product.productItemId) *
                         (product.price -
-                          product.price * (product.discount / 100))}{" "}
+                          product.price * (product.discount / 100))
+                      ).toLocaleString("vi-VN")}{" "}
                       VND
                     </td>
                     <td class="px-6 py-4 text-center">
@@ -383,7 +390,7 @@ const Cart = () => {
                 <div className="flex items-center mb-1 px-4">
                   <button
                     type="button"
-                    className="text-white bg-orange-500 hover:bg-[#050708]/80 focus:ring-4 focus:outline-none focus:ring-[#050708]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#050708]/40 dark:focus:ring-gray-600 me-2 mb-2"
+                    className="text-white bg-orange-500 hover:bg-orange-700/80 focus:ring-4 focus:outline-none focus:ring-[#]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-orange-700/40 dark:focus:ring-gray-600 me-2 mb-2"
                   >
                     Check out
                   </button>

@@ -167,3 +167,8 @@ h1 {
 .quantity-control button:active {
     background-color: #ffe281;
 }
+
+.disabled {
+    color: #363636;
+    background-color: #b8b8b8;
+}
