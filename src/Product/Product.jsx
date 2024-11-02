@@ -33,6 +33,9 @@ const Product = () => {
     if (userId) {
       fetchCart();
     }
+    if (productList.length > 0) {
+      setSelectedSize(productList[0].size);
+    }
   }, []);
 
   const fetchCart = async () => {
@@ -61,9 +64,7 @@ const Product = () => {
   const fetchProduct = async () => {
     try {
       const response = await axios.get(`http://localhost:8080/Product/${id}`);
-      console.log(response);
       const { productList, descriptionList } = response.data;
-      console.log(id);
       setProductList(productList);
       console.log(productList);
       setDescriptionList(descriptionList);
@@ -131,30 +132,36 @@ const Product = () => {
   };
 
   const chooseSize = (size) => {
-    for (let i = 0; i < productList.length; i++) {
-      if (productList[i].size === size) {
-        const productInCart = cart.find(
-          (item) =>
-            item.productItemId === productList[i].productItemId &&
-            item.size === productList[i].size
-        );
-
-        if (
-          productInCart &&
-          productInCart.qty >= productList[i].quantityStock &&
-          productInCart.qty !== 0
-        ) {
-          setShowOutStockPopup(true);
-        } else {
-          console.log(`Size "${size}" belongs to product at index ${i}`);
-          setCurrent(i);
-          console.log(current);
-          setSelectedSize(productList[i].size);
-          setQuantity(1);
-        }
-      }
-    }
+    setSelectedSize(size);
+    setQuantity(1);
   };
+
+  // const chooseSize = (size) => {
+  //   for (let i = 0; i < productList.length; i++) {
+  //     if (productList[i].size === size) {
+  //       const productInCart = cart.find(
+  //         (item) =>
+  //           item.productItemId === productList[i].productItemId &&
+  //           item.size === productList[i].size
+  //       );
+
+  //       if (
+  //         productInCart &&
+  //         productInCart.qty >= productList[i].quantityStock &&
+  //         productInCart.qty !== 0
+  //       ) {
+  //         setShowOutStockPopup(true);
+  //       } else {
+  //         console.log(`Size "${size}" belongs to product at index ${i}`);
+  //         setCurrent(i);
+  //         console.log(current);
+  //         setSelectedSize(productList[i].size);
+  //         console.log(selectedSize);
+  //         setQuantity(1);
+  //       }
+  //     }
+  //   }
+  // };
 
   useEffect(() => {
     let initialSize = null;
@@ -174,6 +181,13 @@ const Product = () => {
     }
   }, [productList, cart]);
 
+  const selectedProduct = productList.find(
+    (product) => product.size === selectedSize
+  );
+
+  if (!selectedProduct) {
+    return <div>Product not found!</div>;
+  }
   const handleQuantityChange = (operation) => {
     setQuantity((prevQuantity) => {
       if (operation === "increment") {
@@ -251,7 +265,7 @@ const Product = () => {
         <div className="product-gallery">
           <div className="main-image">
             <img
-              src={`./${productList[current].productImage}.jpg`}
+              src={`./${selectedProduct.productImage}.jpg`}
               alt="Main Product"
             />
           </div>
@@ -261,8 +275,8 @@ const Product = () => {
           <h2>{productList[current].name}</h2>
           <div className="product-rating">
             <p className="text-yellow-500">
-              {"★".repeat(productList[current].productRating)}{" "}
-              {"☆".repeat(5 - productList[current].productRating)}{" "}
+              {"★".repeat(productList[0].productRating)}{" "}
+              {"☆".repeat(5 - productList[0].productRating)}{" "}
             </p>
           </div>
 
@@ -297,14 +311,16 @@ const Product = () => {
             <p className="current-price">
               {" "}
               {(
-                productList[current].price -
-                productList[current].price *
-                  (productList[current].discount / 100)
+                selectedProduct.price -
+                selectedProduct.price * (selectedProduct.discount / 100)
               ).toLocaleString("vi-VN")}{" "}
               VND
             </p>
             <p className="old-price">
-              {productList[current].price.toLocaleString("vi-VN")} VND
+              {productList
+                .find((product) => product.size === selectedSize)
+                .price.toLocaleString("vi-VN")}{" "}
+              VND
             </p>
           </div>
 
@@ -318,9 +334,7 @@ const Product = () => {
             <button className="buy-now">Buy Now</button>
             <button
               className="add-to-cart"
-              onClick={() =>
-                addProductToCart(productList[current].productItemId)
-              }
+              onClick={() => addProductToCart(selectedProduct.productItemId)}
             >
               Add to Cart
             </button>

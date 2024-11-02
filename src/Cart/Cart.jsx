@@ -385,7 +385,7 @@ const Cart = () => {
                   </button>
                 </div>
                 <div className="flex items-center mb-2 px-4">
-                  <h3>Subtotal: {total} VND</h3>
+                  <h3>Subtotal: {total.toLocaleString("vi-VN")} VND</h3>
                 </div>
                 <div className="flex items-center mb-1 px-4">
                   <button
