@@ -238,6 +238,11 @@ const Cart = ({ setCartData }) => {
   };
 
   const passCart = () => {
+    const quantityMap = new Map();
+    cart.forEach((cartItem) => {
+      quantityMap.set(cartItem.productItemId, cartItem.qty);
+    });
+
     localStorage.removeItem("cart");
     localStorage.setItem(
       "cart",
@@ -246,9 +251,7 @@ const Cart = ({ setCartData }) => {
           .filter((product) => product.selected === true)
           .map((product) => ({
             ...product,
-            quantity: cart.find(
-              (cartItem) => (cartItem.productItemId = product.productItemId)
-            ).qty,
+            quantity: quantityMap.get(product.productItemId) || 1,
           }))
       )
     );
