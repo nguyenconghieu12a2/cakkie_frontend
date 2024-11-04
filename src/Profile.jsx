@@ -7,7 +7,7 @@ import EditProfile from './components/EditProfile';
 import ChangePassword from './components/ChangePassword';
 import './style/Profile.css';
 
-const api = 'http://localhost:8080/api/profile';
+const api = '/api/profile';
 
 const Profile = ({ onLogout }) => {
     const [profileData, setProfileData] = useState(null);

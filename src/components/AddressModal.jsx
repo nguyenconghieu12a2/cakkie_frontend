@@ -17,7 +17,7 @@ const AddressModal = ({ userId, onClose, onAddAddress }) => {
     });
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/provinces')
+        axios.get('/api/provinces')
             .then(response => setProvinces(response.data))
             .catch(error => console.error("Error fetching provinces:", error));
     }, []);
@@ -28,7 +28,7 @@ const AddressModal = ({ userId, onClose, onAddAddress }) => {
         setSelectedDistrict('');
         setWards([]);
 
-        axios.post('http://localhost:8080/api/districts', { provinceCode })
+        axios.post('/api/districts', { provinceCode })
             .then(response => setDistricts(response.data))
             .catch(error => console.error("Error fetching districts:", error));
     };
@@ -37,7 +37,7 @@ const AddressModal = ({ userId, onClose, onAddAddress }) => {
         const districtCode = e.target.value;
         setSelectedDistrict(districtCode);
 
-        axios.post('http://localhost:8080/api/wards', { districtCode })
+        axios.post('/api/wards', { districtCode })
             .then(response => setWards(response.data))
             .catch(error => console.error("Error fetching wards:", error));
     };
@@ -53,7 +53,7 @@ const AddressModal = ({ userId, onClose, onAddAddress }) => {
         };
     
         try {
-            const response = await axios.post(`http://localhost:8080/api/user/${userId}/address/add`, addressData);
+            const response = await axios.post(`/api/user/${userId}/address/add`, addressData);
             const newAddressData = response.data;
             console.log("New Address Response:", newAddressData);  // Log to inspect
     

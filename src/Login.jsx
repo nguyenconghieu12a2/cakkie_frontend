@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './style/Login.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
-const api = 'http://localhost:8080/api/login';
+const api = '/api/login';
 
 const Login = ({ onLoginSuccess }) => {
   const [formData, setFormData] = useState({

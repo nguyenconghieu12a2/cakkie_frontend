@@ -16,14 +16,14 @@ const EditAddressModal = ({ userId, address, onClose, onUpdateAddress }) => {
     });
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/provinces')
+        axios.get('/api/provinces')
             .then(response => setProvinces(response.data))
             .catch(error => console.error("Error fetching provinces:", error));
     }, []);
 
     useEffect(() => {
         if (selectedProvince) {
-            axios.post('http://localhost:8080/api/districts', { provinceCode: selectedProvince })
+            axios.post('/api/districts', { provinceCode: selectedProvince })
                 .then(response => {
                     setDistricts(response.data);
                     const matchedDistrict = response.data.find(district => district.fullNameEn === address.districtName);
@@ -39,7 +39,7 @@ const EditAddressModal = ({ userId, address, onClose, onUpdateAddress }) => {
 
     useEffect(() => {
         if (selectedDistrict) {
-            axios.post('http://localhost:8080/api/wards', { districtCode: selectedDistrict })
+            axios.post('/api/wards', { districtCode: selectedDistrict })
                 .then(response => {
                     setWards(response.data);
                     const matchedWard = response.data.find(ward => ward.fullNameEn === address.wardName);
@@ -78,7 +78,7 @@ const EditAddressModal = ({ userId, address, onClose, onUpdateAddress }) => {
         };
 
         try {
-            await axios.put(`http://localhost:8080/api/user/${userId}/address/${address.addressId}/update`, addressData);
+            await axios.put(`/api/user/${userId}/address/${address.addressId}/update`, addressData);
             onUpdateAddress({ ...address, ...addressData }); // Pass updated address back to MyAddress
             onClose();
         } catch (error) {

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import '../style/ChangePassword.css';
 
-const changePasswordApi = 'http://localhost:8080/api/change-password';
+const changePasswordApi = '/api/change-password';
 
 const ChangePassword = ({ onPasswordChange }) => {
     const [currentPassword, setCurrentPassword] = useState('');

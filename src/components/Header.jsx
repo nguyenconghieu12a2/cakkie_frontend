@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const api = 'http://localhost:8080/api/profile'; // Backend API route
+const api = '/api/profile'; // Backend API route
 
 const Header = ({ isLoggedIn }) => {
   const [user, setUser] = useState(null);

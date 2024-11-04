@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import '../style/EditProfile.css';
 
-const api = 'http://localhost:8080/api/profile';
-const updateApi = 'http://localhost:8080/api/edit-account';
+const api = '/api/profile';
+const updateApi = '/api/edit-account';
 
 const EditProfile = ({ profileData = {}, onSave }) => {
     const [formData, setFormData] = useState({

@@ -23,7 +23,7 @@ const ResetPassword = () => {
       }
 
       try {
-        const response = await fetch(`http://localhost:8080/api/validate-reset-token?email=${email}&token=${token}`);
+        const response = await fetch(`/api/validate-reset-token?email=${email}&token=${token}`);
         if (response.ok) {
           setIsTokenValid(true);
         } else {
@@ -49,7 +49,7 @@ const ResetPassword = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8080/api/reset-password', {
+      const response = await fetch('/api/reset-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

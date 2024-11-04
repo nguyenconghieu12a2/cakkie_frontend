@@ -3,7 +3,7 @@ import './style/Register.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const api = 'http://localhost:8080/api/register';
+const api = '/api/register';
 
 const Register = () => {
   const [formData, setFormData] = useState({

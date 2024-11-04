@@ -15,7 +15,7 @@ const MyAddress = ({ userId, reloadKey, refreshAddresses }) => {
     useEffect(() => {
         const fetchAddresses = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/user/${userId}/addresses`);
+                const response = await axios.get(`/api/user/${userId}/addresses`);
                 setAddresses(response.data.sort((a, b) => b.default - a.default) || []);
             } catch (error) {
                 console.error("Error fetching addresses:", error);
@@ -58,7 +58,7 @@ const MyAddress = ({ userId, reloadKey, refreshAddresses }) => {
 
     const handleSetDefault = async (addressId) => {
         try {
-            await axios.put(`http://localhost:8080/api/user/${userId}/address/${addressId}/set-default`);
+            await axios.put(`/api/user/${userId}/address/${addressId}/set-default`);
             setAddresses((prevAddresses) =>
                 prevAddresses
                     .map((address) => ({
@@ -76,7 +76,7 @@ const MyAddress = ({ userId, reloadKey, refreshAddresses }) => {
     const handleDeleteAddress = async () => {
         if (!addressToDelete) return;
         try {
-            await axios.delete(`http://localhost:8080/api/user/${userId}/address/${addressToDelete.addressId}/delete`);
+            await axios.delete(`/api/user/${userId}/address/${addressToDelete.addressId}/delete`);
             setAddresses((prevAddresses) =>
                 prevAddresses
                     .filter((address) => address.addressId !== addressToDelete.addressId)
