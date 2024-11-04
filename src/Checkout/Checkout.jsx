@@ -1,11 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/checkout.css";
 import Header from "../components/Header";
+import { useLocation } from "react-router-dom";
 
-const Checkout = (cart) => {
+const Checkout = () => {
+  const location = useLocation();
+  const [cart, setCart] = useState([]);
   const [message, setMessage] = useState("");
   const [coupon, setCoupon] = useState("THANHDEPCHAILMAOLMAOLMAO");
   const [shippingOption, setShippingOption] = useState("Thanhdepchai");
+
+  useEffect(() => {
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCart(storedCart);
+  }, []);
 
   const products = [
     {
@@ -31,50 +39,54 @@ const Checkout = (cart) => {
     0
   );
 
-
-
   return (
     <div className="checkout-page">
       <Header Title={"Products Ordered"} />
+      {console.log(cart)}
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-left rtl:text-right mt-12 py-5">
-          <thead class="text-xs b">
+          <thead className="text-xs b">
             <tr>
-              <th scope="col" class="px-16 py-3 text-center">
+              <th scope="col" className="px-16 py-3 text-center">
                 Product
               </th>
-              <th scope="col" class="px-16 py-3">
+              <th scope="col" className="px-16 py-3">
                 Price
               </th>
-              <th scope="col" class="px-6 py-3">
+              <th scope="col" className="px-6 py-3">
                 Quantity
               </th>
-              <th scope="col" class="px-6 py-3">
+              <th scope="col" className="px-6 py-3">
                 Total
               </th>
             </tr>
           </thead>
 
           <tbody>
-            {products.map((product) => (
+            {cart.map((product) => (
               <tr key={product.id}>
                 <td>
-                  <div className="flex flex-row">
+                  <div className="flex flex-row justify-content-center">
                     <img
                       className="w-10 h-10"
                       src={product.imageUrl}
                       alt={product.name}
                     />
-                    <div className="px-2">
+                    <div className="px-2 ">
                       <p>{product.name}</p>
-                      <p>{product.description}</p>
                     </div>
                   </div>
                 </td>
-                <td>{product.unitPrice.toLocaleString()} đ</td>
+                <td>
+                  {(
+                    product.price -
+                    (product.price * product.discount) / 100
+                  ).toLocaleString()}{" "}
+                  VND
+                </td>
                 <td>{product.quantity}</td>
                 <td>
-                  {(product.unitPrice * product.quantity).toLocaleString()} đ
+                  {(product.unitPrice * product.quantity).toLocaleString()} VND
                 </td>
               </tr>
             ))}
@@ -87,7 +99,7 @@ const Checkout = (cart) => {
               Message for shop
             </label>
             <input
-              class="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+              className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
               placeholder="Type here..."
             />
           </div>
@@ -117,7 +129,7 @@ const Checkout = (cart) => {
             <div className="flex items-center mb-1 px-4">
               <button
                 type="button"
-                className="text-white bg-orange hover:bg-[#050708]/80 focus:ring-4 focus:outline-none focus:ring-[#050708]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#050708]/40 dark:focus:ring-gray-600 me-2 mb-2"
+                className="text-white bg-orange-500 hover:bg-orange-700/80 focus:ring-4 focus:outline-none focus:ring-[#]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-orange-700/40 dark:focus:ring-gray-600 me-2 mb-2"
               >
                 Order
               </button>

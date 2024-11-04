@@ -2,12 +2,10 @@ import React, { useEffect, useState } from "react";
 import "../styles/product.css";
 import Header from "../components/Header";
 import axios from "axios";
-import request from "../utils/request";
-import { type } from "@testing-library/user-event/dist/type";
 import { useNavigate, useParams } from "react-router-dom";
+import NotFound from "../components/NotFound";
 const Product = () => {
   const { productId } = useParams();
-  const [current, setCurrent] = useState(0);
   const [id, setId] = useState(productId);
   const [spec, setSpec] = useState(false);
   const [couponId, setCouponId] = useState(1);
@@ -26,6 +24,7 @@ const Product = () => {
   const [showOutStockPopup, setShowOutStockPopup] = useState(false);
   const [cart, setCart] = useState([]);
   const navigate = useNavigate();
+  const [disabled, setDisibled] = useState(false);
 
   useEffect(() => {
     fetchProduct();
@@ -35,6 +34,16 @@ const Product = () => {
     }
     if (productList.length > 0) {
       setSelectedSize(productList[0].size);
+      const allProductsOutOfStock = productList.every((product) => {
+        const productInCart = cart.find(
+          (item) => item.productItemId === product.productItemId
+        );
+        return productInCart && productInCart.qty >= product.quantityStock;
+      });
+
+      if (allProductsOutOfStock) {
+        setDisibled(true);
+      }
     }
   }, []);
 
@@ -120,7 +129,7 @@ const Product = () => {
   };
 
   const selectedDescription = () => {
-    setContent(productList[current].description);
+    setContent(selectedProduct.description);
     setSpec(false);
     setToogle(!toogle);
     console.log(toogle, spec);
@@ -135,33 +144,6 @@ const Product = () => {
     setSelectedSize(size);
     setQuantity(1);
   };
-
-  // const chooseSize = (size) => {
-  //   for (let i = 0; i < productList.length; i++) {
-  //     if (productList[i].size === size) {
-  //       const productInCart = cart.find(
-  //         (item) =>
-  //           item.productItemId === productList[i].productItemId &&
-  //           item.size === productList[i].size
-  //       );
-
-  //       if (
-  //         productInCart &&
-  //         productInCart.qty >= productList[i].quantityStock &&
-  //         productInCart.qty !== 0
-  //       ) {
-  //         setShowOutStockPopup(true);
-  //       } else {
-  //         console.log(`Size "${size}" belongs to product at index ${i}`);
-  //         setCurrent(i);
-  //         console.log(current);
-  //         setSelectedSize(productList[i].size);
-  //         console.log(selectedSize);
-  //         setQuantity(1);
-  //       }
-  //     }
-  //   }
-  // };
 
   useEffect(() => {
     let initialSize = null;
@@ -186,27 +168,31 @@ const Product = () => {
   );
 
   if (!selectedProduct) {
-    return <div>Product not found!</div>;
+    return (
+      <>
+        <Header />
+        <NotFound />
+      </>
+    );
   }
   const handleQuantityChange = (operation) => {
     setQuantity((prevQuantity) => {
       if (operation === "increment") {
         let productInCart = cart.find(
-          (product) =>
-            product.productItemId === productList[current].productItemId
+          (product) => product.productItemId === selectedProduct.productItemId
         );
-
+        console.log(productInCart);
         if (productInCart) {
           if (
             productInCart.qty + prevQuantity + 1 >
-            productList[current].quantityStock
+            selectedProduct.quantityStock
           ) {
             setShowOutStockPopup(true);
             return prevQuantity;
           } else {
             return prevQuantity + 1;
           }
-        } else if (prevQuantity + 1 <= productList[current].quantityStock) {
+        } else if (prevQuantity + 1 <= selectedProduct.quantityStock) {
           return prevQuantity + 1;
         } else {
           window.alert("Your order is the last item in shop!");
@@ -247,7 +233,7 @@ const Product = () => {
               {
                 cart.find(
                   (product) =>
-                    product.productItemId === productList[current].productItemId
+                    product.productItemId === selectedProduct.productItemId
                 ).qty
               }{" "}
               in your Cart. If you buy more, it exceed the stock in the shop.
@@ -272,7 +258,7 @@ const Product = () => {
         </div>
 
         <div className="product-info">
-          <h2>{productList[current].name}</h2>
+          <h2>{selectedProduct.name}</h2>
           <div className="product-rating">
             <p className="text-yellow-500">
               {"★".repeat(productList[0].productRating)}{" "}
@@ -294,7 +280,9 @@ const Product = () => {
                   <button
                     key={product}
                     className={`size-button ${
-                      selectedSize === product.size ? "selected" : ""
+                      selectedSize === product.size && !isDisabled
+                        ? "selected"
+                        : ""
                     }
                     ${isDisabled ? "disabled" : ""}`}
                     onClick={() => chooseSize(product.size)}
@@ -331,10 +319,16 @@ const Product = () => {
           </div>
 
           <div className="action-buttons">
-            <button className="buy-now">Buy Now</button>
             <button
-              className="add-to-cart"
+              disabled={disabled}
+              className={` ${disabled ? "disabled" : ""} buy-now`}
+            >
+              Buy Now
+            </button>
+            <button
+              className={` ${disabled ? "disabled" : ""} add-to-cart`}
               onClick={() => addProductToCart(selectedProduct.productItemId)}
+              disabled={disabled}
             >
               Add to Cart
             </button>

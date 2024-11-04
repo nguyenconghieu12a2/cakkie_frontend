@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Home from "./Home/Home";
 function App() {
-  const [cart, setCart] = useState([]);
+  const [userCart, setUserCart] = useState([]);
   const [userId, setUserId] = useState(1);
   return (
     <div className="App">
@@ -23,9 +23,12 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/product/:productId" element={<Product />} />
-          <Route path="/cart" element={<Cart userId={userId} />} />
-          <Route path="/checkout" element={<Checkout cart={cart} />} />
-          <Route path="/order" element={<Order cart={cart} />} />
+          <Route
+            path="/cart"
+            element={<Cart userId={userId} setUserCart={setUserCart} />}
+          />
+          <Route path="/checkout" element={<Checkout userCart={userCart} />} />
+          <Route path="/order" element={<Order />} />
         </Routes>
         <Footer />
       </Router>

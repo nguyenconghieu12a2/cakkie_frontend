@@ -4,14 +4,13 @@ import Header from "../components/Header";
 import "../styles/cart.css";
 import CartItem from "./CartItem";
 import axios from "axios";
-import { get } from "../utils/request";
-import { useLocation } from "react-router-dom";
-const Cart = () => {
+import { Link, useNavigate } from "react-router-dom";
+const Cart = ({ setCartData }) => {
   //useState
-  const location = useLocation();
+  const navigate = useNavigate();
   const [quantity, setQuantity] = useState(0);
   const [id, setId] = useState(1);
-  const [userId, setUserId] = useState(location.state?.userId || 1);
+  const [userId, setUserId] = useState(1);
   const [checkAll, setCheckAll] = useState(false);
   const [productList, setProductList] = useState([]);
   const [cart, setCart] = useState([]);
@@ -237,6 +236,15 @@ const Cart = () => {
       setCart(updatedCart);
     }
   };
+
+  const passCart = () => {
+    localStorage.removeItem("cart");
+    localStorage.setItem(
+      "cart",
+      JSON.stringify(productList.filter((product) => product.selected === true))
+    );
+    console.log(localStorage.getItem("cart"));
+  };
   return (
     <>
       <div className="">
@@ -391,6 +399,17 @@ const Cart = () => {
                   <button
                     type="button"
                     className="text-white bg-orange-500 hover:bg-orange-700/80 focus:ring-4 focus:outline-none focus:ring-[#]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-orange-700/40 dark:focus:ring-gray-600 me-2 mb-2"
+                    onClick={() => {
+                      const checkCartSelected = productList.some(
+                        (product) => product.selected === true
+                      );
+                      if (checkCartSelected) {
+                        passCart();
+                        navigate("/checkout");
+                      } else {
+                        alert("Please select at least one item!");
+                      }
+                    }}
                   >
                     Check out
                   </button>
