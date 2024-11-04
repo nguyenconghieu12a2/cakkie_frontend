@@ -241,7 +241,16 @@ const Cart = ({ setCartData }) => {
     localStorage.removeItem("cart");
     localStorage.setItem(
       "cart",
-      JSON.stringify(productList.filter((product) => product.selected === true))
+      JSON.stringify(
+        productList
+          .filter((product) => product.selected === true)
+          .map((product) => ({
+            ...product,
+            quantity: cart.find(
+              (cartItem) => (cartItem.productItemId = product.productItemId)
+            ).qty,
+          }))
+      )
     );
     console.log(localStorage.getItem("cart"));
   };

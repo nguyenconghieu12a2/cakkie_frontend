@@ -61,9 +61,7 @@ const Product = () => {
 
   const fetchCoupon = async () => {
     try {
-      const couponResponse = await axios.get(
-        `http://localhost:8080/coupon/${couponId}`
-      );
+      const couponResponse = await axios.get(`http://localhost:8080/coupon/`);
       console.log(couponResponse);
       setCoupon(couponResponse.data);
     } catch (error) {

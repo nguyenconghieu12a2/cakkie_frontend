@@ -39,7 +39,9 @@ function Home() {
     if (selectedCategory === "All") {
       return true;
     } else if (selectedCategory === "Cake") {
-      return !["Basic Tools", "Other Tools","Boxs", "Bags"].includes(product.categoryName);
+      return !["Basic Tools", "Other Tools", "Boxs", "Bags"].includes(
+        product.categoryName
+      );
     } else if (selectedCategory === "Tools") {
       return ["Basic Tools", "Other Tools"].includes(product.categoryName);
     } else if (selectedCategory === "Box") {
@@ -126,7 +128,7 @@ function Home() {
                 <img
                   src={`./${product.productImage}.jpg`}
                   alt={product.name}
-                  className="w-full h-50 object-cover"
+                  className="w-full h-60 object-cover"
                 />
                 <div className="p-4">
                   <h3 className="text-lg font-bold">{product.name}</h3>
