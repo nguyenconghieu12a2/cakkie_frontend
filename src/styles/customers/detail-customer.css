@@ -45,6 +45,15 @@
     text-align: start;
   }
 
+  .banned-reason{
+    background-color: rgb(243, 243, 243);
+    padding: 10px;
+    border-radius: 50px;
+  }
+  .banned-reason p {
+    margin: 0;
+  }
+
   .table th {
     background-color: rgb(160, 244, 228);
     text-align: center;
@@ -52,3 +61,23 @@
   .col-id{
     text-align: center;
   }
+
+  .view-detail-order{
+    font-size: 25px;
+  }
+
+  .view-detail-button{
+    margin: 0px 10px 0px 0px;
+    padding: 0;
+    border-radius: 5px;
+    border: none;
+  }
+
+  .forward-oMana{
+    width: 20px;
+    height: 20px;
+    color: white;
+    background-color: rgb(64, 154, 244);
+    border-radius: 5px;
+  }
+
