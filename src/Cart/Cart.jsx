@@ -22,7 +22,7 @@ const Cart = ({ setCartData }) => {
   const fetchCart = async () => {
     try {
       const responseCart = await axios.get(
-        `http://localhost:8080/cart/${userId}`
+        `/cart/${userId}`
       );
       console.log(responseCart.data);
       setCart(responseCart.data);
@@ -53,7 +53,7 @@ const Cart = ({ setCartData }) => {
   const fetchProduct = async (productId) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/productItem/${productId}`
+        `/productItem/${productId}`
       );
       return response.data;
     } catch (error) {
@@ -69,7 +69,7 @@ const Cart = ({ setCartData }) => {
     let cartId = findCartItemIdByProductItemId(productItemId);
     try {
       const response = await axios.post(
-        `http://localhost:8080/deleteCartItem`,
+        `/deleteCartItem`,
         { cartId }
       );
 

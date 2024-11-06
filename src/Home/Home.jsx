@@ -12,7 +12,7 @@ function Home() {
 
   const fetchProduct = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/Product/getAll`);
+      const response = await axios.get(`/Product/getAll`);
       setProductList(response.data);
       console.log(response.data);
     } catch (error) {

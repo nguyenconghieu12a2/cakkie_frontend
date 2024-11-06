@@ -50,7 +50,7 @@ const Product = () => {
   const fetchCart = async () => {
     try {
       const responseCart = await axios.get(
-        `http://localhost:8080/cart/${userId}`
+        `/cart/${userId}`
       );
       console.log(responseCart.data);
       setCart(responseCart.data);
@@ -61,7 +61,7 @@ const Product = () => {
 
   const fetchCoupon = async () => {
     try {
-      const couponResponse = await axios.get(`http://localhost:8080/coupon/`);
+      const couponResponse = await axios.get(`/coupon/`);
       console.log(couponResponse);
       setCoupon(couponResponse.data);
     } catch (error) {
@@ -70,7 +70,7 @@ const Product = () => {
   };
   const fetchProduct = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/Product/${id}`);
+      const response = await axios.get(`/Product/${id}`);
       const { productList, descriptionList } = response.data;
       setProductList(productList);
       console.log(productList);
@@ -102,7 +102,7 @@ const Product = () => {
     };
     try {
       const response = await axios.post(
-        `http://localhost:8080/addToCart`,
+        `/addToCart`,
         data
       );
 

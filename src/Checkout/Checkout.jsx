@@ -8,6 +8,7 @@ const Checkout = () => {
   const [message, setMessage] = useState("");
   const [coupon, setCoupon] = useState([]);
   const [discount, setDiscount] = useState(0);
+  const [userId, setUserId] = useState(1);
   const [shippingOption, setShippingOption] = useState([]);
   const [shippingPrice, setShippingPrice] = useState(0);
   const [paymentMethodList, setPaymentMethodList] = useState([]);
@@ -23,7 +24,7 @@ const Checkout = () => {
 
   const fetchCoupon = async () => {
     try {
-      const couponResponse = await axios.get(`http://localhost:8080/coupon/`);
+      const couponResponse = await axios.get(`/coupon/`);
       console.log(couponResponse.data);
       setCoupon(couponResponse.data);
     } catch (error) {
@@ -33,9 +34,7 @@ const Checkout = () => {
 
   const fetchPaymentMethod = async () => {
     try {
-      const shippingResponse = await axios.get(
-        `http://localhost:8080/getPaymentMethods/`
-      );
+      const shippingResponse = await axios.get(`/getPaymentMethods/`);
       console.log(shippingResponse.data);
       setPaymentMethodList(shippingResponse.data);
     } catch (error) {
@@ -45,13 +44,36 @@ const Checkout = () => {
 
   const fetchShippingMethod = async () => {
     try {
-      const shippingResponse = await axios.get(
-        `http://localhost:8080/shippingMethod/`
-      );
+      const shippingResponse = await axios.get(`/shippingMethod/`);
       console.log(shippingResponse.data);
       setShippingOption(shippingResponse.data);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const addNewOrder = async (order) => {
+    const data = {
+      userId: userId,
+      shippingMethod: "",
+      shippingAddress: 1,
+      paymentMethod: paymentMethod,
+      orderStatus: 1,
+      couponsId: 1,
+    };
+    try {
+      const response = await axios.post(
+        `/addNewOrder`,
+        data
+      );
+
+      if (response.status === 200) {
+        alert("that ok!");
+      }
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return null;
     }
   };
 
@@ -66,6 +88,7 @@ const Checkout = () => {
 
   const handleShippingMethodChange = (e) => {
     setShippingPrice(e.target.value);
+
     console.log(e.target.value);
   };
 
