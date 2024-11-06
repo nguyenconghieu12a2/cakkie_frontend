@@ -1,0 +1,10 @@
+.btn__create--des {
+    display: flex;
+    align-items: center;
+}
+
+.btn__des {
+    align-items: center;
+    margin: 0;
+    margin-left: 22px;
+}

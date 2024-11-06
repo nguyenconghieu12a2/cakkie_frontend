@@ -1,6 +1,5 @@
 import "../styles/sidebar.css";
 import { useState } from "react";
-import logo from "../images/logo2.png";
 import {
   FaChartLine,
   FaUsers,
@@ -10,13 +9,10 @@ import {
   FaAngleDown,
   FaChartSimple,
 } from "react-icons/fa6";
+import { Link } from "react-router-dom";
+import { VscSignOut } from "react-icons/vsc";
 
-import { AiOutlineLogout } from "react-icons/ai";
-
-//import link
-import Product from "./admin-product";
-
-function Sidebar() {
+function Sidebar({onLogout}) {
   const [openMenu, setOpenMenu] = useState(""); // Track which menu is open
   const [selected, setSelected] = useState("");
 
@@ -29,7 +25,13 @@ function Sidebar() {
         "banned_customer",
         "deleted_customer",
       ],
-      catalog: ["catalog", "category", "product"],
+      catalog: [
+        "catalog",
+        "category",
+        "product",
+        "deleted_category",
+        "deleted_product",
+      ],
       sales: ["sales", "order", "canceled_order", "coupons"],
       report: ["reports", "report", "statistic"],
     };
@@ -37,32 +39,32 @@ function Sidebar() {
     const isSelectedInMenu =
       selectedItems[menuName]?.includes(selected) || false;
 
-    // If the menu is open and there's no selected item, toggle close. Otherwise, toggle open.
+    // Toggle the menu open/close based on current state
     if (openMenu === menuName && !isSelectedInMenu) {
-      setOpenMenu("");
-      // Close the dropdown
+      setOpenMenu(""); // Close the menu if it's already open
     } else {
       setOpenMenu(menuName); // Open the dropdown
     }
   };
 
   const handleSelected = (selection) => {
-    setSelected(selection);
+    setSelected(selection); // Set the selected item
   };
+
 
   return (
     <>
       <div className="sidebar__wrap">
         <div className="sidebar">
           <div className="sidebar__head">
-            <img src={logo} alt="Logo" />
+            <img src="../images/logo2.png" alt="Logo" />
           </div>
           <div className="sidebar__body">
             <div className="title">
               <h3 className="title__main">OVERVIEW</h3>
             </div>
             <div className="sidebar__content">
-              <a className="sidebar__link" href="#">
+              <Link className="sidebar__link" href="#">
                 <div
                   className={`menu__list ${
                     selected === "Dashboard" ? "active" : ""
@@ -72,9 +74,10 @@ function Sidebar() {
                   <FaChartLine className="list__icon" />
                   <h3 className="list__title">Dashboard</h3>
                 </div>
-              </a>
+              </Link>
 
-              <a
+              {/* Customer Section */}
+              <Link
                 href="#"
                 className="sidebar__link"
                 onClick={() => handleMenuClick("customer")}
@@ -95,7 +98,7 @@ function Sidebar() {
                 </div>
                 {openMenu === "customer" && (
                   <div className="list__subitems">
-                    <a
+                    <Link
                       className={`sidebar__link ${
                         selected === "manage_customer" ? "active" : ""
                       }`}
@@ -103,8 +106,8 @@ function Sidebar() {
                       href="#"
                     >
                       <h4 className="item__cate">Manage Customer</h4>
-                    </a>
-                    <a
+                    </Link>
+                    <Link
                       className={`sidebar__link ${
                         selected === "banned_customer" ? "active" : ""
                       }`}
@@ -112,8 +115,8 @@ function Sidebar() {
                       href="#"
                     >
                       <h4 className="item__cate">Banned Customer</h4>
-                    </a>
-                    <a
+                    </Link>
+                    <Link
                       className={`sidebar__link ${
                         selected === "deleted_customer" ? "active" : ""
                       }`}
@@ -121,13 +124,13 @@ function Sidebar() {
                       href="#"
                     >
                       <h4 className="item__cate">Deleted Customer</h4>
-                    </a>
+                    </Link>
                   </div>
                 )}
-              </a>
+              </Link>
 
-              <a
-                href="#"
+              {/* Catalog Section */}
+              <Link
                 className="sidebar__link"
                 onClick={() => handleMenuClick("catalog")}
               >
@@ -147,29 +150,51 @@ function Sidebar() {
                 </div>
                 {openMenu === "catalog" && (
                   <div className="list__subitems">
-                    <a
+                    <Link
+                      to={"/main-category"}
                       className={`sidebar__link ${
                         selected === "category" ? "active" : ""
                       }`}
                       onClick={() => handleSelected("category")}
-                      href="#"
                     >
                       <h4 className="item__cate">Category</h4>
-                    </a>
-                    <a
+                    </Link>
+                    <Link
+                      to={"/product"}
                       className={`sidebar__link ${
                         selected === "product" ? "active" : ""
                       }`}
                       onClick={() => handleSelected("product")}
-                      href="./admin-product.js"
                     >
                       <h4 className="item__cate">Product</h4>
-                    </a>
+                    </Link>
+
+                    <Link
+                      to={"/deleted-category"}
+                      className={`sidebar__link ${
+                        selected === "deleted_category" ? "active" : ""
+                      }`}
+                      onClick={() => handleSelected("deleted_category")}
+                    >
+                      <h4 className="item__cate">Deleted Category</h4>
+                    </Link>
+
+                    <Link
+                      to={"/deleted-product"}
+                      className={`sidebar__link ${
+                        selected === "delect_product" ? "active" : ""
+                      }`}
+                      onClick={() => handleSelected("deleted-product")}
+                      href=""
+                    >
+                      <h4 className="item__cate">Deleted Product</h4>
+                    </Link>
                   </div>
                 )}
-              </a>
+              </Link>
 
-              <a
+              {/* Sales Section */}
+              <Link
                 href="#"
                 className="sidebar__link"
                 onClick={() => handleMenuClick("sales")}
@@ -190,38 +215,41 @@ function Sidebar() {
                 </div>
                 {openMenu === "sales" && (
                   <div className="list__subitems">
-                    <a
+                    <Link
+                      to={"/order"}
                       className={`sidebar__link ${
                         selected === "order" ? "active" : ""
                       }`}
                       onClick={() => handleSelected("order")}
-                      href="#"
+                      href=""
                     >
                       <h4 className="item__cate">Order</h4>
-                    </a>
-                    <a
+                    </Link>
+                    <Link
+                      to={"/canceled-order"}
                       className={`sidebar__link ${
                         selected === "canceled_order" ? "active" : ""
                       }`}
                       onClick={() => handleSelected("canceled_order")}
-                      href="#"
+                      href=""
                     >
                       <h4 className="item__cate">Canceled Order</h4>
-                    </a>
-                    <a
+                    </Link>
+                    <Link
+                      to={"/coupon"}
                       className={`sidebar__link ${
                         selected === "coupons" ? "active" : ""
                       }`}
                       onClick={() => handleSelected("coupons")}
-                      href="#"
                     >
                       <h4 className="item__cate">Coupons</h4>
-                    </a>
+                    </Link>
                   </div>
                 )}
-              </a>
+              </Link>
 
-              <a className="sidebar__link" href="#">
+              {/* Banner Section */}
+              <Link className="sidebar__link" href="#">
                 <div
                   className={`menu__list ${
                     selected === "banner" ? "active" : ""
@@ -231,9 +259,10 @@ function Sidebar() {
                   <FaPalette className="list__icon" />
                   <h3 className="list__title">Banners</h3>
                 </div>
-              </a>
+              </Link>
 
-              <a
+              {/* Reports Section */}
+              <Link
                 href="#"
                 className="sidebar__link"
                 onClick={() => handleMenuClick("report")}
@@ -254,7 +283,7 @@ function Sidebar() {
                 </div>
                 {openMenu === "report" && (
                   <div className="list__subitems">
-                    <a
+                    <Link
                       className={`sidebar__link ${
                         selected === "report" ? "active" : ""
                       }`}
@@ -262,8 +291,8 @@ function Sidebar() {
                       href="#"
                     >
                       <h4 className="item__cate">Report</h4>
-                    </a>
-                    <a
+                    </Link>
+                    <Link
                       className={`sidebar__link ${
                         selected === "statistic" ? "active" : ""
                       }`}
@@ -271,19 +300,19 @@ function Sidebar() {
                       href="#"
                     >
                       <h4 className="item__cate">Statistic</h4>
-                    </a>
+                    </Link>
                   </div>
                 )}
-              </a>
+              </Link>
             </div>
           </div>
           <div className="sidebar__footer">
-            <a href="#">
+            <Link to="/" onClick={onLogout}>
               <div className="footer__list">
-                <AiOutlineLogout className="footer__icon" />
+                <VscSignOut className="footer__icon" />
                 <h3 className="footer__title">Sign Out</h3>
               </div>
-            </a>
+            </Link>
           </div>
         </div>
       </div>

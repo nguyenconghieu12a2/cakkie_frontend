@@ -1,0 +1,147 @@
+.main__wrap {
+    display: flex;
+}
+
+.coupon__wrap {
+    margin-left: 250px;
+    flex: 1;
+    height: 100vh;
+    padding: 10px;
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.coupon__head--main {
+    display: flex;
+    justify-content: space-between;
+}
+
+.coupon__title {
+    text-align: left;
+}
+
+.admin__avatar img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* coupon Body */
+.coupon__body {
+    background-color: #F0E8D6;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.coupon__body--head {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.coupon__body--title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.coupon__icon--add {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 20px;
+}
+
+.coupon__icon--add:hover {
+    font-size: 24px;
+    color: #106d37;
+    font-weight: 700;
+    transition: all ease-in-out 0.2s; 
+}
+
+.table,
+.th,
+.td {
+    padding: 12px 15px;
+    border: 1px solid #000000;
+    /* Stronger borders for clarity */
+}
+
+/* Table center alignment */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 1rem;
+    text-align: center; /* Center the text horizontally */
+  }
+  
+  /* Center the table header */
+  .thead th {
+    padding: 12px 15px;
+    background-color: white;
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    text-align: center; /* Center header content */
+    vertical-align: middle; /* Vertically center content */
+  }
+  
+  /* Center table data */
+  .tbody td {
+    padding: 12px 15px;
+    border: 1px solid #dee2e6;
+    background-color: white;
+    text-align: center; /* Center content horizontally */
+    vertical-align: middle; /* Center content vertically */
+  }
+  
+  /* Add hover effect to rows */
+  .tbody tr:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+  }
+  
+  /* Table row */
+  .tr {
+    text-align: center;
+    vertical-align: middle; /* Vertically center the row */
+  }
+
+.coupon__icon {
+    margin-left: 20px;
+}
+
+.coupon__icon:nth-child(1) {
+    margin-left: 0;
+}
+
+.coupon__icon--menu:hover {
+    color: #725B3C    ;
+    font-weight: 900;
+    transition: all ease-in-out 0.2s; 
+}
+
+.coupon__icon--edit:hover {
+    color: #FFCCBC;
+    font-weight: 900;
+    transition: all ease-in-out 0.2s; 
+}
+
+.coupon__icon--delete:hover {
+    color: #C1473C ;
+    font-weight: 900;
+    transition: all ease-in-out 0.2s; 
+}
+
+.link__icon {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #000;
+}
+
+.link__icon:nth-child(1) {
+    margin: 0;
+}
+
+

@@ -1,0 +1,109 @@
+.main__wrap {
+    display: flex;
+}
+
+.order__detail__wrap {
+    margin-left: 250px;
+    flex: 1;
+    height: 100vh;
+    padding: 10px;
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.order__detail__head--main {
+    display: flex;
+    justify-content: space-between;
+}
+
+.order__detail__title {
+    text-align: left;
+}
+
+.admin__avater img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border__detail-radius: 50%;
+}
+
+/* order__detail Body */
+.order__detail__body {
+    background-color: #F0E8D6;
+    padding: 20px;
+    border__detail-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.order__detail__body--head {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.order__detail__body--title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.order__detail__icon--add {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 20px;
+}
+
+.order__detail__icon--add:hover {
+    font-size: 24px;
+    color: #106d37;
+    font-weight: 700;
+    transition: all ease-in-out 0.2s; 
+}
+
+.table,
+.th,
+.td {
+    padding: 12px 15px;
+    border__detail: 1px solid #000000;
+    /* Stronger border__details for clarity */
+}
+
+.order__detail__icon {
+    margin-left: 20px;
+}
+
+.order__detail__icon:nth-child(1) {
+    margin-left: 0;
+}
+
+.order__detail__icon--menu:hover {
+    color: #725B3C    ;
+    font-weight: 900;
+    transition: all ease-in-out 0.2s; 
+}
+
+.order__detail__icon--edit:hover {
+    color: #FFCCBC;
+    font-weight: 900;
+    transition: all ease-in-out 0.2s; 
+}
+
+.order__detail__icon--delete:hover {
+    color: #C1473C ;
+    font-weight: 900;
+    transition: all ease-in-out 0.2s; 
+}
+
+.link__icon {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #000;
+}
+
+.link__icon:nth-child(1) {
+    margin: 0;
+}
+
+.table {
+    overflow-x: auto;
+}

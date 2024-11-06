@@ -101,6 +101,11 @@ a {
   transition: all ease-in-out 0.2s;
 }
 
+.rotate1 {
+  transform: rotate(180deg);
+  transition: all ease-in-out 0.2s;
+}
+
 .list__icon {
   color: #000000;
   font-size: 24px;
