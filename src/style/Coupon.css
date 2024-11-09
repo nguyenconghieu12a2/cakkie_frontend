@@ -1,0 +1,32 @@
+.coupon-list-container {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin: 20px 0;
+  }
+  
+  .coupon-list {
+    display: inline-flex;
+    animation: scrollLeft linear infinite;
+  }
+  
+  .coupon {
+    padding: 10px 20px;
+    background-color: #e3f2fd;
+    border-radius: 4px;
+    margin: 0 10px;
+    font-weight: bold;
+  }
+  
+  @keyframes scrollLeft {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+  

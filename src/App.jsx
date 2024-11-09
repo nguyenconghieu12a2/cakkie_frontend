@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import HomePage from './HomePage';
 import Login from './Login';
@@ -9,8 +9,8 @@ import ResetPassword from './ResetPassword';
 import Profile from './Profile';
 import EditProfile from './components/EditProfile';
 import ChangePassword from './components/ChangePassword';
-import Header from './components/Header';
-import Footer from './components/Footer';
+import UserHeader from './components/Header'; // Renamed to UserHeader
+import UserFooter from './components/Footer'; // Renamed to UserFooter
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
@@ -42,26 +42,42 @@ function App() {
     sessionStorage.removeItem('jwt');
   };
 
+  const location = useLocation();
+
+  // Define routes where UserHeader and UserFooter should be shown
+  const userRoutes = [
+    '/',
+    '/login',
+    '/register',
+    '/forgot-password',
+    '/verify-otp',
+    '/reset-password',
+    '/profile',
+    '/edit-profile',
+    '/change-password',
+  ];
+
+  // Show header and footer only if the current path matches one of the userRoutes
+  const shouldShowUserHeaderFooter = userRoutes.includes(location.pathname);
+
   return (
-    <Router>
-      <div className="d-flex flex-column min-vh-100">
-        <Header isLoggedIn={isLoggedIn} user={user} />
-        <main className="flex-grow-1">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/verify-otp" element={<OtpVerification />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/profile" element={<Profile onLogout={handleLogout} />} />
-            <Route path="/edit-profile" element={<EditProfile />} />
-            <Route path="/change-password" element={<ChangePassword />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </Router>
+    <div className="d-flex flex-column min-vh-100">
+      {shouldShowUserHeaderFooter && <UserHeader isLoggedIn={isLoggedIn} user={user} />}
+      <main className="flex-grow-1">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/verify-otp" element={<OtpVerification />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/profile" element={<Profile onLogout={handleLogout} />} />
+          <Route path="/edit-profile" element={<EditProfile />} />
+          <Route path="/change-password" element={<ChangePassword />} />
+        </Routes>
+      </main>
+      {shouldShowUserHeaderFooter && <UserFooter />}
+    </div>
   );
 }
 

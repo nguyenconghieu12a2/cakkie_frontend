@@ -1,12 +1,13 @@
 /* Reset margin and ensure smooth font rendering */
 body {
   margin: 0;
+  padding-top: 66px; /* Adjust this to match the header height */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh; /* Ensure body takes full height of the viewport */
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -16,11 +17,21 @@ html {
   height: 100%;
 }
 
+/* Main content styling */
+main {
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: calc(100vh - 100px); /* Adjust height based on header/footer */
+}
+
 /* Header styling */
 header {
   background-color: #e1c16e;
   color: #3b3b3b;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
   position: sticky;
   top: 0;
   width: 100%;
@@ -32,7 +43,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 50px;
+  height: 66px; /* Adjusted to match padding-top in body */
 }
 
 /* Logo section */
@@ -43,13 +54,12 @@ header {
 }
 
 .logo a {
-  margin-bottom: 16px;
   display: flex;
+  align-items: center;
   color: #3b3b3b;
   text-decoration: none;
   font-size: 1.25rem;
   font-weight: bold;
-  align-items: center;
 }
 
 .logo a img {
@@ -99,19 +109,6 @@ header {
   transform: scale(1.1);
 }
 
-/* Main content styling */
-main {
-  /* flex-grow: 1; */
-  /* display: flex; */ /* Remove or comment out this line */
-  padding: 20px;
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 1200px; /* Sets a maximum width for the main content area */
-  margin: 0 auto; /* Centers the content horizontally */
-  min-height: calc(100vh - 100px); /* Adjust height based on header/footer */
-}
-
-/* Footer styling */
 footer {
   padding: 1rem;
   text-align: center;

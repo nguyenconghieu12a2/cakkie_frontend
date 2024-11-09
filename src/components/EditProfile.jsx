@@ -115,7 +115,7 @@ const EditProfile = ({ profileData = {}, onSave }) => {
                     <FormGroup label="Gender" name="gender" value={formData.gender} onChange={handleChange} type="select" />
                     <FormGroup label="Birthday" name="birthday" value={formData.birthday} onChange={handleChange} type="date" />
                     <FormGroup label="Phone" name="phone" value={formData.phone} onChange={handleChange} type="tel" pattern="[0-9]{10}"/>
-                    <FormGroup label="Email" name="email" value={formData.email} onChange={handleChange} type="email" />
+                    <FormGroup label="Email" name="email" value={formData.email} onChange={handleChange} type="email" disabled />
                     <button type="submit" className="edit-profile-save-btn">Save Changes</button>
                 </form>
             </div>
@@ -126,17 +126,17 @@ const EditProfile = ({ profileData = {}, onSave }) => {
     );
 };
 
-const FormGroup = ({ label, name, value, onChange, type = 'text' }) => (
+const FormGroup = ({ label, name, value, onChange, type = 'text', disabled = false }) => (
     <div className="edit-profile-form-group">
         <label>{label}</label>
         {type === 'select' ? (
-            <select name={name} value={value} onChange={onChange} required>
+            <select name={name} value={value} onChange={onChange} required disabled={disabled}>
                 <option value="" disabled>Select Gender</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
             </select>
         ) : (
-            <input type={type} name={name} value={value} onChange={onChange} required />
+            <input type={type} name={name} value={value} onChange={onChange} required disabled={disabled} />
         )}
     </div>
 );
@@ -147,6 +147,7 @@ FormGroup.propTypes = {
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
     type: PropTypes.string,
+    disabled: PropTypes.bool,
 };
 
 export default EditProfile;
