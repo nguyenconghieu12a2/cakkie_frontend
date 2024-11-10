@@ -23,10 +23,6 @@ function ProductDetail() {
   const [lgShow1, setLgShow1] = useState(false);
   const handleClose1 = () => setLgShow1(false);
 
-  const [show3, setShow3] = useState(false);
-  const handleClose3 = () => setShow3(false);
-  const handleShow3 = () => setShow3(true);
-
   const [productDetail, setProductDetail] = useState(null);
   const [loading, setLoading] = useState(true); // Add loading state
 
@@ -130,6 +126,38 @@ function ProductDetail() {
       loadProduct(); // Reload the product details to reflect the updated description
     } catch (error) {
       console.error("Error editing description information:", error);
+    }
+  };
+
+  const [show3, setShow3] = useState(false);
+  const [deleteDesTitleId, setDeleteDesTitleId] = useState(null);
+
+  const handleClose3 = () => setShow3(false);
+
+  // Modify handleShow3 to include a console log to ensure it's triggered
+  const handleShow3 = () => {
+    console.log("handleShow3 is called"); // Debugging to verify if it's triggered
+    setShow3(true);
+  };
+
+  // Function to delete product description
+  const handleDeleteDesInfo = async () => {
+    try {
+      const payload = {
+        desTitleId: deleteDesTitleId,
+      };
+      await axios.delete(
+        `http://localhost:8080/api/product/${id}/delete-desinfo`,
+        {
+          data: payload,
+        }
+      );
+      console.log("Description info deleted successfully");
+      setDeleteDesTitleId(null);
+      loadProduct(); // Reload product details after delete
+      handleClose3(); // Close modal after delete
+    } catch (error) {
+      console.error("Error deleting description info:", error);
     }
   };
 
@@ -330,15 +358,20 @@ function ProductDetail() {
                               <div className="icon-container5">
                                 <FaTrash
                                   className="product__icon1 product__icon--delete"
-                                  onClick={handleShow3}
+                                  onClick={() => {
+                                    setDeleteDesTitleId(item.desTitleID);
+                                    handleShow3();
+                                  }}
                                 />
                                 <Modal show={show3} onHide={handleClose3}>
                                   <Modal.Header closeButton>
-                                    <Modal.Title>Delete Product</Modal.Title>
+                                    <Modal.Title>
+                                      Delete Product Description
+                                    </Modal.Title>
                                   </Modal.Header>
                                   <Modal.Body>
-                                    Are you sure you want to delete this
-                                    product?
+                                    Are you sure you want to delete this product
+                                    description?
                                   </Modal.Body>
                                   <Modal.Footer>
                                     <Button
@@ -349,7 +382,7 @@ function ProductDetail() {
                                     </Button>
                                     <Button
                                       variant="danger"
-                                      onClick={handleClose3}
+                                      onClick={handleDeleteDesInfo}
                                     >
                                       Delete
                                     </Button>
