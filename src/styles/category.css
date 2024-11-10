@@ -103,3 +103,16 @@
 .link__icon:nth-child(1) {
     margin: 0;
 }
+
+.deleted__category--body--table {
+    margin-bottom: 20px;
+}
+
+.deleted__subCategory--body--table {
+    margin-bottom: 20px;
+}
+
+.modal-backdrop.show {
+    opacity: 0.3;
+    background-color: #bebebe;
+}

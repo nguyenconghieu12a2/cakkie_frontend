@@ -1,12 +1,34 @@
 import Sidebar from "../sidebar.js";
 import "../../styles/list-canceled-order.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
-import { FaBars , FaRegCircleLeft} from "react-icons/fa6";
+import { FaBars, FaRegCircleLeft } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
-
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import { useEffect } from "react";
 
 function ListCanceledOrder() {
+  const { id } = useParams();
+
+  //Fetch Detail
+  const [detail, newDetail] = useState([]);
+
+  const loadDetail = async () => {
+    try {
+      const result = await axios.get(
+        `http://localhost:8080/api/cancel-order/detail/${id}`
+      );
+      newDetail(result.data);
+    } catch (error) {
+      console.log("Error connect to: ", error);
+    }
+  };
+
+  useEffect(() => {
+    loadDetail();
+  }, [id]);
+
   const navigate = useNavigate();
 
   return (
@@ -35,15 +57,17 @@ function ListCanceledOrder() {
           </div>
 
           <div className="link__back">
-            <a href="" onClick={() => navigate("/canceled-order")}>
+            <Link to={`/canceled-order`}>
               <FaRegCircleLeft className="back__icon" />
-            </a>
+            </Link>
           </div>
 
           <div className="list__canceled--body--wrap">
             <div className="list__canceled--body">
               <div className="list__canceled--body--head">
-                <h4 className="list__canceled--body--title">List Canceled Order</h4>
+                <h4 className="list__canceled--body--title">
+                  List Canceled Order
+                </h4>
               </div>
 
               <div className="list__canceled--body--table">
@@ -52,28 +76,30 @@ function ListCanceledOrder() {
                     <tr>
                       <th className="th">Order ID</th>
                       <th className="th">Customer Name</th>
+                      <th className="th">Total Product</th>
                       <th className="th">Total Price</th>
-                      <th className="th">Canceled Date</th>
                       <th className="th">Canceled Reason</th>
                       <th className="th">Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td className="td">1</td>
-                      <td className="td">Table cell</td>
-                      <td className="td">Table cell</td>
-                      <td className="td">Table cell</td>
-                      <td className="td">Table cell</td>
-                      <td className="th handle__icon">
-                        <a className="link__icon" href="">
-                          <FaBars
-                            className="list__canceled--icon list__canceled--icon--menu"
-                            onClick={() => navigate("/detail-canceled")}
-                          />
-                        </a>
-                      </td>
-                    </tr>
+                    {detail.map((item, index) => (
+                      <tr>
+                        <td className="td">{index + 1}</td>
+                        <td className="td">{item.fullName}</td>
+                        <td className="td">{item.totalProduct}</td>
+                        <td className="td">{item.orderTotal}</td>
+                        <td className="td">{item.orderStatus}</td>
+                        <td className="th handle__icon">
+                          <a className="link__icon" href="">
+                            <FaBars
+                              className="list__canceled--icon list__canceled--icon--menu"
+                              onClick={() => navigate("/detail-canceled")}
+                            />
+                          </a>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </Table>
               </div>

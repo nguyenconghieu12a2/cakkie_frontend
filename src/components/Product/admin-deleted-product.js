@@ -1,5 +1,5 @@
 import Sidebar from "../sidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../../styles/category.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaBars, FaArrowsRotate, FaTrash } from "react-icons/fa6";
@@ -8,6 +8,8 @@ import "../../styles/deleted-product.css";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import ReactPaginate from "react-paginate";
+import axios from "axios";
+import Form from "react-bootstrap/Form";
 
 function DeletedProduct() {
   const [show, setShow] = useState(false);
@@ -18,13 +20,35 @@ function DeletedProduct() {
   const handleClose1 = () => setShow1(false);
   const handleShow1 = () => setShow1(true);
 
-  const data = [];
+  //Fetch Deleted Product
+  const [deletedProduct, setDeletedProduct] = useState([]);
+
+  const loadDeleted = async () => {
+    const result = await axios.get(
+      `http://localhost:8080/api/admin-product/deleted`
+    );
+    setDeletedProduct(result.data);
+  };
+
+  useEffect(() => {
+    loadDeleted();
+  }, [])
+
+  const [selectedSize, setSelectedSize] = useState({});
+  const handleSizeChange = (productName, selectedSize) => {
+    const selectedProduct = deletedProduct.find((p) => p.productName === productName);
+    const sizeDetail = selectedProduct.productItem.find(
+      (s) => s.size === selectedSize
+    );
+    setSelectedSize({ ...selectedSize, [productName]: sizeDetail });
+  };
+
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
 
-  const pageCount = Math.ceil(data.length / itemsPerPage);
+  const pageCount = Math.ceil(deletedProduct.length / itemsPerPage);
 
-  const displayData = data.slice(
+  const displayData = deletedProduct.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
@@ -71,6 +95,7 @@ function DeletedProduct() {
                       <th className="th">Product ID</th>
                       <th className="th">Category Name</th>
                       <th className="th">Product Name</th>
+                      <th className="th">Description  </th>
                       <th className="th">Size</th>
                       <th className="th">Quantity in Stock</th>
                       <th className="th">Price</th>
@@ -79,70 +104,70 @@ function DeletedProduct() {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td className="td">1</td>
-                      <td className="td">Table cell</td>
-                      <td className="td">Table cell</td>
-                      <td className="td">Table cell</td>
-                      <td className="td">Table cell</td>
-                      <td className="td">Table cell</td>
-                      <td className="td">Table cell</td>
-                      <td className="th handle__icon">
-                        <a className="link__icon" href="#">
-                          <FaArrowsRotate
-                            className="deleted__icon deleted__icon--recovery"
-                            onClick={handleShow1}
-                          />
-                          <Modal
-                            show={show1}
-                            onHide={handleClose1}
-                            backdrop="static"
-                            keyboard={false}
-                          >
-                            <Modal.Header closeButton>
-                              <Modal.Title>Recovery Product</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                              Are you sure to recovery this product?
-                            </Modal.Body>
-                            <Modal.Footer>
-                              <Button
-                                variant="secondary"
-                                onClick={handleClose1}
-                              >
-                                Close
-                              </Button>
-                              <Button variant="success">Recovery</Button>
-                            </Modal.Footer>
-                          </Modal>
-                        </a>
-                        <a className="link__icon" href="#">
-                          <FaTrash
-                            className="deleted__icon deleted__icon--delete"
-                            onClick={handleShow}
-                          />
-                          <Modal
-                            show={show}
-                            onHide={handleClose}
-                            backdrop="static"
-                            keyboard={false}
-                          >
-                            <Modal.Header closeButton>
-                              <Modal.Title>Delete Product</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                              Are you sure to delete this product?
-                            </Modal.Body>
-                            <Modal.Footer>
-                              <Button variant="secondary" onClick={handleClose}>
-                                Close
-                              </Button>
-                              <Button variant="danger">Delete</Button>
-                            </Modal.Footer>
-                          </Modal>
-                        </a>
-                      </td>
-                    </tr>
+                  {displayData.map((item, index) => {
+                      const currentSize = selectedSize[item.productName] || item.productItem[0];
+                      return (
+                        <tr key={item.productId}>
+                          <td className="td">{index + 1 + currentPage * itemsPerPage}</td>
+                          <td className="td">{item.categoryName}</td>
+                          <td className="td">{item.productName}</td>
+                          <td className="td">{item.description}</td>
+                          <td className="td">
+                            <img
+                              src={`../images/${item.productImage}`}
+                              alt={item.productName}
+                              className="product__image"
+                            />
+                          </td>
+                          <td className="td">
+                            <Form.Select
+                              value={currentSize.size}
+                              onChange={(e) =>
+                                handleSizeChange(item.productName, e.target.value)
+                              }
+                            >
+                              {item.productItem.map((sizeOption, i) => (
+                                <option key={i} value={sizeOption.size}>
+                                  {sizeOption.size}
+                                </option>
+                              ))}
+                            </Form.Select>
+                          </td>
+                          <td className="td">{currentSize.quantity}</td>
+                          <td className="td">{currentSize.price} VND</td>
+                          <td className="td">
+                          <a className="link__icon" href="#">
+                            <FaArrowsRotate
+                              className="deleted__icon deleted__icon--recovery"
+                              onClick={handleShow1}
+                            />
+                            <Modal
+                              show={show1}
+                              onHide={handleClose1}
+                              backdrop="static"
+                              keyboard={false}
+                            >
+                              <Modal.Header closeButton>
+                                <Modal.Title>Recovery Product</Modal.Title>
+                              </Modal.Header>
+                              <Modal.Body>
+                                Are you sure to recovery this product?
+                              </Modal.Body>
+                              <Modal.Footer>
+                                <Button
+                                  variant="secondary"
+                                  onClick={handleClose1}
+                                >
+                                  Close
+                                </Button>
+                                <Button variant="success">Recovery</Button>
+                              </Modal.Footer>
+                            </Modal>
+                          </a>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </Table>
                 <div>

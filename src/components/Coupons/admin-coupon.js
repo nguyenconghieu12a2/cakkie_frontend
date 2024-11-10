@@ -15,9 +15,6 @@ function Coupon() {
   const [lgShow, setLgShow] = useState(false);
   const handleClose = () => setLgShow(false);
 
-  const [lgShow1, setLgShow1] = useState(false);
-  const handleClose1 = () => setLgShow1(false);
-
   const [show2, setShow2] = useState(false);
   const handleClose2 = () => setShow2(false);
 
@@ -36,6 +33,16 @@ function Coupon() {
   useEffect(() => {
     loadCoupons();
   }, []);
+
+  // Helper function to format dates to YYYY-MM-DD
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
   // Create a new coupon
   const [newCoupon, setNewCoupon] = useState({
@@ -70,7 +77,7 @@ function Coupon() {
       newCoupon.startDate === "" ||
       newCoupon.endDate === ""
     ) {
-      setError("Please fill in all requires fields.");
+      setError("Please fill in all required fields.");
       return;
     } else if (startDate < currentDate) {
       setError("The start date must be from now to the future");
@@ -89,10 +96,9 @@ function Coupon() {
 
     try {
       await axios.post(`http://localhost:8080/api/coupons`, newCoupon);
-      handleClose(); // Close the modal
-      loadCoupons(); // Reload the coupon list
+      handleClose();
+      loadCoupons(); 
       setNewCoupon({
-        // Reset form fields
         code: "",
         name: "",
         quantity: "",
@@ -103,6 +109,34 @@ function Coupon() {
       });
     } catch (error) {
       console.error("Error saving coupon:", error);
+    }
+  };
+
+  // Edit Coupons
+  const [showEdit, setShowEdit] = useState(false);
+  const handleCloseEdit = () => {
+    setShowEdit(false);
+    setEditCoupon({}); 
+  };
+
+  const [editCoupon, setEditCoupon] = useState([]);
+  const [couponIdEdit, setCouponIdEdit] = useState(null);
+
+  const handleEditInputChange = (e) => {
+    setEditCoupon({ ...editCoupon, [e.target.name]: e.target.value });
+  };
+
+  const editCouponSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(
+        `http://localhost:8080/api/coupons/update/${couponIdEdit}`,
+        editCoupon
+      );
+      handleCloseEdit();
+      loadCoupons();
+    } catch (error) {
+      console.error("Error editing coupon:", error);
     }
   };
 
@@ -184,7 +218,6 @@ function Coupon() {
                           <Form.Control
                             type="text"
                             placeholder="SU24"
-                            // required
                             value={newCoupon.code}
                             name="code"
                             onChange={handleInputChange}
@@ -195,7 +228,6 @@ function Coupon() {
                           <Form.Control
                             type="text"
                             placeholder="Summer 2024"
-                            // required
                             value={newCoupon.name}
                             name="name"
                             onChange={handleInputChange}
@@ -206,7 +238,6 @@ function Coupon() {
                           <Form.Control
                             type="number"
                             placeholder="10"
-                            // required
                             value={newCoupon.quantity}
                             name="quantity"
                             onChange={handleInputChange}
@@ -217,7 +248,6 @@ function Coupon() {
                           <Form.Control
                             type="number"
                             placeholder="10000"
-                            // required
                             value={newCoupon.priceDiscount}
                             name="priceDiscount"
                             onChange={handleInputChange}
@@ -227,18 +257,15 @@ function Coupon() {
                           <Form.Label>Start Date</Form.Label>
                           <Form.Control
                             type="date"
-                            // required
                             value={newCoupon.startDate}
                             name="startDate"
                             onChange={handleInputChange}
-                            
                           />
                         </Form.Group>
                         <Form.Group className="mb-3">
                           <Form.Label>End Date</Form.Label>
                           <Form.Control
                             type="date"
-                            // required
                             value={newCoupon.endDate}
                             name="endDate"
                             onChange={handleInputChange}
@@ -289,14 +316,108 @@ function Coupon() {
                           <a className="link__icon">
                             <FaPenToSquare
                               className="coupon__icon coupon__icon--edit"
-                              onClick={() => setLgShow1(true)}
+                              onClick={() => {
+                                setCouponIdEdit(item.id);
+                                setEditCoupon({
+                                  ...item,
+                                  startDate: formatDate(item.startDate),
+                                  endDate: formatDate(item.endDate),
+                                });
+                                setShowEdit(true);
+                              }}
                             />
+                            <Modal
+                              size="lg"
+                              show={showEdit}
+                              onHide={handleCloseEdit}
+                              aria-labelledby="example-modal-sizes-title-lg"
+                            >
+                              <Modal.Header closeButton>
+                                <Modal.Title id="example-modal-sizes-title-lg">
+                                  Edit Coupon
+                                </Modal.Title>
+                              </Modal.Header>
+                              <Modal.Body>
+                                <Form onSubmit={editCouponSubmit}>
+                                  <Form.Group className="mb-3">
+                                    <Form.Label>Code</Form.Label>
+                                    <Form.Control
+                                      type="text"
+                                      placeholder="SU24"
+                                      value={editCoupon.code}
+                                      name="code"
+                                      onChange={handleEditInputChange}
+                                    />
+                                  </Form.Group>
+                                  <Form.Group className="mb-3">
+                                    <Form.Label>Coupon Name</Form.Label>
+                                    <Form.Control
+                                      type="text"
+                                      placeholder="Summer 2024"
+                                      value={editCoupon.name}
+                                      name="name"
+                                      onChange={handleEditInputChange}
+                                    />
+                                  </Form.Group>
+                                  <Form.Group className="mb-3">
+                                    <Form.Label>Quantity</Form.Label>
+                                    <Form.Control
+                                      type="number"
+                                      placeholder="10"
+                                      value={editCoupon.quantity}
+                                      name="quantity"
+                                      onChange={handleEditInputChange}
+                                    />
+                                  </Form.Group>
+                                  <Form.Group className="mb-3">
+                                    <Form.Label>Price Discount</Form.Label>
+                                    <Form.Control
+                                      type="number"
+                                      placeholder="10000"
+                                      value={editCoupon.priceDiscount}
+                                      name="priceDiscount"
+                                      onChange={handleEditInputChange}
+                                    />
+                                  </Form.Group>
+                                  <Form.Group className="mb-3">
+                                    <Form.Label>Start Date</Form.Label>
+                                    <Form.Control
+                                      type="date"
+                                      value={editCoupon.startDate}
+                                      name="startDate"
+                                      onChange={handleEditInputChange}
+                                    />
+                                  </Form.Group>
+                                  <Form.Group className="mb-3">
+                                    <Form.Label>End Date</Form.Label>
+                                    <Form.Control
+                                      type="date"
+                                      value={editCoupon.endDate}
+                                      name="endDate"
+                                      onChange={handleEditInputChange}
+                                    />
+                                  </Form.Group>
+                                  <Modal.Footer>
+                                    <Button
+                                      variant="secondary"
+                                      onClick={handleCloseEdit}
+                                    >
+                                      Close
+                                    </Button>
+                                    <Button variant="warning" type="submit">
+                                      Update
+                                    </Button>
+                                  </Modal.Footer>
+                                </Form>
+                              </Modal.Body>
+                              {error && <Alert variant="danger">{error}</Alert>}
+                            </Modal>
                           </a>
 
                           <a className="link__icon">
                             <FaTrash
                               className="coupon__icon coupon__icon--delete"
-                              onClick={() => handleShow2(item.id)} 
+                              onClick={() => handleShow2(item.id)}
                             />
                             <Modal
                               show={show2}

@@ -1,19 +1,17 @@
 import Sidebar from "../sidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../../styles/deleted-category.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaArrowsRotate, FaBars, FaTrash } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
-import "../../styles/category.css";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
+import axios from "axios";
 
 function DeletedCategory() {
   const data = [];
-
-  const nevigate = useNavigate();
 
   const [show, setShow] = useState(false);
 
@@ -24,6 +22,65 @@ function DeletedCategory() {
 
   const handleClose1 = () => setShow1(false);
   const handleShow1 = () => setShow1(true);
+
+  //Fetch Deleted Category Level 1
+
+  //Fetch Deleted Category Level 2
+  const [deletedSubCate, setDeleteSub] = useState([]);
+  const loadSub = async () => {
+    try {
+      const result = await axios.get(
+        `http://localhost:8080/api/view-deleted/sub-category`
+      );
+      setDeleteSub(result.data);
+    } catch (error) {
+      console.log("Error fetching subcategories:", error);
+    }
+  };
+
+  useEffect(() => {
+    loadSub();
+  }, []);
+
+  //Fetch Deleted Category Level 3
+  const [deletedSubSub, setDeletedSubSub] = useState([]);
+
+  const loadDeletedSubSub = async () => {
+    try {
+      const result = await axios.get(
+        `http://localhost:8080/api/view-deleted/sub-sub-category`
+      );
+      setDeletedSubSub(result.data);
+    } catch (error) {
+      console.log("Error fetching subcategories:", error);
+    }
+  };
+
+  useEffect(() => {
+    loadDeletedSubSub();
+  });
+
+  //Recovery
+  const [showDelete, setShowDelete] = useState(false);
+  const handleCloseDelete = () => setShowDelete(false);
+  const handleShowDelete = (id) => {
+    setSubSubRecoverId(id);
+    setShowDelete(true);
+  };
+
+  const [subSubRecoverId, setSubSubRecoverId] = useState([]);
+
+  const recoverySubSubCate = async () => {
+    try {
+      await axios.delete(
+        `http://localhost:8080/api/recover/sub-sub-category/${subSubRecoverId}`
+      );
+      handleCloseDelete();
+      loadDeletedSubSub();
+    } catch (error) {
+      console.error("Error deleting category:", error);
+    }
+  };
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
@@ -63,15 +120,15 @@ function DeletedCategory() {
             <hr />
           </div>
 
-          <div className="deleted__category--body--wrap">
-            <div className="deleted__category--body">
-              <div className="deleted__category--body--head">
-                <h4 className="deleted__category--body--title">
-                  Main Deleted Category
+          <div className="deleted__subSubCategory--body--wrap">
+            <div className="deleted__subSubCategory--body">
+              <div className="deleted__subSubCategory--body--head">
+                <h4 className="deleted__subSubCategory--body--title">
+                  View Deleted Sub Sub-Category
                 </h4>
               </div>
 
-              <div className="deleted__category--body--table">
+              <div className="deleted__subSubCategory--body--table">
                 <Table className="table">
                   <thead className="thead">
                     <tr>
@@ -81,73 +138,42 @@ function DeletedCategory() {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td className="td">1</td>
-                      <td className="td">Table cell</td>
-                      <td className="th handle__icon">
-                        <a className="link__icon" href="">
-                          <FaBars
-                            className="deleted__category--icon deleted__category--icon--menu"
-                            onClick={() => nevigate("/deleted-sub-category")}
-                          />
-                        </a>
-
-                        <a className="link__icon">
-                          <FaArrowsRotate
-                            className="deleted__category--icon deleted__category--icon--edit"
-                            onClick={handleShow}
-                          />
-                          <Modal
-                            show={show}
-                            onHide={handleClose}
-                            backdrop="static"
-                            keyboard={false}
-                          >
-                            <Modal.Header closeButton>
-                              <Modal.Title>Recovery Category</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                              Are you sure to recovery this category?
-                            </Modal.Body>
-                            <Modal.Footer>
-                              <Button variant="secondary" onClick={handleClose}>
-                                Close
-                              </Button>
-                              <Button variant="success">Recovery</Button>
-                            </Modal.Footer>
-                          </Modal>
-                        </a>
-
-                        <a className="link__icon">
-                          <FaTrash
-                            className="deleted__category--icon deleted__category--icon--delete"
-                            onClick={handleShow1}
-                          />
-                          <Modal
-                            show={show1}
-                            onHide={handleClose1}
-                            backdrop="static"
-                            keyboard={false}
-                          >
-                            <Modal.Header closeButton>
-                              <Modal.Title>Delete Category</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                              Are you sure to delete category?
-                            </Modal.Body>
-                            <Modal.Footer>
-                              <Button
-                                variant="secondary"
-                                onClick={handleClose1}
-                              >
-                                Close
-                              </Button>
-                              <Button variant="danger">Delete</Button>
-                            </Modal.Footer>
-                          </Modal>
-                        </a>
-                      </td>
-                    </tr>
+                    {deletedSubCate.map((item, index) => (
+                      <tr>
+                        <td className="td">{index + 1}</td>
+                        <td className="td">{item.cateName}</td>
+                        <td className="th handle__icon">
+                          <a className="link__icon">
+                            <FaArrowsRotate
+                              className="deleted__subSubCategory--icon deleted__subSubCategory--icon--edit"
+                              onClick={() => handleShowDelete(item.id)}
+                            />
+                            <Modal show={showDelete} onHide={handleCloseDelete}>
+                              <Modal.Header closeButton>
+                                <Modal.Title>Recovery Category</Modal.Title>
+                              </Modal.Header>
+                              <Modal.Body>
+                                Are you sure to recovery this category?
+                              </Modal.Body>
+                              <Modal.Footer>
+                                <Button
+                                  variant="secondary"
+                                  onClick={handleCloseDelete}
+                                >
+                                  Close
+                                </Button>
+                                <Button
+                                  variant="success"
+                                  onClick={recoverySubSubCate}
+                                >
+                                  Recovery
+                                </Button>
+                              </Modal.Footer>
+                            </Modal>
+                          </a>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </Table>
 

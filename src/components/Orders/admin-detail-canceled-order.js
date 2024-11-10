@@ -6,6 +6,7 @@ import Table from "react-bootstrap/Table";
 import { useNavigate } from "react-router-dom";
 
 function DetailCanceledOrder() {
+  
   const navigator = useNavigate();
 
   return (

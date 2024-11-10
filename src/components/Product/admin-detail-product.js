@@ -2,15 +2,18 @@ import { useEffect, useState } from "react";
 import Sidebar from "../sidebar.js";
 import "../../styles/product-detail.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
-import { FaRegSquarePlus, FaPenToSquare, FaTrash, FaRegCircleLeft } from "react-icons/fa6";
+import {
+  FaRegSquarePlus,
+  FaPenToSquare,
+  FaTrash,
+  FaRegCircleLeft,
+} from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
 import Modal from "react-bootstrap/Modal";
-import AddModal from "./admin-add-product.js";
 import Button from "react-bootstrap/Button";
-import UpdateProduct from "./admin-update-product.js";
-import ReactPaginate from "react-paginate";
 import axios from "axios";
 import { useParams, Link } from "react-router-dom";
+import Form from "react-bootstrap/Form";
 
 function ProductDetail() {
   const { id } = useParams();
@@ -24,8 +27,8 @@ function ProductDetail() {
   const handleClose3 = () => setShow3(false);
   const handleShow3 = () => setShow3(true);
 
-  // Fetch Product Data
-  const [productDetail, setProductDetail] = useState(null); 
+  const [productDetail, setProductDetail] = useState(null);
+  const [loading, setLoading] = useState(true); // Add loading state
 
   const loadProduct = async () => {
     try {
@@ -33,15 +36,109 @@ function ProductDetail() {
       setProductDetail(result.data);
     } catch (error) {
       console.error("Failed to load product:", error);
+    } finally {
+      setLoading(false); // Set loading to false after request completes
     }
   };
 
   useEffect(() => {
     loadProduct();
+    loadDesTitles();
   }, [id]);
 
-  if (!productDetail) {
-    return <div>Loading...</div>; // Show loading state
+  // Create Des
+  const [show2, setShow2] = useState(false);
+
+  const handleClose2 = () => setShow2(false);
+  const handleShow2 = () => setShow2(true);
+  const [desTitles, setDesTitles] = useState([]);
+  const loadDesTitles = async () => {
+    try {
+      const result = await axios.get("http://localhost:8080/api/desTitles");
+      setDesTitles(result.data);
+    } catch (error) {
+      console.error("Error fetching description titles:", error);
+    }
+  };
+
+  const [newDesInfo, setDesInfo] = useState({
+    desTitleID: "",
+    desInfo: "",
+    isDelete: 1, // Assuming this is required
+  });
+
+  const [currentProductId, setCurrentProductId] = useState(null);
+
+  const handleDesInfoChange = (e) => {
+    const { name, value } = e.target;
+    setDesInfo((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleAddDesInfo = async () => {
+    try {
+      await axios.post(
+        `http://localhost:8080/api/product/${currentProductId}/add-desinfo`,
+        newDesInfo
+      );
+      console.log("Description info added successfully");
+      setDesInfo({ desTitleID: "", desInfo: "", isDelete: 1 });
+      loadProduct();
+      handleClose2();
+    } catch (error) {
+      console.error("Error adding description info:", error);
+    }
+  };
+
+  // Update DesInfo
+  const [showEdit, setShowEdit] = useState(false);
+
+  const handleCloseEdit = () => setShowEdit(false);
+  const handleShowEdit = () => setShowEdit(true);
+
+  const [editDes, setEditDes] = useState({
+    desTitleId: "",
+    desInfo: "",
+  });
+  const [desIdEdit, setDesIdEdit] = useState(null);
+
+  // Fix: Correct the input change handler to work properly with form fields
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditDes((prevEditDes) => ({
+      ...prevEditDes,
+      [name]: value,
+    }));
+  };
+
+  // Fix: Update only desInfo
+  const editDesSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const payload = {
+        desTitleId: editDes.desTitleId,
+        desInfo: editDes.desInfo,
+      };
+
+      await axios.put(
+        `http://localhost:8080/api/product/${id}/update-desinfo`,
+        payload
+      );
+      handleCloseEdit();
+      loadProduct(); // Reload the product details to reflect the updated description
+    } catch (error) {
+      console.error("Error editing description information:", error);
+    }
+  };
+
+  // If don't have anything
+  if (loading) return <div>Loading...</div>; // Show loading state
+
+  // Ensure productDetail and productInfo are available before rendering the table
+  if (!productDetail || !productDetail.productInfo) {
+    return <div>No product details available.</div>;
   }
 
   return (
@@ -80,20 +177,48 @@ function ProductDetail() {
                 <h4 className="product__body--title">Product Details</h4>
                 <FaRegSquarePlus
                   className="product__icon--add"
-                  onClick={() => setLgShow(true)}
+                  onClick={() => {
+                    setCurrentProductId(id);
+                    handleShow2();
+                  }}
                 />
-                <Modal size="lg" show={lgShow} onHide={handleClose}>
+                <Modal show={show2} onHide={handleClose2}>
                   <Modal.Header closeButton>
-                    <Modal.Title>Add Product</Modal.Title>
+                    <Modal.Title>Add Product Description</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
-                    <AddModal />
+                    <Form>
+                      <Form.Group className="mb-3" controlId="desTitleID">
+                        <Form.Label>Description Title</Form.Label>
+                        <Form.Select
+                          name="desTitleID"
+                          value={newDesInfo.desTitleID}
+                          onChange={handleDesInfoChange}
+                        >
+                          <option value="">Select Description Title</option>
+                          {desTitles.map((title, index) => (
+                            <option key={index} value={index + 1}>
+                              {title}
+                            </option>
+                          ))}
+                        </Form.Select>
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="desInfo">
+                        <Form.Label>Description Information</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="desInfo"
+                          value={newDesInfo.desInfo}
+                          onChange={handleDesInfoChange}
+                        />
+                      </Form.Group>
+                    </Form>
                   </Modal.Body>
                   <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="secondary" onClick={handleClose2}>
                       Close
                     </Button>
-                    <Button variant="success" onClick={handleClose}>
+                    <Button variant="success" onClick={handleAddDesInfo}>
                       Create
                     </Button>
                   </Modal.Footer>
@@ -110,70 +235,132 @@ function ProductDetail() {
                     </tr>
                   </thead>
                   <tbody>
-                    {productDetail.productInfo.map((item, index) => (
-                      <tr key={item.productId}>
-                        <td className="td">{index + 1}</td>
-                        <td className="td">{item.title}</td>
-                        <td className="td">{item.infomation}</td>
-                        <td className="td">
-                          <div className="icon-container">
-                            <FaPenToSquare
-                              className="product__icon1 product__icon--edit"
-                              onClick={() => setLgShow1(true)}
-                            />
-                            <Modal
-                              size="lg"
-                              show={lgShow1}
-                              onHide={handleClose1}
-                            >
-                              <Modal.Header closeButton>
-                                <Modal.Title>Update Product</Modal.Title>
-                              </Modal.Header>
-                              <Modal.Body>
-                                <UpdateProduct />
-                              </Modal.Body>
-                              <Modal.Footer>
-                                <Button
-                                  variant="secondary"
-                                  onClick={handleClose1}
-                                >
-                                  Close
-                                </Button>
-                                <Button
-                                  variant="success"
-                                  onClick={handleClose1}
-                                >
-                                  Edit
-                                </Button>
-                              </Modal.Footer>
-                            </Modal>
-                            <FaTrash
-                              className="product__icon1 product__icon--delete"
-                              onClick={handleShow3}
-                            />
-                            <Modal show={show3} onHide={handleClose3}>
-                              <Modal.Header closeButton>
-                                <Modal.Title>Delete Product</Modal.Title>
-                              </Modal.Header>
-                              <Modal.Body>
-                                Are you sure you want to delete this product?
-                              </Modal.Body>
-                              <Modal.Footer>
-                                <Button
-                                  variant="secondary"
-                                  onClick={handleClose3}
-                                >
-                                  Close
-                                </Button>
-                                <Button variant="danger" onClick={handleClose3}>
-                                  Delete
-                                </Button>
-                              </Modal.Footer>
-                            </Modal>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                    {productDetail.productInfo.map((item, index) => {
+                      const matchedTitle = productDetail.productTitle.find(
+                        (title) => title.desTitleID === item.desTitleID
+                      );
+
+                      return (
+                        <tr key={index}>
+                          <td className="td">{index + 1}</td>
+                          <td className="td">
+                            {matchedTitle ? matchedTitle.desTitleName : "N/A"}
+                          </td>
+                          <td className="td">{item.desInfo}</td>
+                          <td className="td">
+                            <div className="icon-container3">
+                              <div className="icon-container4">
+                                <FaPenToSquare
+                                  className="product__icon1 product__icon--edit"
+                                  onClick={() => {
+                                    setDesIdEdit(item.desTitleID);
+                                    setEditDes({
+                                      desTitleId: item.desTitleID,
+                                      desInfo: item.desInfo,
+                                    });
+                                    handleShowEdit();
+                                  }}
+                                />
+                                <Modal show={showEdit} onHide={handleCloseEdit}>
+                                  <Modal.Header closeButton>
+                                    <Modal.Title>
+                                      Update Product Description
+                                    </Modal.Title>
+                                  </Modal.Header>
+                                  <Modal.Body>
+                                    <Form onSubmit={editDesSubmit}>
+                                      <Form.Group
+                                        className="mb-3"
+                                        controlId="desTitleID"
+                                      >
+                                        <Form.Label>
+                                          Description Title
+                                        </Form.Label>
+                                        <Form.Select
+                                          name="desTitleId"
+                                          value={editDes.desTitleId}
+                                          onChange={handleEditInputChange}
+                                          disabled
+                                        >
+                                          <option value="">
+                                            Select Description Title
+                                          </option>
+                                          {desTitles.map((title, index) => (
+                                            <option
+                                              key={index}
+                                              value={index + 1}
+                                            >
+                                              {title}
+                                            </option>
+                                          ))}
+                                        </Form.Select>
+                                      </Form.Group>
+                                      <Form.Group
+                                        className="mb-3"
+                                        controlId="desInfo"
+                                      >
+                                        <Form.Label>
+                                          Description Information
+                                        </Form.Label>
+                                        <Form.Control
+                                          type="text"
+                                          name="desInfo"
+                                          value={editDes.desInfo}
+                                          onChange={handleEditInputChange}
+                                        />
+                                      </Form.Group>
+                                    </Form>
+                                  </Modal.Body>
+                                  <Modal.Footer>
+                                    <Button
+                                      variant="secondary"
+                                      onClick={handleCloseEdit}
+                                    >
+                                      Close
+                                    </Button>
+                                    <Button
+                                      variant="warning"
+                                      onClick={editDesSubmit}
+                                    >
+                                      Update
+                                    </Button>
+                                  </Modal.Footer>
+                                </Modal>
+                              </div>
+                              <div className="icon-container5">
+                                <FaTrash
+                                  className="product__icon1 product__icon--delete"
+                                  onClick={handleShow3}
+                                />
+                                <Modal show={show3} onHide={handleClose3}>
+                                  <Modal.Header closeButton>
+                                    <Modal.Title>Delete Product</Modal.Title>
+                                  </Modal.Header>
+                                  <Modal.Body>
+                                    Are you sure you want to delete this
+                                    product?
+                                  </Modal.Body>
+                                  <Modal.Footer>
+                                    <Button
+                                      variant="secondary"
+                                      onClick={handleClose3}
+                                    >
+                                      Close
+                                    </Button>
+                                    <Button
+                                      variant="danger"
+                                      onClick={handleClose3}
+                                    >
+                                      Delete
+                                    </Button>
+                                  </Modal.Footer>
+                                </Modal>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </Table>
               </div>

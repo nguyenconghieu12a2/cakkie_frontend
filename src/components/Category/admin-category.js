@@ -29,7 +29,7 @@ function Category() {
   const [showEdit, setShowEdit] = useState(false);
   const handleCloseEdit = () => {
     setShowEdit(false);
-    setEditCate({}); // Reset edit state when modal closes
+    setEditCate({}); 
   };
   const handleShowEdit = () => setShowEdit(true);
 
@@ -290,8 +290,8 @@ function Category() {
                               <Button variant="secondary" onClick={handleCloseEdit}>
                                 Close
                               </Button>
-                              <Button variant="success" type="submit" onClick={editCateSubmit}>
-                                Save Changes
+                              <Button variant="warning" type="submit" onClick={editCateSubmit}>
+                                Update
                               </Button>
                             </Modal.Footer>
                           </Modal>

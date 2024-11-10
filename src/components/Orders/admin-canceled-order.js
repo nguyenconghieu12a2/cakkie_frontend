@@ -95,7 +95,7 @@ function CanceledOrder() {
                         <td className="td">{item.fullName}</td>
                         <td className="td">{item.totalCancel}</td>
                         <td className="th handle__icon">
-                          <Link to={`/list-canceled`} className="link__icon">
+                          <Link to={`/canceled-order/list-canceled/${item.id}`} className="link__icon">
                             <FaBars className="canceled__icon canceled__icon--menu" />
                           </Link>
 

@@ -144,4 +144,9 @@
     margin: 0;
 }
 
+.modal-backdrop.show {
+    opacity: 0.3;
+    background-color: #d9d9d9;
+}
+
 
