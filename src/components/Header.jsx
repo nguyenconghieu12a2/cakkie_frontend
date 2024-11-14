@@ -1,37 +1,37 @@
-import React from "react";
-import { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "@fortawesome/fontawesome-free/css/all.min.css";
-import "bootstrap/dist/js/bootstrap.bundle";
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import "../styles/Header.css";
+// import React from "react";
+// import { useState } from "react";
+// import "bootstrap/dist/css/bootstrap.min.css";
+// import "@fortawesome/fontawesome-free/css/all.min.css";
+// import "bootstrap/dist/js/bootstrap.bundle";
+// import Container from "react-bootstrap/Container";
+// import Nav from "react-bootstrap/Nav";
+// import Navbar from "react-bootstrap/Navbar";
+// import "../styles/Header.css";
 
-const Header = ({ Title }) => {
-  return (
-    <Navbar className="custom-navbar" data-bs-theme="dark">
-      <Container className="header">
-        <Navbar.Brand href="/">
-          <img src="./images/logos.jpg" className="logo" href="#" alt="a pic" />
-        </Navbar.Brand>
-        <Nav className="me-auto    nav">
-          <Nav href="/" className="logoName">
-            CAKKIE
-          </Nav>
-          <Nav href={`./${{Title}}`}>{Title}</Nav>
-        </Nav>
-      </Container>
-    </Navbar>
-  );
-};
+// const Header = ({ Title }) => {
+//   return (
+//     <Navbar className="custom-navbar" data-bs-theme="dark">
+//       <Container className="header">
+//         <Navbar.Brand href="/">
+//           <img src="./images/logos.jpg" className="logo" href="#" alt="a pic" />
+//         </Navbar.Brand>
+//         <Nav className="me-auto    nav">
+//           <Nav href="/" className="logoName">
+//             CAKKIE
+//           </Nav>
+//           <Nav href={`./${{Title}}`}>{Title}</Nav>
+//         </Nav>
+//       </Container>
+//     </Navbar>
+//   );
+// };
 
-export default Header;
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+// export default Header;
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const api = '/api/profile'; // Backend API route
+const api = "/api/profile"; // Backend API route
 
 const Header = ({ isLoggedIn }) => {
   const [user, setUser] = useState(null);
@@ -39,7 +39,8 @@ const Header = ({ isLoggedIn }) => {
 
   useEffect(() => {
     const fetchUserProfile = async () => {
-      const token = localStorage.getItem('jwt') || sessionStorage.getItem('jwt');
+      const token =
+        localStorage.getItem("jwt") || sessionStorage.getItem("jwt");
 
       if (!token) {
         return; // No token found, do not attempt to fetch profile
@@ -51,7 +52,7 @@ const Header = ({ isLoggedIn }) => {
         });
         setUser(response.data); // Set user profile data
       } catch (error) {
-        console.error('Error fetching user profile:', error);
+        console.error("Error fetching user profile:", error);
       }
     };
 
@@ -61,7 +62,7 @@ const Header = ({ isLoggedIn }) => {
   }, [isLoggedIn, navigate]);
 
   const handleProfileClick = () => {
-    navigate('/profile');
+    navigate("/profile");
   };
 
   return (
@@ -76,12 +77,16 @@ const Header = ({ isLoggedIn }) => {
           {isLoggedIn ? (
             <>
               <li>
-              <img
-                  src={user?.image ? `/images/${user.image}` : '/images/default_profile.jpg'} // Use user's profile image, or fallback to default
+                <img
+                  src={
+                    user?.image
+                      ? `/images/${user.image}`
+                      : "/images/default_profile.jpg"
+                  } // Use user's profile image, or fallback to default
                   alt="Profile"
                   className="profile-icon"
                   onClick={handleProfileClick}
-                  style={{ cursor: 'pointer' }} 
+                  style={{ cursor: "pointer" }}
                 />
               </li>
             </>

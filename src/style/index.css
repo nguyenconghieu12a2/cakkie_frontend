@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Reset margin and ensure smooth font rendering */
 body {
   margin: 0;
@@ -6,7 +10,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh; /* Ensure body takes full height of the viewport */
+  min-height: 100vh;
+  /* Ensure body takes full height of the viewport */
   display: flex;
   flex-direction: column;
 }
@@ -102,13 +107,17 @@ header {
 /* Main content styling */
 main {
   /* flex-grow: 1; */
-  /* display: flex; */ /* Remove or comment out this line */
+  /* display: flex; */
+  /* Remove or comment out this line */
   padding: 20px;
   box-sizing: border-box;
   width: 100%;
-  max-width: 1200px; /* Sets a maximum width for the main content area */
-  margin: 0 auto; /* Centers the content horizontally */
-  min-height: calc(100vh - 100px); /* Adjust height based on header/footer */
+  max-width: 1200px;
+  /* Sets a maximum width for the main content area */
+  margin: 0 auto;
+  /* Centers the content horizontally */
+  min-height: calc(100vh - 100px);
+  /* Adjust height based on header/footer */
 }
 
 /* Footer styling */
