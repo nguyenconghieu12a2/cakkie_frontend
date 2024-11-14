@@ -366,6 +366,7 @@ function Product() {
     }
   };
 
+  //Pagination
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
   const pageCount = Math.ceil(product.length / itemsPerPage);

@@ -309,7 +309,7 @@ function Coupon() {
                         <td className="td">{item.code}</td>
                         <td className="td">{item.name}</td>
                         <td className="td">{item.quantity}</td>
-                        <td className="td">{item.priceDiscount} VNĐ</td>
+                        <td className="td">{item.priceDiscount} VND</td>
                         <td className="td">{item.startDate}</td>
                         <td className="td">{item.endDate}</td>
                         <td className="td handle__icon">
