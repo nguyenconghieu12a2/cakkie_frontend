@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../styles/checkout.css";
 import Header from "../components/Header";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
   const [cart, setCart] = useState([]);
@@ -11,15 +12,25 @@ const Checkout = () => {
   const [userId, setUserId] = useState(1);
   const [shippingOption, setShippingOption] = useState([]);
   const [shippingPrice, setShippingPrice] = useState(0);
+  const [shippingId, setShippingId] = useState(0);
   const [paymentMethodList, setPaymentMethodList] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState("empty");
-
+  const [paymentMethodId, setPaymentMethodId] = useState(0);
+  const [address, setAddress] = useState([]);
+  const [addressId, setAddressId] = useState(0);
+  const [discountId, setDiscountId] = useState(0);
+  const navigate = useNavigate();
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    setCart(storedCart);
-    fetchCoupon();
-    fetchShippingMethod();
-    fetchPaymentMethod();
+    if (storedCart != []) {
+      setCart(storedCart);
+      fetchCoupon();
+      fetchShippingMethod();
+      fetchPaymentMethod();
+      fetchUserAddess();
+    } else {
+      navigate("/");
+    }
   }, []);
 
   const fetchCoupon = async () => {
@@ -52,23 +63,64 @@ const Checkout = () => {
     }
   };
 
+  const fetchUserAddess = async () => {
+    try {
+      const shippingResponse = await axios.get(`/address/${userId}`);
+      console.log(shippingResponse.data);
+      setAddress(shippingResponse.data);
+
+      const defaultAddress = shippingResponse.data.find(
+        (addr) => addr.isDefault === 1
+      );
+      if (defaultAddress) {
+        setAddressId(defaultAddress.id);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const removeCart = async () => {
+    try {
+      const response = await axios.delete(`/deleteCart/${userId}`);
+
+      if (response.status === 200) {
+        console.log(cart);
+      }
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  };
+
   const addNewOrder = async (order) => {
+    const orderLineList = cart.map((product) => ({
+      productItemId: product.productItemId,
+      price: product.price,
+      quantity: product.quantity,
+      discountPrice: (product.price * product.discount) / 100,
+      note: message || "",
+    }));
     const data = {
       userId: userId,
-      shippingMethod: "",
-      shippingAddress: 1,
-      paymentMethod: paymentMethod,
-      orderStatus: 1,
-      couponsId: 1,
+      shippingMethodId: shippingId,
+      shippingAddress: addressId,
+      paymentMethodId: paymentMethodId,
+      orderStatus: 2,
+      couponsId: discountId || 0,
+      orderTotal: calculateOrderTotal(cart),
+      orderLineList: orderLineList,
     };
+
     try {
-      const response = await axios.post(
-        `/addNewOrder`,
-        data
-      );
+      const response = await axios.post(`/addToOrder`, data);
 
       if (response.status === 200) {
         alert("that ok!");
+        removeCart();
+        localStorage.removeItem("cart");
+        navigate("/");
       }
       return response.data;
     } catch (error) {
@@ -82,28 +134,51 @@ const Checkout = () => {
     console.log(message);
   };
   const handleCouponChange = (e) => {
-    setDiscount(e.target.value);
+    const selectedCoupon = JSON.parse(e.target.value);
+    console.log("Selected ID:", selectedCoupon.id);
+    console.log("Selected Price Discount:", selectedCoupon.priceDiscount);
+    setDiscount(selectedCoupon.priceDiscount);
+    setDiscountId(selectedCoupon.id);
+  };
+
+  const handleSetDefault = (e) => {
+    const updatedAddresses = address.map((address) =>
+      address.id == e.target.value
+        ? { ...address, isDefault: 1 }
+        : { ...address, isDefault: 0 }
+    );
+    setAddress(updatedAddresses);
+    setAddressId(e.target.value);
+    console.log(updatedAddresses);
     console.log(e.target.value);
   };
 
   const handleShippingMethodChange = (e) => {
-    setShippingPrice(e.target.value);
+    const selectedShippingMethod = JSON.parse(e.target.value);
+    setShippingPrice(selectedShippingMethod.shippingPrice);
+    setShippingId(selectedShippingMethod.id);
 
     console.log(e.target.value);
   };
 
   const handlePaymentMethodChange = (e) => {
-    setPaymentMethod(e.target.value);
-    console.log(e.target.value);
+    const selectedPaymentMethod = JSON.parse(e.target.value);
+    setPaymentMethod(selectedPaymentMethod.paymentMethod);
+    setPaymentMethodId(selectedPaymentMethod.id);
+    console.log(paymentMethod, paymentMethodId);
   };
 
   const OrderProcess = () => {
-    if (shippingPrice == 0)
-      return alert("You must choose one Shipping Method!!!");
-    if (paymentMethod === "empty")
-      return alert("You must choose the Payment Method!!!!");
-    console.log(paymentMethod);
-    console.log(shippingPrice);
+    if (shippingPrice == 0) {
+      alert("You must choose one Shipping Method!!!");
+      return;
+    }
+
+    if (paymentMethod === "empty") {
+      alert("You must choose the Payment Method!!!!");
+      return;
+    }
+    addNewOrder();
   };
 
   const calculateOrderTotal = (cart) => {
@@ -132,7 +207,7 @@ const Checkout = () => {
       orderTotal += discountedPrice * product.quantity;
     }
 
-    return orderTotal - discount - shippingPrice;
+    return orderTotal - (discount || 0) - shippingPrice;
   };
 
   return (
@@ -140,6 +215,44 @@ const Checkout = () => {
       <Header Title={"Products Ordered"} />
       {console.log(cart)}
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <div>
+          <label>Select Default Address: </label>
+          <select
+            onChange={handleSetDefault}
+            value={address.find((address) => address.isDefault)?.id || ""}
+          >
+            {address.map((address) => (
+              <option key={address.id} value={address.id}>
+                {address.receiveName} - {address.detailAddress}, {address.wards}
+                , {address.district}, {address.province}
+              </option>
+            ))}
+          </select>
+
+          {address.map((address) => (
+            <div
+              key={address.id}
+              style={{
+                border: "1px solid #ddd",
+                padding: "16px",
+                margin: "16px 0",
+                backgroundColor: address.isDefault ? "#f0f8ff" : "#fff",
+              }}
+            >
+              <h3>{address.receiveName}</h3>
+              <p>Phone: {address.phone}</p>
+              <p>
+                Address: {address.detailAddress}, {address.wards},{" "}
+                {address.district}, {address.province}
+              </p>
+              {address.isDefault && (
+                <p>
+                  <strong>Default Address</strong>
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
         <table className="w-full text-left rtl:text-right mt-12 py-5">
           <thead className="text-xs b">
             <tr>
@@ -221,7 +334,13 @@ const Checkout = () => {
               >
                 <option value={0}>Select shipping method</option>
                 {shippingOption.map((shippingMethod) => (
-                  <option key={shippingMethod.id} value={shippingMethod.price}>
+                  <option
+                    key={shippingMethod.id}
+                    value={JSON.stringify({
+                      id: shippingMethod.id,
+                      shippingPrice: shippingMethod.price,
+                    })}
+                  >
                     {shippingMethod.name}{" "}
                     {shippingMethod.price.toLocaleString("vi-VN")} VND
                   </option>
@@ -237,7 +356,13 @@ const Checkout = () => {
                 <select name="coupon" id="coupon" onChange={handleCouponChange}>
                   <option value={0}>Select a Coupon</option>
                   {coupon.map((ticket) => (
-                    <option key={ticket.id} value={ticket.priceDiscount}>
+                    <option
+                      key={ticket.id}
+                      value={JSON.stringify({
+                        id: ticket.id,
+                        priceDiscount: ticket.priceDiscount,
+                      })}
+                    >
                       {ticket.code}{" "}
                       {ticket.priceDiscount.toLocaleString("vi-VN")} VND
                     </option>
@@ -257,9 +382,22 @@ const Checkout = () => {
                 id="shippingMethod"
                 onChange={handlePaymentMethodChange}
               >
-                <option value={"empty"}>Select Payment Method</option>
+                <option
+                  value={JSON.stringify({
+                    id: 0,
+                    paymentMethod: "empty",
+                  })}
+                >
+                  Select Payment Method
+                </option>
                 {paymentMethodList.map((paymentMethod) => (
-                  <option key={paymentMethod.id} value={paymentMethod.name}>
+                  <option
+                    key={paymentMethod.id}
+                    value={JSON.stringify({
+                      id: paymentMethod.id,
+                      paymentMethod: paymentMethod.name,
+                    })}
+                  >
                     {paymentMethod.name}{" "}
                   </option>
                 ))}

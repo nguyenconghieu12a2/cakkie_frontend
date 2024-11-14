@@ -1,8 +1,70 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/order.css";
 import Header from "../components/Header";
+import axios from "axios";
 const Order = () => {
   const [selectedTab, setSelectedTab] = useState("All");
+  const [userId, setUserId] = useState(1);
+  const [orderList, setOrderList] = useState([]);
+  const [orderItems, setOrderItems] = useState({});
+
+  useEffect(() => {
+    fetchOrder();
+  }, []);
+  const fetchOrder = async () => {
+    try {
+      const response = await axios.get(`/order/${userId}`);
+      const order = response.data;
+      console.log(order);
+      setOrderList(response.data);
+      fetchAllOrderItems(order);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchAllOrderItems = async (orders) => {
+    try {
+      const itemsResponses = await Promise.all(
+        orders.map((order) => axios.get(`/orderItem/${order.orderId}`))
+      );
+
+      const itemsData = await Promise.all(
+        itemsResponses.map(async (response, index) => {
+          const orderId = orders[index].orderId;
+          const orderItems = response.data;
+
+          const productItems = await Promise.all(
+            orderItems.map(async (item) => {
+              const productItemResponse = await axios.get(
+                `/productItem/${item.productItemId}`
+              );
+              return {
+                ...item,
+                productDetails: productItemResponse.data,
+              };
+            })
+          );
+
+          return { orderId, productItems };
+        })
+      );
+
+      // Convert itemsData into a structure that can be used in state
+      const formattedItemsData = itemsData.reduce(
+        (acc, { orderId, productItems }) => {
+          acc[orderId] = productItems;
+          return acc;
+        },
+        {}
+      );
+
+      setOrderItems(formattedItemsData);
+      console.log("Order Items:", formattedItemsData);
+    } catch (error) {
+      console.error("Error fetching order items:", error);
+    }
+  };
 
   const products = [
     {
@@ -37,7 +99,7 @@ const Order = () => {
 
   const tabs = [
     "All",
-    "To Pay",
+    "Pending",
     "To Ship",
     "To Receive",
     "Completed",
@@ -59,7 +121,7 @@ const Order = () => {
         ))}
       </div>
       <div className="product-list">
-        {products.map((product) => (
+        {orderList.map((product) => (
           <div className="product-item" key={product.id}>
             <div className="product-info">
               <img src={product.imageUrl} alt={product.name} />
@@ -70,9 +132,8 @@ const Order = () => {
               </div>
             </div>
             <div className="product-details">
-              <p>{product.unitPrice.toLocaleString()} đ</p>
-              <p>{product.quantity}</p>
-              <p>{product.subtotal.toLocaleString()} đ</p>
+              <p> đ</p>
+              <p> đ</p>
             </div>
             <button className="review-button">Review</button>
           </div>
