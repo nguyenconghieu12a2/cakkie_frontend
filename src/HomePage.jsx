@@ -22,15 +22,15 @@ const HomePage = () => {
 
   return (
     <div>
-      <section className="coupons">
-        <h2>Exclusive Coupons</h2>
-        <Coupon coupons={coupons} />
-      </section>
-
       <section className="banner">
       <h1>Welcome to CAKKIE</h1>
       <p>Your one-stop shop for all things cool!</p>
         <Banner />
+      </section>
+
+      <section className="coupons">
+        <h2>Exclusive Coupons</h2>
+        <Coupon coupons={coupons} />
       </section>
 
       <section className="products">
