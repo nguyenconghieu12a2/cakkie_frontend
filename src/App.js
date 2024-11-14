@@ -54,8 +54,8 @@ function App() {
 
           {/* CANCELED PAGE */}
           <Route path="/canceled-order" element={<CanceledOrder />} />
-          <Route path="/canceled-order/list-canceled/:id" element={<ListCanceledOrder />} />
-          <Route path="/detail-canceled" element={<DetailCanceledOrder />} />
+          <Route path="/list-canceled/:id" element={<ListCanceledOrder />} />
+          <Route path="/detail-canceled/:id" element={<DetailCanceledOrder />} />
 
           {/* COUPON PAGE */}
           <Route path="/coupon" element={<Coupon />} />

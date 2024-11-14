@@ -6,7 +6,7 @@ import { FaArrowsRotate, FaBars, FaTrash } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 
@@ -84,8 +84,8 @@ function DeletedCategory() {
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
-  const pageCount = Math.ceil(data.length / itemsPerPage);
-  const displayData = data.slice(
+  const pageCount = Math.ceil(deletedSubSub.length / itemsPerPage);
+  const displayData = deletedSubSub.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
@@ -124,7 +124,7 @@ function DeletedCategory() {
             <div className="deleted__subSubCategory--body">
               <div className="deleted__subSubCategory--body--head">
                 <h4 className="deleted__subSubCategory--body--title">
-                  View Deleted Sub Sub-Category
+                  View Deleted Category
                 </h4>
               </div>
 
@@ -138,12 +138,12 @@ function DeletedCategory() {
                     </tr>
                   </thead>
                   <tbody>
-                    {deletedSubCate.map((item, index) => (
+                    {displayData.map((item, index) => (
                       <tr>
                         <td className="td">{index + 1}</td>
                         <td className="td">{item.cateName}</td>
                         <td className="th handle__icon">
-                          <a className="link__icon">
+                          <Link className="link__icon">
                             <FaArrowsRotate
                               className="deleted__subSubCategory--icon deleted__subSubCategory--icon--edit"
                               onClick={() => handleShowDelete(item.id)}
@@ -170,7 +170,7 @@ function DeletedCategory() {
                                 </Button>
                               </Modal.Footer>
                             </Modal>
-                          </a>
+                          </Link>
                         </td>
                       </tr>
                     ))}

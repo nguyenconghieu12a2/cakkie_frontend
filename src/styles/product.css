@@ -58,7 +58,7 @@
     font-size: 24px;
     color: #106d37;
     font-weight: 700;
-    transition: all ease-in-out 0.2s; 
+    transition: all ease-in-out 0.2s;
 }
 
 /* General Icon Styling */
@@ -75,7 +75,8 @@
 .link__icon {
     margin-left: 20px;
     text-decoration: none;
-    color: inherit; /* Use inherited color */
+    color: inherit;
+    /* Use inherited color */
 }
 
 /* Hover Effects for Different Icons */
@@ -104,11 +105,13 @@
 .link__icon {
     display: inline-flex;
     align-items: center;
-    color: #000; /* Default color */
+    color: #000;
+    /* Default color */
 }
 
 .link__icon:hover {
-    text-decoration: none; /* Prevents underline on hover */
+    text-decoration: none;
+    /* Prevents underline on hover */
 }
 
 /* Detail Product */
@@ -171,7 +174,7 @@
     font-size: 24px;
     color: #106d37;
     font-weight: 700;
-    transition: all ease-in-out 0.2s; 
+    transition: all ease-in-out 0.2s;
 }
 
 .table1,
@@ -191,26 +194,26 @@
 .product__icon1--menu:hover {
     color: #725B3C;
     font-weight: 900;
-    transition: all ease-in-out 0.2s; 
+    transition: all ease-in-out 0.2s;
 }
 
 .product__icon1--edit:hover {
     color: #FFCCBC;
     font-weight: 900;
-    transition: all ease-in-out 0.2s; 
+    transition: all ease-in-out 0.2s;
 }
 
 .product__icon1--delete:hover {
-    color: #C1473C ;
+    color: #C1473C;
     font-weight: 900;
-    transition: all ease-in-out 0.2s; 
+    transition: all ease-in-out 0.2s;
 }
 
 .link__icon1 {
     /* margin-left: 20px; */
     text-decoration: none;
     color: #000;
-    
+
 }
 
 .link__icon1:nth-child(1) {
@@ -231,72 +234,78 @@
     border-collapse: collapse;
     margin: 1rem 0;
     font-size: 1rem;
-    text-align: center; /* Center the text horizontally */
-  }
-  
-  /* Center the table header */
-  .thead th {
+    text-align: center;
+    /* Center the text horizontally */
+}
+
+/* Center the table header */
+.thead th {
     padding: 12px 15px;
     background-color: white;
     color: rgb(0, 0, 0);
     font-weight: bold;
-    text-align: center; /* Center header content */
-    vertical-align: middle; /* Vertically center content */
-  }
-  
-  /* Center table data */
-  .tbody td {
+    text-align: center;
+    /* Center header content */
+    vertical-align: middle;
+    /* Vertically center content */
+}
+
+/* Center table data */
+.tbody td {
     padding: 10px 12px;
     border: 1px solid #dee2e6;
     background-color: white;
-    text-align: center; /* Center content horizontally */
-    vertical-align: middle; /* Center content vertically */
-  }
-  
-  /* Add hover effect to rows */
-  .tbody tr:hover {
+    text-align: center;
+    /* Center content horizontally */
+    vertical-align: middle;
+    /* Center content vertically */
+}
+
+/* Add hover effect to rows */
+.tbody tr:hover {
     background-color: #f1f1f1;
     cursor: pointer;
-  }
+}
 
-  .table tbody tr td {
+.table tbody tr td {
     font-size: 16px;
-  }
-  
-  /* Table row */
-  .tr {
-    text-align: center;
-    vertical-align: middle; /* Vertically center the row */
-  }
+}
 
-  .product__image {
+/* Table row */
+.tr {
+    text-align: center;
+    vertical-align: middle;
+    /* Vertically center the row */
+}
+
+.product__image {
     width: 100px;
     height: 100px;
     object-fit: cover;
-  }
+}
 
-  .icon-container {
+.icon-container {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-  }
+}
 
-  .icon-container1 {
+.icon-container1 {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
     width: 100%;
     justify-content: space-between;
-  }
+}
 
-  .icon-container2 {
+.icon-container2 {
     width: 100%;
     display: flex;
     justify-content: space-between;
-  }
+}
 
-  .modal-backdrop.show {
+.modal-backdrop.show {
     opacity: 0.3;
-    background-color: #bebebe;
+    background-color: #dfdfdf;
 }

@@ -3,11 +3,26 @@ import "../../styles/detail-canceled-order.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaRegCircleLeft } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
-import { useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function DetailCanceledOrder() {
-  
-  const navigator = useNavigate();
+  const { id } = useParams();
+
+  // Fetch data
+  const [productCancel, setProductCancel] = useState([]);
+
+  const loadProductCancel = async () => {
+    const result = await axios.get(
+      `http://localhost:8080/api/cancel-order/product-detail/${id}`
+    );
+    setProductCancel(result.data);
+  };
+
+  useEffect(() => {
+    loadProductCancel();
+  }, []);
 
   return (
     <>
@@ -27,7 +42,7 @@ function DetailCanceledOrder() {
             <div className="detail__canceled--breadcrumb">
               <Breadcrumb>
                 <Breadcrumb.Item link>Home</Breadcrumb.Item>
-                <Breadcrumb.Item active>Catelog</Breadcrumb.Item>
+                <Breadcrumb.Item active>Catalog</Breadcrumb.Item>
                 <Breadcrumb.Item active>Sales</Breadcrumb.Item>
                 <Breadcrumb.Item active>Canceled Order</Breadcrumb.Item>
                 <Breadcrumb.Item active>List Canceled Order</Breadcrumb.Item>
@@ -37,9 +52,9 @@ function DetailCanceledOrder() {
           </div>
 
           <div className="link__back">
-            <a href="" onClick={() => navigator("/list-canceled")}>
+            <Link to={(`/canceled-order`)}>
               <FaRegCircleLeft className="back__icon" />
-            </a>
+            </Link>
           </div>
 
           <div className="detail__canceled--body--wrap">
@@ -54,23 +69,29 @@ function DetailCanceledOrder() {
                 <Table className="table">
                   <thead className="thead">
                     <tr>
-                      <th className="th">Product ID</th>
+                      <th className="th">Order ID</th>
+                      <th className="th">Customer Name</th>
                       <th className="th">Product Name</th>
                       <th className="th">Quantity</th>
                       <th className="th">Price</th>
                       <th className="th">Size</th>
-                      <th className="th">Product Image</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td className="td">1</td>
-                      <td className="td">Table cell</td>
-                      <td className="td">Table cell</td>
-                      <td className="td">Table cell</td>
-                      <td className="td">Table cell</td>
-                      <td className="td">Table cell</td>
-                    </tr>
+                    {productCancel.map((order) =>
+                      order.product.map((product) =>
+                        product.productItem.map((item, index) => (
+                          <tr key={index}>
+                            <td className="td">{order.id}</td>
+                            <td className="td">{order.fullName}</td>
+                            <td className="td">{product.productName}</td>
+                            <td className="td">{item.quantity}</td>
+                            <td className="td">{item.price}</td>
+                            <td className="td">{item.size}</td>
+                          </tr>
+                        ))
+                      )
+                    )}
                   </tbody>
                 </Table>
               </div>
