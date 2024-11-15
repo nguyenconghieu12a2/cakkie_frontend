@@ -159,21 +159,22 @@ function Home() {
 
       <section className="px-8 py-12 bg-white">
         <h2 className="text-2xl font-bold mb-6">More To Buy</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {displayedProducts.map((product) => (
             <Link
               to={`/product/${product.productID}`}
               style={{ textDecoration: "none", color: "black" }}
               state={{ userId: 1 }}
               key={product.productID}
+              className="flex flex-col items-center w-full h-full p-2"
             >
-              <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 w-60 h-80 flex flex-col">
+              <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 w-full h-full flex flex-col">
                 <img
                   src={`./${product.productImage}.jpg`}
                   alt={product.name}
-                  className="w-full h-36 object-cover"
+                  className="w-full h-48 object-cover"
                 />
-                <div className="p-4 flex-1 flex flex-col justify-between">
+                <div className="p-4 flex-grow flex flex-col justify-between">
                   <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 overflow-hidden">
                     {product.name}
                   </h3>

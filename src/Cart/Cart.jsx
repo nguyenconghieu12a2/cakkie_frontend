@@ -264,6 +264,9 @@ const Cart = ({ setCartData }) => {
                     Product
                   </th>
                   <th scope="col" class="px-16 py-3 text-center">
+                    Size
+                  </th>
+                  <th scope="col" class="px-16 py-3 text-center">
                     Quantity
                   </th>
                   <th scope="col" class="px-6 py-3 text-center">
@@ -291,6 +294,9 @@ const Cart = ({ setCartData }) => {
                         }
                       />
                       {product.name}
+                    </td>
+                    <td class="px-16 py-4 font-semibold text-center text-gray-900 dark:text-black">
+                      <p>{product.size}</p>
                     </td>
                     <td class="px-6 py-4">
                       <div class="flex items-center justify-content-center">

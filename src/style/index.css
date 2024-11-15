@@ -112,9 +112,9 @@ main {
   padding: 20px;
   box-sizing: border-box;
   width: 100%;
-  max-width: 1200px;
+  /* max-width: 1200px; */
   /* Sets a maximum width for the main content area */
-  margin: 0 auto;
+  /* margin: 0 auto; */
   /* Centers the content horizontally */
   min-height: calc(100vh - 100px);
   /* Adjust height based on header/footer */

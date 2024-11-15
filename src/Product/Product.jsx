@@ -173,20 +173,22 @@ const Product = () => {
           (product) => product.productItemId === selectedProduct.productItemId
         );
         console.log(productInCart);
+        const newQuantity = prevQuantity + 1;
+
         if (productInCart) {
-          if (
-            productInCart.qty + prevQuantity + 1 >
-            selectedProduct.quantityStock
-          ) {
+          if (productInCart.qty + newQuantity > selectedProduct.quantityStock) {
             setShowOutStockPopup(true);
             return prevQuantity;
           } else {
-            return prevQuantity + 1;
+            return newQuantity;
           }
-        } else if (prevQuantity + 1 <= selectedProduct.quantityStock) {
-          return prevQuantity + 1;
         } else {
-          window.alert("Your order is the last item in shop!");
+          if (newQuantity <= selectedProduct.quantityStock) {
+            return newQuantity;
+          } else {
+            window.alert("Your order is the last item in shop!");
+            return prevQuantity;
+          }
         }
       } else {
         return Math.max(1, prevQuantity - 1);
@@ -318,19 +320,21 @@ const Product = () => {
               className={` ${disabled ? "disabled" : ""} buy-now`}
               onClick={() => {
                 if (!checkLogin()) {
-                  navigate("/checkout", {
-                    state: {
-                      product: {
-                        productId: selectedProduct.productItemId,
-                        name: selectedProduct.name,
-                        price: selectedProduct.price,
-                        size: selectedSize,
-                        quantity: quantity,
-                        image: selectedProduct.productImage,
-                        discount: selectedProduct.discount,
-                      },
-                    },
-                  });
+                  addProductToCart(selectedProduct.productItemId);
+                  navigate("/cart");
+                  // navigate("/checkout", {
+                  //   state: {
+                  //     product: {
+                  //       productId: selectedProduct.productItemId,
+                  //       name: selectedProduct.name,
+                  //       price: selectedProduct.price,
+                  //       size: selectedSize,
+                  //       quantity: quantity,
+                  //       productImage: selectedProduct.productImage,
+                  //       discount: selectedProduct.discount,
+                  //     },
+                  //   },
+                  // });
                 } else {
                   navigate("/login");
                 }

@@ -1,32 +1,3 @@
-// import React from "react";
-// import { useState } from "react";
-// import "bootstrap/dist/css/bootstrap.min.css";
-// import "@fortawesome/fontawesome-free/css/all.min.css";
-// import "bootstrap/dist/js/bootstrap.bundle";
-// import Container from "react-bootstrap/Container";
-// import Nav from "react-bootstrap/Nav";
-// import Navbar from "react-bootstrap/Navbar";
-// import "../styles/Header.css";
-
-// const Header = ({ Title }) => {
-//   return (
-//     <Navbar className="custom-navbar" data-bs-theme="dark">
-//       <Container className="header">
-//         <Navbar.Brand href="/">
-//           <img src="./images/logos.jpg" className="logo" href="#" alt="a pic" />
-//         </Navbar.Brand>
-//         <Nav className="me-auto    nav">
-//           <Nav href="/" className="logoName">
-//             CAKKIE
-//           </Nav>
-//           <Nav href={`./${{Title}}`}>{Title}</Nav>
-//         </Nav>
-//       </Container>
-//     </Navbar>
-//   );
-// };
-
-// export default Header;
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -74,6 +45,20 @@ const Header = ({ isLoggedIn, Title }) => {
           </Link>
         </div>
         <ul className="nav-links">
+          {isLoggedIn && ( // Only show cart and order if logged in
+            <>
+              <li>
+                <Link to="/cart">
+                  <i className="fas fa-shopping-cart"></i> CART
+                </Link>
+              </li>
+              <li>
+                <Link to="/order">
+                  <i className="fas fa-file-alt"></i> ORDERS
+                </Link>
+              </li>
+            </>
+          )}
           {isLoggedIn ? (
             <>
               <li>

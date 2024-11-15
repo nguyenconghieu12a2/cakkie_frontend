@@ -9,7 +9,7 @@ const Checkout = () => {
   const [message, setMessage] = useState("");
   const [coupon, setCoupon] = useState([]);
   const [discount, setDiscount] = useState(0);
-  const [userId, setUserId] = useState(2);
+  const [userId, setUserId] = useState(sessionStorage.getItem("userId"));
   const [shippingOption, setShippingOption] = useState([]);
   const [shippingPrice, setShippingPrice] = useState(0);
   const [shippingId, setShippingId] = useState(0);
@@ -25,15 +25,21 @@ const Checkout = () => {
   console.log(product);
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    if (storedCart != [] && !product) {
+    if (
+      storedCart.length > 0 &&
+      (!product || Object.keys(product).length === 0)
+    ) {
       setCart(storedCart);
-      fetchCoupon();
-      fetchShippingMethod();
-      fetchPaymentMethod();
-      fetchUserAddess();
-    } else if (!product) {
+    } else if (product && Object.keys(product).length > 0) {
+      setCart(Array.isArray(product) ? product : [product]);
+    } else {
       navigate("/");
     }
+
+    fetchCoupon();
+    fetchShippingMethod();
+    fetchPaymentMethod();
+    fetchUserAddess();
   }, []);
 
   const fetchCoupon = async () => {
@@ -145,15 +151,16 @@ const Checkout = () => {
   };
 
   const handleSetDefault = (e) => {
-    const updatedAddresses = address.map((address) =>
-      address.id == e.target.value
-        ? { ...address, isDefault: 1 }
-        : { ...address, isDefault: 0 }
+    const selectedAddressId = parseInt(e.target.value, 10);
+
+    const updatedAddresses = address.map((addr) =>
+      addr.id === selectedAddressId
+        ? { ...addr, isDefault: 1 }
+        : { ...addr, isDefault: 0 }
     );
+
     setAddress(updatedAddresses);
-    setAddressId(e.target.value);
-    console.log(updatedAddresses);
-    console.log(e.target.value);
+    setAddressId(selectedAddressId);
   };
 
   const handleShippingMethodChange = (e) => {
@@ -210,7 +217,7 @@ const Checkout = () => {
       orderTotal += discountedPrice * product.quantity;
     }
 
-    return orderTotal - (discount || 0) - shippingPrice;
+    return Math.max(0, orderTotal - (discount || 0) + shippingPrice);
   };
 
   return (
@@ -219,37 +226,40 @@ const Checkout = () => {
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <div>
           <label>Select Default Address: </label>
-          <select
-            onChange={handleSetDefault}
-            value={address.find((address) => address.isDefault)?.id || ""}
-          >
-            {address.map((address) => (
-              <option key={address.id} value={address.id}>
-                {address.receiveName} - {address.detailAddress}, {address.wards}
-                , {address.district}, {address.province}
+          <select onChange={handleSetDefault} value={addressId || ""}>
+            <option value="" disabled>
+              Select an address
+            </option>
+            {address.map((addr) => (
+              <option key={addr.id} value={addr.id}>
+                {addr.receiveName} - {addr.detailAddress}, {addr.wards},{" "}
+                {addr.district}, {addr.province}
               </option>
             ))}
           </select>
 
           {address
-            .filter((address) => address.id === addressId)
-            .map((address) => (
+            .filter((addr) => addr.id === addressId)
+            .map((selectedAddress) => (
               <div
-                key={address.id}
+                key={selectedAddress.id}
                 style={{
                   border: "1px solid #ddd",
                   padding: "16px",
                   margin: "16px 0",
-                  backgroundColor: address.isDefault ? "#f0f8ff" : "#fff",
+                  backgroundColor: selectedAddress.isDefault
+                    ? "#f0f8ff"
+                    : "#fff",
                 }}
               >
-                <h3>{address.receiveName}</h3>
-                <p>Phone: {address.phone}</p>
+                <h3>{selectedAddress.receiveName}</h3>
+                <p>Phone: {selectedAddress.phone}</p>
                 <p>
-                  Address: {address.detailAddress}, {address.wards},{" "}
-                  {address.district}, {address.province}
+                  Address: {selectedAddress.detailAddress},{" "}
+                  {selectedAddress.wards}, {selectedAddress.district},{" "}
+                  {selectedAddress.province}
                 </p>
-                {address.isDefault && (
+                {selectedAddress.isDefault && (
                   <p>
                     <strong>Default Address</strong>
                   </p>
@@ -279,38 +289,40 @@ const Checkout = () => {
           </thead>
 
           <tbody>
-            {cart.map((product) => (
-              <tr key={product.id}>
-                <td>
-                  <div className="flex flex-row align-items-center">
-                    <img
-                      className="w-20 h-20"
-                      src={`./${product.productImage}.jpg`}
-                      alt={product.name}
-                    />
-                    <div className="px-2 align-middle">
-                      <p>{product.name}</p>
+            {cart &&
+              cart.map((product) => (
+                <tr key={product.id}>
+                  <td>
+                    <div className="flex flex-row align-items-center">
+                      <img
+                        className="w-20 h-20"
+                        src={`./${product.productImage}.jpg`}
+                        alt={product.name}
+                      />
+                      <div className="px-2 align-middle">
+                        <p>{product.name}</p>
+                      </div>
                     </div>
-                  </div>
-                </td>
-                <td className="text-center">{product.size}</td>
-                <td className="text-center">
-                  {(
-                    product.price -
-                    (product.price * product.discount) / 100
-                  ).toLocaleString()}{" "}
-                  VND
-                </td>
-                <td className="text-center">{product.quantity}</td>
-                <td className="text-center">
-                  {(
-                    (product.price - (product.price * product.discount) / 100) *
-                    product.quantity
-                  ).toLocaleString()}{" "}
-                  VND
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td className="text-center">{product.size}</td>
+                  <td className="text-center">
+                    {(
+                      product.price -
+                      (product.price * product.discount) / 100
+                    ).toLocaleString()}{" "}
+                    VND
+                  </td>
+                  <td className="text-center">{product.quantity}</td>
+                  <td className="text-center">
+                    {(
+                      (product.price -
+                        (product.price * product.discount) / 100) *
+                      product.quantity
+                    ).toLocaleString()}{" "}
+                    VND
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
 
