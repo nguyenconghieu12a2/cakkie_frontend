@@ -103,3 +103,7 @@
 .link__icon:nth-child(1) {
     margin: 0;
 }
+
+.subcategory__body__wrap {
+    margin-bottom: 40px;
+}

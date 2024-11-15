@@ -19,6 +19,8 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Alert from "react-bootstrap/Alert";
+import Tab from "react-bootstrap/Tab";
+import Tabs from "react-bootstrap/Tabs";
 
 function Product() {
   const [lgShow, setLgShow] = useState(false);
@@ -406,6 +408,158 @@ function Product() {
                   <Modal.Header closeButton>
                     <Modal.Title>Add Product</Modal.Title>
                   </Modal.Header>
+                  <Tabs defaultActiveKey="add-product" id="product-tabs">
+                    <Tab eventKey="add-product" title="Add Product">
+                      <Modal.Body>
+                        <Form onSubmit={handleSubmit}>
+                          <Container>
+                            <Row>
+                              <Col>
+                                <Form.Group
+                                  className="mb-3"
+                                  controlId="productName"
+                                >
+                                  <Form.Label>Product Name</Form.Label>
+                                  <Form.Control
+                                    type="text"
+                                    name="name"
+                                    value={newProduct.name}
+                                    onChange={handleChange}
+                                    autoFocus
+                                    required
+                                  />
+                                </Form.Group>
+                              </Col>
+                              <Col>
+                                <Form.Group
+                                  className="mb-3"
+                                  controlId="categoryId"
+                                >
+                                  <Form.Label>Category Name</Form.Label>
+                                  <Form.Select
+                                    name="categoryId"
+                                    value={newProduct.categoryId}
+                                    onChange={handleChange}
+                                    required
+                                  >
+                                    <option value="">Select Category</option>
+                                    {categories.map((category) => (
+                                      <option
+                                        key={category.id}
+                                        value={category.id}
+                                      >
+                                        {category.cateName}
+                                      </option>
+                                    ))}
+                                  </Form.Select>
+                                </Form.Group>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col>
+                                <Form.Group
+                                  className="mb-3"
+                                  controlId="description"
+                                >
+                                  <Form.Label>Description</Form.Label>
+                                  <Form.Control
+                                    as="textarea"
+                                    name="description"
+                                    value={newProduct.description}
+                                    onChange={handleChange}
+                                    rows={2}
+                                    required
+                                  />
+                                </Form.Group>
+                              </Col>
+                              <Col>
+                                <Form.Group className="mb-3" controlId="size">
+                                  <Form.Label>Size</Form.Label>
+                                  <Form.Select
+                                    name="size"
+                                    value={newProduct.size}
+                                    onChange={handleChange}
+                                    required
+                                  >
+                                    <option value="">Select Size</option>
+                                    {sizes.map((size, index) => (
+                                      <option key={index} value={size}>
+                                        {size}
+                                      </option>
+                                    ))}
+                                  </Form.Select>
+                                </Form.Group>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col>
+                                <Form.Group
+                                  className="mb-3"
+                                  controlId="productImage"
+                                >
+                                  <Form.Label>Product Image</Form.Label>
+                                  <Form.Control
+                                    type="file"
+                                    onChange={handleImageChange}
+                                    required
+                                  />
+                                </Form.Group>
+                              </Col>
+                              <Col>
+                                <Form.Group
+                                  className="mb-3"
+                                  controlId="qtyInStock"
+                                >
+                                  <Form.Label>Quantity in Stock</Form.Label>
+                                  <Form.Control
+                                    type="number"
+                                    name="qtyInStock"
+                                    value={newProduct.qtyInStock}
+                                    onChange={handleChange}
+                                    required
+                                  />
+                                </Form.Group>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col>
+                                <Form.Group className="mb-3" controlId="price">
+                                  <Form.Label>Price</Form.Label>
+                                  <Form.Control
+                                    type="number"
+                                    name="price"
+                                    value={newProduct.price}
+                                    onChange={handleChange}
+                                    required
+                                  />
+                                </Form.Group>
+                              </Col>
+                            </Row>
+                            <Modal.Footer>
+                              <Button variant="secondary" onClick={handleClose}>
+                                Close
+                              </Button>
+                              <Button
+                                variant="success"
+                                type="submit"
+                                onSubmit={handleSubmit}
+                              >
+                                Create
+                              </Button>
+                            </Modal.Footer>
+                          </Container>
+                        </Form>
+                      </Modal.Body>
+                    </Tab>
+                    <Tab eventKey="add-size" title="Add Size">
+
+                    </Tab>
+                  </Tabs>
+                </Modal>
+                {/* <Modal size="lg" show={lgShow} onHide={handleClose}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Add Product</Modal.Title>
+                  </Modal.Header>
                   <Modal.Body>
                     <Form onSubmit={handleSubmit}>
                       <Container>
@@ -537,7 +691,7 @@ function Product() {
                       </Container>
                     </Form>
                   </Modal.Body>
-                </Modal>
+                </Modal> */}
               </div>
 
               <div className="product__body--table">

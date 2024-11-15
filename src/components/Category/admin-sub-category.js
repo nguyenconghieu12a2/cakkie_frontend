@@ -130,7 +130,7 @@ function SubCategory() {
       }, 5000);
     }
   };
-
+  //Pagination
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
   const pageCount = Math.ceil(subCate.length / itemsPerPage);
@@ -141,6 +141,33 @@ function SubCategory() {
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
+  };
+
+  //Load Sub SubCate Null
+  const [nullSubSub, setNullSubSub] = useState([]);
+  const loadNull = async () => {
+    const result = await axios.get(
+      `http://localhost:8080/api/admin/null-sub-subCate`
+    );
+    setNullSubSub(result.data);
+  };
+
+  useEffect(() => {
+    loadNull();
+  }, []);
+
+  //Pagination Null
+  //Pagination
+  const [currentPage1, setCurrentPage1] = useState(0);
+  const itemsPerPage1 = 10;
+  const pageCount1 = Math.ceil(nullSubSub.length / itemsPerPage);
+  const displayData1 = nullSubSub.slice(
+    currentPage1 * itemsPerPage1,
+    (currentPage1 + 1) * itemsPerPage1
+  );
+
+  const handlePageClick1 = (event) => {
+    setCurrentPage1(event.selected);
   };
 
   return (
@@ -285,7 +312,7 @@ function SubCategory() {
                               </Button>
                             </Modal.Footer>
                           </Modal>
-                          <FaTrash
+                          {/* <FaTrash
                             className="subcategory__icon subcategory__icon--delete"
                             onClick={handleShowDelete}
                           />
@@ -310,7 +337,7 @@ function SubCategory() {
                                 Delete
                               </Button>
                             </Modal.Footer>
-                          </Modal>
+                          </Modal> */}
                         </td>
                       </tr>
                     ))}
@@ -324,6 +351,54 @@ function SubCategory() {
                 onPageChange={handlePageClick}
                 pageRangeDisplayed={5}
                 pageCount={pageCount}
+                previousLabel="< previous"
+                pageClassName="page-item"
+                pageLinkClassName="page-link"
+                previousClassName="page-item"
+                previousLinkClassName="page-link"
+                nextClassName="page-item"
+                nextLinkClassName="page-link"
+                breakClassName="page-item"
+                breakLinkClassName="page-link"
+                containerClassName="pagination"
+                activeClassName="active"
+              />
+            </div>
+          </div>
+
+          <div className="subcategory__body__wrap">
+            <div className="subcategory__body">
+              <div className="subcategory__body--head">
+                <h4 className="subcategory__body--title">Null Sub Sub-Category</h4>
+              </div>
+
+              <div className="subcategory__body--table">
+                <Table className="table">
+                  <thead className="thead">
+                    <tr>
+                      <th className="th">Sub-Category ID</th>
+                      <th className="th">Sub-Category Name</th>
+                      <th className="th">Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {displayData1.map((item, index) => (
+                      <tr key={index}> 
+                        <td className="td">{index + 1 + currentPage1 * pageCount1}</td>
+                        <td className="td">{item.cateName}</td>
+                        <td className="td">Null</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
+              <ReactPaginate
+                className="pagination"
+                breakLabel="..."
+                nextLabel="next >"
+                onPageChange={handlePageClick1}
+                pageRangeDisplayed={5}
+                pageCount={pageCount1}
                 previousLabel="< previous"
                 pageClassName="page-item"
                 pageLinkClassName="page-link"

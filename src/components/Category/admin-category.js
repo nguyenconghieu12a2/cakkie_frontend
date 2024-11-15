@@ -296,7 +296,7 @@ function Category() {
                             </Modal.Footer>
                           </Modal>
 
-                          <FaTrash
+                          {/* <FaTrash
                             className="category__icon category__icon--delete"
                             onClick={() => handleShowDelete(item.id)}
                           />
@@ -315,7 +315,7 @@ function Category() {
                                 Delete
                               </Button>
                             </Modal.Footer>
-                          </Modal>
+                          </Modal> */}
                         </td>
                       </tr>
                     ))}
