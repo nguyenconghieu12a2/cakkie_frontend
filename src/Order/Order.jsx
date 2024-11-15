@@ -108,7 +108,6 @@ const Order = () => {
 
   return (
     <div className="order-list-page">
-      <Header Title={"Order"} />
       <div className="tabs">
         {tabs.map((tab) => (
           <button
@@ -120,22 +119,33 @@ const Order = () => {
           </button>
         ))}
       </div>
-      <div className="product-list">
-        {orderList.map((product) => (
-          <div className="product-item" key={product.id}>
-            <div className="product-info">
-              <img src={product.imageUrl} alt={product.name} />
-              <div>
-                <p>{product.name}</p>
-                <p>{product.description}</p>
-                {product.size && <p>Size: {product.size}</p>}
-              </div>
+      <div className="order-list">
+        {orderList.map((order) => (
+          <div className="order-item" key={order.orderId}>
+            <h3>Order #{order.orderId}</h3>
+            <div className="products-in-order">
+              {orderItems[order.orderId]?.map((item) => (
+                <div className="product-item" key={item.id}>
+                  <div className="product-info">
+                    <img
+                      src={`./${item.productDetails[0]?.productImage}.jpg`}
+                      alt={item.productDetails[0]?.name || "Product"}
+                    />
+                    <div>
+                      <p>{item.productDetails[0]?.name}</p>
+                      <p>Quantity: {item.quantity}</p>
+                    </div>
+                  </div>
+                  <div className="product-details">
+                    <p>Price: {item.price.toLocaleString()} đ</p>
+                    <p>
+                      Subtotal: {(item.price * item.quantity).toLocaleString()}{" "}
+                      đ
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="product-details">
-              <p> đ</p>
-              <p> đ</p>
-            </div>
-            <button className="review-button">Review</button>
           </div>
         ))}
       </div>

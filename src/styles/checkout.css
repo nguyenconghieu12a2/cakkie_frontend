@@ -35,7 +35,7 @@ h3 {
 
 .product-info {
     display: flex;
-    align-items: center;
+    /* align-items: center; */
 }
 
 .product-info img {

@@ -10,20 +10,17 @@ const Cart = ({ setCartData }) => {
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(0);
   const [id, setId] = useState(1);
-  const [userId, setUserId] = useState(1);
+  const [userId, setUserId] = useState(sessionStorage.getItem("userId"));
   const [checkAll, setCheckAll] = useState(false);
   const [productList, setProductList] = useState([]);
   const [cart, setCart] = useState([]);
   const [fetchedProducts, setFetchedProducts] = useState(false);
   const [total, setTotal] = useState(0);
-
   //fetching
 
   const fetchCart = async () => {
     try {
-      const responseCart = await axios.get(
-        `/cart/${userId}`
-      );
+      const responseCart = await axios.get(`/cart/${userId}`);
       console.log(responseCart.data);
       setCart(responseCart.data);
     } catch (error) {
@@ -52,9 +49,7 @@ const Cart = ({ setCartData }) => {
 
   const fetchProduct = async (productId) => {
     try {
-      const response = await axios.get(
-        `/productItem/${productId}`
-      );
+      const response = await axios.get(`/productItem/${productId}`);
       return response.data;
     } catch (error) {
       console.log(error);
@@ -68,10 +63,7 @@ const Cart = ({ setCartData }) => {
   const removeCartItem = async (productItemId) => {
     let cartId = findCartItemIdByProductItemId(productItemId);
     try {
-      const response = await axios.post(
-        `/deleteCartItem`,
-        { cartId }
-      );
+      const response = await axios.post(`/deleteCartItem`, { cartId });
 
       if (response.status === 200) {
         setCart((prevCart) => prevCart.filter((item) => item.id !== cartId));
@@ -96,6 +88,8 @@ const Cart = ({ setCartData }) => {
   useEffect(() => {
     if (userId && !fetchedProducts) {
       fetchCart();
+    } else if (userId === null) {
+      navigate("/login");
     }
   }, [userId]);
 
@@ -257,10 +251,10 @@ const Cart = ({ setCartData }) => {
     );
     console.log(localStorage.getItem("cart"));
   };
+
   return (
     <>
       <div className="">
-        <Header Title={"Shopping Cart"} />
         {productList.length > 0 ? (
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table className="w-full text-left rtl:text-right mt-12 py-5">

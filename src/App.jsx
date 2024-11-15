@@ -1,4 +1,4 @@
-import { Link, Route, Routes, useLocation } from "react-router-dom";
+import { Link, matchPath, Route, Routes, useLocation } from "react-router-dom";
 import { useState } from "react";
 import HomePage from "./HomePage";
 import Login from "./Login";
@@ -43,9 +43,12 @@ function App() {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUser(null);
+    localStorage.removeItem("email");
     localStorage.removeItem("jwt");
     localStorage.removeItem("user");
+    localStorage.removeItem("userId");
     sessionStorage.removeItem("jwt");
+    sessionStorage.removeItem("userId");
   };
 
   const location = useLocation();
@@ -64,11 +67,13 @@ function App() {
     "/order",
     "/cart",
     "/checkout",
-    "/product",
+    "/product/:productId",
   ];
 
   // Show header and footer only if the current path matches one of the userRoutes
-  const shouldShowUserHeaderFooter = userRoutes.includes(location.pathname);
+  const shouldShowUserHeaderFooter = userRoutes.some((route) =>
+    matchPath({ path: route, end: true }, location.pathname)
+  );
 
   return (
     <div className="d-flex flex-column min-vh-100">

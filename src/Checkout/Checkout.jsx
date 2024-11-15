@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import "../styles/checkout.css";
 import Header from "../components/Header";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Checkout = () => {
   const [cart, setCart] = useState([]);
   const [message, setMessage] = useState("");
   const [coupon, setCoupon] = useState([]);
   const [discount, setDiscount] = useState(0);
-  const [userId, setUserId] = useState(1);
+  const [userId, setUserId] = useState(2);
   const [shippingOption, setShippingOption] = useState([]);
   const [shippingPrice, setShippingPrice] = useState(0);
   const [shippingId, setShippingId] = useState(0);
@@ -20,15 +20,18 @@ const Checkout = () => {
   const [addressId, setAddressId] = useState(0);
   const [discountId, setDiscountId] = useState(0);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { product } = location.state || {};
+  console.log(product);
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    if (storedCart != []) {
+    if (storedCart != [] && !product) {
       setCart(storedCart);
       fetchCoupon();
       fetchShippingMethod();
       fetchPaymentMethod();
       fetchUserAddess();
-    } else {
+    } else if (!product) {
       navigate("/");
     }
   }, []);
@@ -82,7 +85,7 @@ const Checkout = () => {
 
   const removeCart = async () => {
     try {
-      const response = await axios.delete(`/deleteCart/${userId}`);
+      const response = await axios.delete(`/clear/${userId}`);
 
       if (response.status === 200) {
         console.log(cart);
@@ -212,7 +215,6 @@ const Checkout = () => {
 
   return (
     <div className="checkout-page">
-      <Header Title={"Products Ordered"} />
       {console.log(cart)}
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <div>
@@ -229,29 +231,31 @@ const Checkout = () => {
             ))}
           </select>
 
-          {address.map((address) => (
-            <div
-              key={address.id}
-              style={{
-                border: "1px solid #ddd",
-                padding: "16px",
-                margin: "16px 0",
-                backgroundColor: address.isDefault ? "#f0f8ff" : "#fff",
-              }}
-            >
-              <h3>{address.receiveName}</h3>
-              <p>Phone: {address.phone}</p>
-              <p>
-                Address: {address.detailAddress}, {address.wards},{" "}
-                {address.district}, {address.province}
-              </p>
-              {address.isDefault && (
+          {address
+            .filter((address) => address.id === addressId)
+            .map((address) => (
+              <div
+                key={address.id}
+                style={{
+                  border: "1px solid #ddd",
+                  padding: "16px",
+                  margin: "16px 0",
+                  backgroundColor: address.isDefault ? "#f0f8ff" : "#fff",
+                }}
+              >
+                <h3>{address.receiveName}</h3>
+                <p>Phone: {address.phone}</p>
                 <p>
-                  <strong>Default Address</strong>
+                  Address: {address.detailAddress}, {address.wards},{" "}
+                  {address.district}, {address.province}
                 </p>
-              )}
-            </div>
-          ))}
+                {address.isDefault && (
+                  <p>
+                    <strong>Default Address</strong>
+                  </p>
+                )}
+              </div>
+            ))}
         </div>
         <table className="w-full text-left rtl:text-right mt-12 py-5">
           <thead className="text-xs b">

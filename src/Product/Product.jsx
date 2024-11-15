@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "../styles/product.css";
-import Header from "../components/Header";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import NotFound from "../components/NotFound";
@@ -17,7 +16,7 @@ const Product = () => {
   const [coupon, setCoupon] = useState([]);
   const [productList, setProductList] = useState([]);
   const [descriptionList, setDescriptionList] = useState([]);
-  const [userId, setUserId] = useState(1);
+  const [userId, setUserId] = useState(sessionStorage.getItem("userId"));
   const [loading, setLoading] = useState(true);
   const [note, setNote] = useState("");
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
@@ -49,9 +48,7 @@ const Product = () => {
 
   const fetchCart = async () => {
     try {
-      const responseCart = await axios.get(
-        `/cart/${userId}`
-      );
+      const responseCart = await axios.get(`/cart/${userId}`);
       console.log(responseCart.data);
       setCart(responseCart.data);
     } catch (error) {
@@ -101,10 +98,7 @@ const Product = () => {
       note: note,
     };
     try {
-      const response = await axios.post(
-        `/addToCart`,
-        data
-      );
+      const response = await axios.post(`/addToCart`, data);
 
       if (response.status === 200) {
         setShowSuccessPopup(true);
@@ -168,7 +162,6 @@ const Product = () => {
   if (!selectedProduct) {
     return (
       <>
-        <Header />
         <NotFound />
       </>
     );
@@ -201,13 +194,16 @@ const Product = () => {
     });
   };
 
+  const checkLogin = () => {
+    console.log(userId);
+    return userId === null;
+  };
   if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
     <div className="product-detail-page">
-      <Header Title={"Product"} />
       {showSuccessPopup && (
         <div className="fixed inset-0 flex items-start justify-center z-50">
           <div className="bg-white w-96 p-6 rounded-lg shadow-lg">
@@ -320,12 +316,35 @@ const Product = () => {
             <button
               disabled={disabled}
               className={` ${disabled ? "disabled" : ""} buy-now`}
+              onClick={() => {
+                if (!checkLogin()) {
+                  navigate("/checkout", {
+                    state: {
+                      product: {
+                        productId: selectedProduct.productItemId,
+                        name: selectedProduct.name,
+                        price: selectedProduct.price,
+                        size: selectedSize,
+                        quantity: quantity,
+                        image: selectedProduct.productImage,
+                        discount: selectedProduct.discount,
+                      },
+                    },
+                  });
+                } else {
+                  navigate("/login");
+                }
+              }}
             >
               Buy Now
             </button>
             <button
               className={` ${disabled ? "disabled" : ""} add-to-cart`}
-              onClick={() => addProductToCart(selectedProduct.productItemId)}
+              onClick={() =>
+                checkLogin()
+                  ? navigate("/login")
+                  : addProductToCart(selectedProduct.productItemId)
+              }
               disabled={disabled}
             >
               Add to Cart

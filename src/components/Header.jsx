@@ -33,7 +33,7 @@ import axios from "axios";
 
 const api = "/api/profile"; // Backend API route
 
-const Header = ({ isLoggedIn }) => {
+const Header = ({ isLoggedIn, Title }) => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
