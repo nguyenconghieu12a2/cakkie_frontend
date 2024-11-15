@@ -21,6 +21,7 @@ import CanceledOrder from "./components/Orders/admin-canceled-order";
 import ListCanceledOrder from "./components/Orders/admin-list-canceled";
 import DetailCanceledOrder from "./components/Orders/admin-detail-canceled-order";
 import ProductDetail from "./components/Product/admin-detail-product";
+import OutOfStock from "./components/Product/out-of-stock";
 
 function App() {
   return (
@@ -36,12 +37,16 @@ function App() {
 
           {/* PRODUCT PAGE */}
           <Route path="/product" element={<Product />} />
-          <Route path="/product/detail/:id" element={<ProductDetail />}/>
+          <Route path="/product/detail/:id" element={<ProductDetail />} />
           <Route path="/deleted-product" element={<DeletedProduct />} />
+          <Route path="/out-of-stock" element={<OutOfStock />} />
 
           {/* CATEGORY PAGE */}
           <Route path="/main-category" element={<Category />} />
-          <Route path="/main-category/sub-category/:parentId" element={<SubCategory />} />
+          <Route
+            path="/main-category/sub-category/:parentId"
+            element={<SubCategory />}
+          />
           <Route
             path="/main-category/sub-category/category/:parentId"
             element={<SubSubCategory />}
@@ -55,7 +60,10 @@ function App() {
           {/* CANCELED PAGE */}
           <Route path="/canceled-order" element={<CanceledOrder />} />
           <Route path="/list-canceled/:id" element={<ListCanceledOrder />} />
-          <Route path="/detail-canceled/:id" element={<DetailCanceledOrder />} />
+          <Route
+            path="/detail-canceled/:id"
+            element={<DetailCanceledOrder />}
+          />
 
           {/* COUPON PAGE */}
           <Route path="/coupon" element={<Coupon />} />

@@ -12,7 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import { VscSignOut } from "react-icons/vsc";
 
-function Sidebar({onLogout}) {
+function Sidebar({ onLogout }) {
   const [openMenu, setOpenMenu] = useState(""); // Track which menu is open
   const [selected, setSelected] = useState("");
 
@@ -29,6 +29,7 @@ function Sidebar({onLogout}) {
         "catalog",
         "category",
         "product",
+        "out_of_stock",
         "deleted_category",
         "deleted_product",
       ],
@@ -50,7 +51,6 @@ function Sidebar({onLogout}) {
   const handleSelected = (selection) => {
     setSelected(selection); // Set the selected item
   };
-
 
   return (
     <>
@@ -168,7 +168,15 @@ function Sidebar({onLogout}) {
                     >
                       <h4 className="item__cate">Product</h4>
                     </Link>
-
+                    <Link
+                      to={"/out-of-stock"}
+                      className={`sidebar__link ${
+                        selected === "out_of_stock" ? "active" : ""
+                      }`}
+                      onClick={() => handleSelected("out_of_stock")}
+                    >
+                      <h4 className="item__cate">Out of Stock</h4>
+                    </Link>
                     <Link
                       to={"/deleted-category"}
                       className={`sidebar__link ${

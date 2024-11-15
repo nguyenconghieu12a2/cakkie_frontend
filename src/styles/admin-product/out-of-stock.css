@@ -1,0 +1,71 @@
+.main__wrap {
+    display: flex;
+}
+
+.stock__wrap {
+    margin-left: 250px;
+    flex: 1;
+    height: 100vh;
+    padding: 10px;
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.stock__head--main {
+    display: flex;
+    justify-content: space-between;
+}
+
+.stock__title {
+    text-align: left;
+}
+
+.admin__avater img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+
+.table1 {
+    width: 100%;
+    border-collapse: collapse;
+    /* Ensures there's no space between table cells */
+    margin-top: 20px;
+    border: 1px solid #000;
+    /* Adds a solid black border around the entire table */
+}
+
+.tr1 
+.td1 {
+    padding: 12px 15px;
+    border: 1px solid #000;
+}
+
+.th1 {
+    background-color: #f4f4f4;
+    color: #333;
+    font-weight: bold;
+}
+
+.stock__image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+
+
+.stock__image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.stock__body--wrap {
+    background-color: #F0E8D6;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
