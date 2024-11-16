@@ -16,7 +16,7 @@ function Home() {
       setProductList(response.data);
       console.log(response.data);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching products:", error);
     }
   };
 
@@ -170,7 +170,7 @@ function Home() {
             >
               <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 w-full h-full flex flex-col">
                 <img
-                  src={`./${product.productImage}.jpg`}
+                  src={`./${product.productImage}.jpg`} // Correctly formatted like your old code
                   alt={product.name}
                   className="w-full h-48 object-cover"
                 />
@@ -183,11 +183,11 @@ function Home() {
                   </p>
                   <div className="flex items-center">
                     <p className="text-yellow-500 text-sm mr-1">
-                      {"★".repeat(product.productRating)}
-                      {"☆".repeat(5 - product.productRating)}
+                      {"★".repeat(Math.round(product.averageRating || 0))}
+                      {"☆".repeat(5 - Math.round(product.averageRating || 0))}
                     </p>
                     <span className="text-gray-500 text-xs">
-                      ({product.productRating})
+                      ({product.averageRating?.toFixed(1) || "0.0"})
                     </span>
                   </div>
                 </div>
@@ -197,13 +197,6 @@ function Home() {
         </div>
 
         <div className="flex justify-center mt-8">
-          {/* <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="mx-2 px-4 py-2 rounded-lg bg-gray-300 disabled:bg-gray-200"
-          >
-            Previous
-          </button> */}
           {[...Array(totalPages)].map((_, index) => (
             <button
               key={index}
@@ -217,13 +210,6 @@ function Home() {
               {index + 1}
             </button>
           ))}
-          {/* <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="mx-2 px-4 py-2 rounded-lg bg-gray-300 disabled:bg-gray-200"
-          >
-            Next
-          </button> */}
         </div>
       </section>
     </div>

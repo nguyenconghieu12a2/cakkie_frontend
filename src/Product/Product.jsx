@@ -28,6 +28,7 @@ const Product = () => {
   useEffect(() => {
     fetchProduct();
     fetchCoupon();
+    
     if (userId) {
       fetchCart();
     }
@@ -256,10 +257,11 @@ const Product = () => {
         <div className="product-info">
           <h2>{selectedProduct.name}</h2>
           <div className="product-rating">
-            <p className="text-yellow-500">
-              {"★".repeat(productList[0].productRating)}{" "}
-              {"☆".repeat(5 - productList[0].productRating)}{" "}
+          <p className="text-yellow-500">
+              {"★".repeat(Math.round(selectedProduct.averageRating))}
+              {"☆".repeat(5 - Math.round(selectedProduct.averageRating))}
             </p>
+            <span>({selectedProduct.averageRating.toFixed(1)} out of 5)</span>
           </div>
 
           <div className="product-sizes">
