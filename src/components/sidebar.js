@@ -57,7 +57,7 @@ function Sidebar({ onLogout }) {
       <div className="sidebar__wrap">
         <div className="sidebar">
           <div className="sidebar__head">
-            <img src="../images/logo2.png" alt="Logo" />
+            <img src="../../../images/logo2.png" alt="Logo" />
           </div>
           <div className="sidebar__body">
             <div className="title">

@@ -3,13 +3,21 @@ import { useEffect, useState } from "react";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaArrowsRotate } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
-import "../../styles/deleted-product.css";
+import "../../styles/admin-product/deleted-product.css";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import Form from "react-bootstrap/Form";
 import { Link } from "react-router-dom";
+
+//API
+//Get Deleted
+const api = "/api/admin/admin-product/deleted";
+//Get Cate not delete
+const cateNotDelete = "/api/admin/admin-product/category-not-deleted";
+//Recover
+const recoverPro = "/api/admin/product-recovery";
 
 function DeletedProduct() {
   const [productIdRecover, setProductIdRecover] = useState(null);
@@ -24,9 +32,7 @@ function DeletedProduct() {
   const [deletedProduct, setDeletedProduct] = useState([]);
 
   const loadDeleted = async () => {
-    const result = await axios.get(
-      `http://localhost:8080/api/admin-product/deleted`
-    );
+    const result = await axios.get(`${api}`);
     setDeletedProduct(result.data);
   };
 
@@ -53,9 +59,7 @@ function DeletedProduct() {
   // Fetch Deleted Product Not Effected By Category
   const [deletedProductNotEffect, setDeletedProductNotEffect] = useState([]);
   const loadDeletedPro = async () => {
-    const result = await axios.get(
-      `http://localhost:8080/api/admin-product/category-not-deleted`
-    );
+    const result = await axios.get(`${cateNotDelete}`);
     setDeletedProductNotEffect(result.data);
   };
 
@@ -82,9 +86,7 @@ function DeletedProduct() {
   //Recovery Deleted Product
   const recoveryProduct = async () => {
     try {
-      await axios.delete(
-        `http://localhost:8080/api/product-recovery/${productIdRecover}`
-      );
+      await axios.delete(`${recoverPro}/${productIdRecover}`);
       setShow1(false);
       loadDeleted();
       loadDeletedPro();
@@ -121,6 +123,18 @@ function DeletedProduct() {
 
   const handlePageClick1 = (event) => {
     setCurrentPage1(event.selected);
+  };
+
+  //Format Price
+  const formatCurrency = (value) => {
+    if (!value) return "0 VND";
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      minimumFractionDigits: 0,
+    })
+      .format(value)
+      .replace("₫", "VND");
   };
 
   return (
@@ -207,7 +221,7 @@ function DeletedProduct() {
                             </Form.Select>
                           </td>
                           <td className="td">{currentSize.quantity}</td>
-                          <td className="td">{currentSize.price} VND</td>
+                          <td className="td">{formatCurrency(currentSize.price)}</td>
                         </tr>
                       );
                     })}
@@ -295,7 +309,7 @@ function DeletedProduct() {
                             </Form.Select>
                           </td>
                           <td className="td">{currentSize1.quantity}</td>
-                          <td className="td">{currentSize1.price} VND</td>
+                          <td className="td">{formatCurrency(currentSize1.price)}</td>
                           <td className="td">
                             <Link className="link__icon" to="#">
                               <FaArrowsRotate

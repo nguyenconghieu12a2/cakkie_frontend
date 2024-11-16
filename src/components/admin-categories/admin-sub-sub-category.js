@@ -1,6 +1,5 @@
 import Sidebar from "../sidebar";
 import { useEffect, useState } from "react";
-import "../../styles/product.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import {
   FaRegSquarePlus,
@@ -9,7 +8,7 @@ import {
   FaRegCircleLeft,
 } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
-import "../../styles/subsubcategory.css";
+import "../../styles/admin-category/subsubcategory.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
@@ -17,7 +16,19 @@ import ReactPaginate from "react-paginate";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import Alert from "react-bootstrap/Alert";
-import { BiSave } from "react-icons/bi";
+
+//API
+//Get Sub SubCate
+const api = "/api/admin/category/sub-category/sub-sub-category";
+
+//Add Sub SubCate
+const addSubSubCate = "/api/admin/category/sub-category/add-sub-sub-category";
+
+//Update SubSubCate
+const updateSubSubCate = "/api/admin/update-category";
+
+//Delete SubSubCate
+const deleteSubSub = "/api/admin/delete/sub-sub-category";
 
 function SubSubCategory() {
   const [error, setError] = useState("");
@@ -46,7 +57,7 @@ function SubSubCategory() {
   const loadSubSub = async () => {
     try {
       const result = await axios.get(
-        `http://localhost:8080/api/category/sub-category/${parentId}/sub-sub-category`
+        `${api}/${parentId}`
       );
       setSubSubCate(result.data);
     } catch (error) {
@@ -106,7 +117,7 @@ function SubSubCategory() {
       console.log("Submitting new sub-category data:", newSubSubCate);
 
       const response = await axios.post(
-        `http://localhost:8080/api/category/sub-category/${parentId}/sub-sub-category`,
+        `${addSubSubCate}/${parentId}`,
         {
           cateName: newSubSubCate.cateName,
           isDeleted: newSubSubCate.isDeleted,
@@ -150,7 +161,7 @@ function SubSubCategory() {
     console.log("Data to submit:", editSubCate);
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/category/${cateIdSubEdit}`,
+        `${updateSubSubCate}/${cateIdSubEdit}`,
         editSubCate
       );
       if (response.status === 200) {
@@ -178,7 +189,7 @@ function SubSubCategory() {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `http://localhost:8080/delete/sub-sub-category/${deleteSubId}`
+        `${deleteSubSub}/${deleteSubId}`
       );
       loadSubSub();
       handleClose2();
@@ -210,7 +221,7 @@ function SubSubCategory() {
             <div className="sub__subcategory__head--main">
               <h3 className="sub__subcategory__title">Category</h3>
               <div className="admin__avater">
-                <img src="../images/diddy.jpg" alt="Avatar" />
+                <img src="../../../images/diddy.jpg" alt="Avatar" />
               </div>
             </div>
 

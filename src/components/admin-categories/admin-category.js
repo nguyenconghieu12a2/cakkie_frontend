@@ -1,13 +1,8 @@
 import Sidebar from "../sidebar";
 import { useEffect, useState } from "react";
-import "../../styles/category.css";
+import "../../styles/admin-category/category.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
-import {
-  FaRegSquarePlus,
-  FaBars,
-  FaPenToSquare,
-  FaTrash,
-} from "react-icons/fa6";
+import { FaRegSquarePlus, FaBars, FaPenToSquare } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -16,6 +11,14 @@ import { Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import Alert from "react-bootstrap/Alert";
+
+//API
+//Get Cate
+const api = "/api/admin/category";
+//Add Cate
+const addCate = "/api/admin/add-category";
+//Update Cate
+const updateCate = "/api/admin/update-category";
 
 function Category() {
   const [show, setShow] = useState(false);
@@ -29,7 +32,7 @@ function Category() {
   const [showEdit, setShowEdit] = useState(false);
   const handleCloseEdit = () => {
     setShowEdit(false);
-    setEditCate({}); 
+    setEditCate({});
   };
   const handleShowEdit = () => setShowEdit(true);
 
@@ -42,7 +45,7 @@ function Category() {
 
   const [cate, setCate] = useState([]);
   const loadCate = async () => {
-    const result = await axios.get(`http://localhost:8080/api/category`);
+    const result = await axios.get(`${api}`);
     setCate(result.data);
   };
 
@@ -70,7 +73,9 @@ function Category() {
       (item) => item.cateName.toLowerCase() === newCate.cateName.toLowerCase()
     );
     if (!regex.test(newCate.cateName)) {
-      setError("Category name cannot start with whitespace or contain special characters!");
+      setError(
+        "Category name cannot start with whitespace or contain special characters!"
+      );
       setSuccess("");
       return;
     } else if (newCate.cateName.length > 30) {
@@ -94,9 +99,9 @@ function Category() {
     }
 
     try {
-      await axios.post(`http://localhost:8080/api/category`, newCate);
+      await axios.post(`${addCate}`, newCate);
       setSuccess("Category created successfully!");
-      loadCate(); 
+      loadCate();
       setNewCate({
         cateName: "",
         parentId: null,
@@ -120,22 +125,117 @@ function Category() {
   // Edit category state
   const [editCate, setEditCate] = useState({});
   const [categoryIdToEdit, setCategoryIdToEdit] = useState(null);
+  const [editError, setEditError] = useState("");
+  const [editSuccess, setEditSuccess] = useState("");
 
   const handleEditInputChange = (e) => {
     setEditCate({ ...editCate, [e.target.name]: e.target.value });
   };
 
+  // const editCateSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   const regex = /^[a-zA-Z][a-zA-Z0-9\s]*$/;
+  //   const cateExisted = cate.some(
+  //     (item) => item.cateName.toLowerCase() === newCate.cateName.toLowerCase()
+  //   );
+  //   if (!regex.test(newCate.cateName)) {
+  //     setEditError(
+  //       "Category name cannot start with whitespace or contain special characters!"
+  //     );
+  //     setEditSuccess("");
+  //     return;
+  //   } else if (newCate.cateName.length > 30) {
+  //     setEditError("Category name should be less than 30 characters!");
+  //     setEditSuccess("");
+  //     return;
+  //   } else if (newCate.cateName.length < 4) {
+  //     setEditError("Category name should be greater than 4 characters!");
+  //     setEditSuccess("");
+  //     setTimeout(() => {
+  //       setEditError("");
+  //     }, 3000);
+  //     return;
+  //   } else if (cateExisted) {
+  //     setEditError("Category has been existed!");
+  //     setEditSuccess("");
+  //     setTimeout(() => {
+  //       setError("");
+  //     }, 3000);
+  //     return;
+  //   }
+
+  //   try {
+  //     await axios.put(`${updateCate}/${categoryIdToEdit}`, editCate);
+  //     setEditSuccess("Category update successfully!");
+  //     // handleCloseEdit();
+  //     setTimeout(() => {
+  //       setEditSuccess("");
+  //     }, 5000);
+  //     loadCate();
+  //   } catch (error) {
+  //     console.error("Error editing category:", error);
+  //   }
+  // };
+
   const editCateSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await axios.put(
-        `http://localhost:8080/api/category/${categoryIdToEdit}`,
-        editCate
+
+    const regex = /^[a-zA-Z][a-zA-Z0-9\s]*$/;
+    const cateExisted = cate.some(
+      (item) =>
+        item.cateName.toLowerCase() === editCate.cateName.toLowerCase() &&
+        item.id !== categoryIdToEdit 
+    );
+
+    if (!regex.test(editCate.cateName)) {
+      setEditError(
+        "Category name cannot start with whitespace or contain special characters!"
       );
-      handleCloseEdit();
+      setEditSuccess("");
+      setTimeout(() => {
+        setEditError(""); 
+      }, 3000);
+      return;
+    } else if (editCate.cateName.length > 30) {
+      setEditError("Category name should be less than 30 characters!");
+      setEditSuccess("");
+      setTimeout(() => {
+        setEditError(""); 
+      }, 3000);
+      return;
+    } else if (editCate.cateName.length < 4) {
+      setEditError("Category name should be greater than 4 characters!");
+      setEditSuccess("");
+      setTimeout(() => {
+        setEditError("");
+      }, 3000);
+      return;
+    } else if (cateExisted) {
+      setEditError("Category already exists!");
+      setEditSuccess("");
+      setTimeout(() => {
+        setEditError(""); 
+      }, 3000);
+      return;
+    }
+
+    try {
+      await axios.put(`${updateCate}/${categoryIdToEdit}`, editCate);
+      setEditSuccess("Category updated successfully!");
+      setEditError("");
+      setTimeout(() => {
+        setEditSuccess(""); 
+      }, 3000);
       loadCate();
+      handleCloseEdit(); 
     } catch (error) {
       console.error("Error editing category:", error);
+      setEditError("Failed to update category. Please try again.");
+      setEditSuccess("");
+      setTimeout(() => {
+        setEditError(""); 
+      }, 3000);
     }
   };
 
@@ -251,78 +351,73 @@ function Category() {
                         </td>
                         <td className="td">{item.cateName}</td>
                         <td className="td">
-                        <Link
-                            key={item.id}
-                            to={(`/main-category/sub-category/${item.id}`)} 
-                            className="link__icon"
-                          >
-                            <FaBars className="category__icon category__icon--menu" />
-                        </Link>
-
-                          <FaPenToSquare
-                            className="category__icon category__icon--edit"
-                            onClick={() => {
-                              setCategoryIdToEdit(item.id);
-                              setEditCate(item);
-                              handleShowEdit();
-                            }}
-                          />
-                          <Modal show={showEdit} onHide={handleCloseEdit}>
-                            <Modal.Header closeButton>
-                              <Modal.Title>Edit Main Category</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                              <Form onSubmit={editCateSubmit}>
-                                <Form.Group className="mb-3">
-                                  <Form.Label>Main Category Name</Form.Label>
-                                  <Form.Control
-                                    type="text"
-                                    name="cateName"
-                                    value={editCate.cateName}
-                                    onChange={handleEditInputChange}
-                                    placeholder="Enter category name"
-                                    autoFocus
-                                  />
-                                </Form.Group>
-                              </Form>
-                            </Modal.Body>
-                            <Modal.Footer>
-                              <Button variant="secondary" onClick={handleCloseEdit}>
-                                Close
-                              </Button>
-                              <Button variant="warning" type="submit" onClick={editCateSubmit}>
-                                Update
-                              </Button>
-                            </Modal.Footer>
-                          </Modal>
-
-                          {/* <FaTrash
-                            className="category__icon category__icon--delete"
-                            onClick={() => handleShowDelete(item.id)}
-                          />
-                          <Modal show={showDelete} onHide={handleCloseDelete}>
-                            <Modal.Header closeButton>
-                              <Modal.Title>Delete Main Category</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                              Are you sure you want to delete this category?
-                            </Modal.Body>
-                            <Modal.Footer>
-                              <Button variant="secondary" onClick={handleCloseDelete}>
-                                Cancel
-                              </Button>
-                              <Button variant="danger" onClick={deleteCategory}>
-                                Delete
-                              </Button>
-                            </Modal.Footer>
-                          </Modal> */}
+                          <div className="icon__container">
+                            <Link
+                              key={item.id}
+                              to={`/main-category/sub-category/${item.id}`}
+                              className="link__icon"
+                            >
+                              <FaBars className="category__icon category__icon--menu" />
+                            </Link>
+                            <FaPenToSquare
+                              className="category__icon category__icon--edit"
+                              onClick={() => {
+                                setCategoryIdToEdit(item.id);
+                                setEditCate(item);
+                                handleShowEdit();
+                              }}
+                            />
+                            <Modal show={showEdit} onHide={handleCloseEdit}>
+                              <Modal.Header closeButton>
+                                <Modal.Title>Edit Main Category</Modal.Title>
+                              </Modal.Header>
+                              <Modal.Body>
+                                <Form onSubmit={editCateSubmit}>
+                                  <Form.Group className="mb-3">
+                                    <Form.Label>Main Category Name</Form.Label>
+                                    <Form.Control
+                                      type="text"
+                                      name="cateName"
+                                      value={editCate.cateName}
+                                      onChange={handleEditInputChange}
+                                      placeholder="Enter category name"
+                                      autoFocus
+                                    />
+                                  </Form.Group>
+                                  {editSuccess && (
+                                    <Alert variant="success">
+                                      {editSuccess}
+                                    </Alert>
+                                  )}
+                                  {editError && (
+                                    <Alert variant="danger">{editError}</Alert>
+                                  )}
+                                </Form>
+                              </Modal.Body>
+                              <Modal.Footer>
+                                <Button
+                                  variant="secondary"
+                                  onClick={handleCloseEdit}
+                                >
+                                  Close
+                                </Button>
+                                <Button
+                                  variant="warning"
+                                  type="submit"
+                                  onClick={editCateSubmit}
+                                >
+                                  Update
+                                </Button>
+                              </Modal.Footer>
+                            </Modal>
+                          </div>
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </Table>
                 <div className="pagination__wrap">
-                <ReactPaginate
+                  <ReactPaginate
                     className="pagination"
                     breakLabel="..."
                     nextLabel="next >"

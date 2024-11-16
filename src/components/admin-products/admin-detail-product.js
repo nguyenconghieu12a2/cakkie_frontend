@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../sidebar.js";
-import "../../styles/product-detail.css";
+import "../../styles/admin-product/product-detail.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import {
   FaRegSquarePlus,
@@ -15,20 +15,27 @@ import axios from "axios";
 import { useParams, Link } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 
+//API
+//get productbyId
+const proById = "/api/admin/product";
+//Get des title
+const getTitle = "/api/admin/desTitles";
+//Add desInfo
+const addDes = "/api/admin/product/add-desinfo";
+//Update desInfo
+const updateDes = "/api/admin/product/update-desinfo";
+//Delete des info
+const deleteDes = "/api/admin/product/delete-desinfo";
+
 function ProductDetail() {
   const { id } = useParams();
-  const [lgShow, setLgShow] = useState(false);
-  const handleClose = () => setLgShow(false);
-
-  const [lgShow1, setLgShow1] = useState(false);
-  const handleClose1 = () => setLgShow1(false);
 
   const [productDetail, setProductDetail] = useState(null);
   const [loading, setLoading] = useState(true); // Add loading state
 
   const loadProduct = async () => {
     try {
-      const result = await axios.get(`http://localhost:8080/api/product/${id}`);
+      const result = await axios.get(`${proById}/${id}`);
       setProductDetail(result.data);
     } catch (error) {
       console.error("Failed to load product:", error);
@@ -50,7 +57,7 @@ function ProductDetail() {
   const [desTitles, setDesTitles] = useState([]);
   const loadDesTitles = async () => {
     try {
-      const result = await axios.get("http://localhost:8080/api/desTitles");
+      const result = await axios.get(`${getTitle}`);
       setDesTitles(result.data);
     } catch (error) {
       console.error("Error fetching description titles:", error);
@@ -60,7 +67,7 @@ function ProductDetail() {
   const [newDesInfo, setDesInfo] = useState({
     desTitleID: "",
     desInfo: "",
-    isDelete: 1, // Assuming this is required
+    isDelete: 1, 
   });
 
   const [currentProductId, setCurrentProductId] = useState(null);
@@ -76,7 +83,7 @@ function ProductDetail() {
   const handleAddDesInfo = async () => {
     try {
       await axios.post(
-        `http://localhost:8080/api/product/${currentProductId}/add-desinfo`,
+        `${addDes}/${currentProductId}`,
         newDesInfo
       );
       console.log("Description info added successfully");
@@ -119,7 +126,7 @@ function ProductDetail() {
       };
 
       await axios.put(
-        `http://localhost:8080/api/product/${id}/update-desinfo`,
+        `${updateDes}/${id}`,
         payload
       );
       handleCloseEdit();
@@ -147,7 +154,7 @@ function ProductDetail() {
         desTitleId: deleteDesTitleId,
       };
       await axios.delete(
-        `http://localhost:8080/api/product/${id}/delete-desinfo`,
+        `${deleteDes}/${id}`,
         {
           data: payload,
         }

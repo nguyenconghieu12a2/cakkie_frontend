@@ -1,54 +1,30 @@
 import Sidebar from "../sidebar";
 import { useEffect, useState } from "react";
-import "../../styles/deleted-category.css";
+import "../../styles/admin-category/deleted-category.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
-import { FaArrowsRotate, FaBars, FaTrash } from "react-icons/fa6";
+import { FaArrowsRotate } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 
+//API
+//Get Deleted SubSubCate
+const api = "/api/admin/view-deleted/sub-sub-category";
+
+//Recover
+const recoverApi = "/api/admin/recover/sub-sub-category";
+
 function DeletedCategory() {
-  const data = [];
-
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  const [show1, setShow1] = useState(false);
-
-  const handleClose1 = () => setShow1(false);
-  const handleShow1 = () => setShow1(true);
-
-  //Fetch Deleted Category Level 1
-
-  //Fetch Deleted Category Level 2
-  const [deletedSubCate, setDeleteSub] = useState([]);
-  const loadSub = async () => {
-    try {
-      const result = await axios.get(
-        `http://localhost:8080/api/view-deleted/sub-category`
-      );
-      setDeleteSub(result.data);
-    } catch (error) {
-      console.log("Error fetching subcategories:", error);
-    }
-  };
-
-  useEffect(() => {
-    loadSub();
-  }, []);
-
   //Fetch Deleted Category Level 3
   const [deletedSubSub, setDeletedSubSub] = useState([]);
 
   const loadDeletedSubSub = async () => {
     try {
       const result = await axios.get(
-        `http://localhost:8080/api/view-deleted/sub-sub-category`
+        `${api}`
       );
       setDeletedSubSub(result.data);
     } catch (error) {
@@ -73,7 +49,7 @@ function DeletedCategory() {
   const recoverySubSubCate = async () => {
     try {
       await axios.delete(
-        `http://localhost:8080/api/recover/sub-sub-category/${subSubRecoverId}`
+        `${recoverApi}/${subSubRecoverId}`
       );
       handleCloseDelete();
       loadDeletedSubSub();

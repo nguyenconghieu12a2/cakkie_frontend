@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../sidebar.js";
-import "../../styles/canceled-order.css";
+import "../../styles/admin-cancel-order/canceled-order.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaBars, FaLock } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
@@ -11,6 +11,13 @@ import { Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import Form from "react-bootstrap/Form";
+
+//API
+//GET CANCELED
+const api = "/api/admin/cacel-order";
+
+//BAN CUSTOMER
+const banApi = "/api/admin/ban-user";
 
 function CanceledOrder() {
   const [show2, setShow2] = useState(false);
@@ -27,7 +34,7 @@ function CanceledOrder() {
   const [cancelOrder, setCancelOrder] = useState([]);
   const loadCancel = async () => {
     try {
-      const result = await axios.get(`http://localhost:8080/api/cacel-order`);
+      const result = await axios.get(`${api}`);
       setCancelOrder(result.data);
     } catch (error) {
       console.error("Error fetching canceled orders:", error);
@@ -49,7 +56,7 @@ function CanceledOrder() {
     }
     try {
       await axios.post(
-        `http://localhost:8080/api/ban-user/${selectedUserId}`,
+        `${banApi}/${selectedUserId}`,
         banReason,
         {
           headers: { "Content-Type": "text/plain" },

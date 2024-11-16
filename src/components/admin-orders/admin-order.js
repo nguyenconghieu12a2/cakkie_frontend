@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../sidebar.js";
-import "../../styles/order.css";
+import "../../styles/admin-orders/order.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaBars, FaPenToSquare } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
@@ -10,6 +10,22 @@ import { Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import Form from "react-bootstrap/Form";
+
+//API
+//Get Order
+const api = "/api/admin/order";
+
+//Get order status
+const status = "/api/admin/order/statuses";
+
+//Load by id
+const orderById = "/api/admin/detail-order";
+
+//Update Status
+const updateStatus = "/api/admin/order/update-status";
+
+//View status
+const orderStatus = "/api/admin/order/status";
 
 function Order() {
   const [show, setShow] = useState(false);
@@ -22,7 +38,7 @@ function Order() {
   const handleClose = () => {
     setShow(false);
     setEditOrderId(null);
-    setStatusById(null); // Reset the status ID when modal is closed
+    setStatusById(null);
   };
 
   const handleShow = () => setShow(true);
@@ -30,7 +46,7 @@ function Order() {
   // Load all orders
   const loadOrders = async () => {
     try {
-      const result = await axios.get(`http://localhost:8080/api/order`);
+      const result = await axios.get(`${api}`);
       setOrder(result.data);
     } catch (error) {
       console.error("Failed to load orders", error);
@@ -40,9 +56,7 @@ function Order() {
   // Load all statuses
   const loadAllStatuses = async () => {
     try {
-      const result = await axios.get(
-        `http://localhost:8080/api/order/statuses`
-      );
+      const result = await axios.get(`${status}`);
       setAllStatuses(result.data);
     } catch (error) {
       console.error("Failed to load order statuses", error);
@@ -57,12 +71,10 @@ function Order() {
   // Load the current status by order ID
   const loadStatusById = async (orderId) => {
     try {
-      console.log("Loading status for order ID:", orderId); // Debug log
-      const result = await axios.get(
-        `http://localhost:8080/api/order/${orderId}/status`
-      );
-      setStatusById(result.data.orderStatusId); // Assuming orderStatusId is the status ID
-      console.log("Loaded status:", result.data.orderStatusId); // Debug log
+      console.log("Loading status for order ID:", orderId);
+      const result = await axios.get(`${orderStatus}/${orderId}`);
+      setStatusById(result.data.orderStatusId);
+      console.log("Loaded status:", result.data.orderStatusId);
     } catch (error) {
       console.error("Failed to load current order status", error);
     }
@@ -84,19 +96,14 @@ function Order() {
     const currentStatus = statusById ? statusById : null;
 
     if (currentStatus === "Ordered") {
-      // Ordered can only go to 'Confirm'
       return allStatuses.filter((status) => status.status === "Confirm");
     } else if (currentStatus === "Confirm") {
-      // Confirmed can only go to 'Shipping'
       return allStatuses.filter((status) => status.status === "Shipping");
     } else if (currentStatus === "Shipping") {
-      // Shipping can only go to 'Arrived'
       return allStatuses.filter((status) => status.status === "Arrived");
     } else if (currentStatus === "Arrived") {
-      // Arrived can only go to 'Cancel'
       return allStatuses.filter((status) => status.status === "Cancel");
     } else {
-      // Return all statuses if no status or in invalid state
       return allStatuses;
     }
   };
@@ -124,14 +131,11 @@ function Order() {
         "to status ID:",
         statusById
       ); // Debug log
-      await axios.put(
-        `http://localhost:8080/api/order/${editOrderId}/update-status`,
-        {
-          statusId: parseInt(statusById),
-        }
-      );
-      loadOrders(); // Reload orders after updating
-      handleClose(); // Close the modal after update
+      await axios.put(`${updateStatus}/${editOrderId}`, {
+        statusId: parseInt(statusById),
+      });
+      loadOrders();
+      handleClose();
     } catch (error) {
       console.error("Failed to update order status", error);
     }
@@ -149,6 +153,18 @@ function Order() {
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
+  };
+
+  //Format Price
+  const formatCurrency = (value) => {
+    if (!value) return "0 VND";
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      minimumFractionDigits: 0,
+    })
+      .format(value)
+      .replace("₫", "VND");
   };
 
   return (
@@ -190,7 +206,6 @@ function Order() {
                       <th className="th">Total Price</th>
                       <th className="th">Discount Price</th>
                       <th className="th">Order Status</th>
-                      <th className="th">Note</th>
                       <th className="th">Action</th>
                     </tr>
                   </thead>
@@ -202,22 +217,27 @@ function Order() {
                         </td>
                         <td className="td">{item.fullName}</td>
                         <td className="td">{item.totalProduct}</td>
-                        <td className="td">{item.totalPrice} VND</td>
-                        <td className="td">{item.totalDiscount} VND</td>
+                        <td className="td">
+                          {formatCurrency(item.totalPrice)}
+                        </td>
+                        <td className="td">
+                          {formatCurrency(item.totalDiscount)}
+                        </td>
                         <td className="td">{item.status}</td>
-                        <td className="td">{item.note}</td>
                         <td className="th handle__icon">
-                          <Link
-                            to={`/order/detail/${item.shopId}`}
-                            className="link__icon"
-                          >
-                            <FaBars className="order__icon order__icon--menu" />
-                          </Link>
-                          <FaPenToSquare
-                            className="order__icon order__icon--edit"
-                            onClick={() => handleEditClick(item.shopId)}
-                            variant="primary"
-                          />
+                          <div className="icon__container">
+                            <Link
+                              to={`/order/detail/${item.shopId}`}
+                              className="link__icon"
+                            >
+                              <FaBars className="order__icon order__icon--menu" />
+                            </Link>
+                            <FaPenToSquare
+                              className="order__icon order__icon--edit"
+                              onClick={() => handleEditClick(item.shopId)}
+                              variant="primary"
+                            />
+                          </div>
                         </td>
                       </tr>
                     ))}

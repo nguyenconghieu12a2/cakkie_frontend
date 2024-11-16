@@ -186,6 +186,11 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 
+//Get oos
+const api = "/api/admin/oos-products";
+//update
+const updateQuan = "api/admin/oos-products/update";
+
 function OutOfStock() {
   // State to track out-of-stock products
   const [stock, setStock] = useState([]);
@@ -193,7 +198,7 @@ function OutOfStock() {
   // Load out-of-stock products
   const loadStock = async () => {
     const result = await axios.get(
-      `http://localhost:8080/api/admin/oos-products`
+      `${api}`
     );
     setStock(result.data);
   };
@@ -250,7 +255,7 @@ function OutOfStock() {
         }
 
         await axios.put(
-          `http://localhost:8080/api/admin/oos-products/update/${selectedProduct.productItemId}`,
+          `${updateQuan}/${selectedProduct.productItemId}`,
           { quantity }
         );
         // Reload stock after update

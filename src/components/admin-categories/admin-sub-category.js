@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import Sidebar from "../sidebar";
-import "../../styles/subcategory.css";
+import "../../styles/admin-category/subcategory.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import {
   FaRegSquarePlus,
   FaBars,
   FaPenToSquare,
-  FaTrash,
   FaRegCircleLeft,
 } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
@@ -17,6 +16,16 @@ import Modal from "react-bootstrap/Modal";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import Alert from "react-bootstrap/Alert";
+
+//API
+//Get SubCate
+const api = "/api/admin/category/sub-category";
+//Add SubCate
+const addSub = "/api/admin/category/add-sub-category";
+//Update Cate
+const updateSub = "/api/admin/update-category";
+//Get Null SubCate
+const nullSub = "/api/admin/null-sub-subCate";
 
 function SubCategory() {
   const { parentId } = useParams();
@@ -36,9 +45,7 @@ function SubCategory() {
 
   const loadSub = async () => {
     try {
-      const result = await axios.get(
-        `http://localhost:8080/api/category/${parentId}/sub-category`
-      );
+      const result = await axios.get(`${api}/${parentId}`);
       setSubCate(result.data);
     } catch (error) {
       console.error("Error fetching subcategories:", error);
@@ -65,13 +72,10 @@ function SubCategory() {
     e.preventDefault();
     try {
       console.log("Submitting new sub-category data:", newSubCate);
-      const response = await axios.post(
-        `http://localhost:8080/api/category/${parentId}/sub-category`,
-        {
-          cateName: newSubCate.cateName,
-          isDeleted: newSubCate.isDeleted,
-        }
-      );
+      const response = await axios.post(`${addSub}/${parentId}`, {
+        cateName: newSubCate.cateName,
+        isDeleted: newSubCate.isDeleted,
+      });
 
       setSuccess("Subcategory created successfully!");
       loadSub();
@@ -108,7 +112,7 @@ function SubCategory() {
     console.log("Data to submit:", editSubCate);
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/category/${cateIdSubEdit}`,
+        `${updateSub}/${cateIdSubEdit}`,
         editSubCate
       );
       if (response.status === 200) {
@@ -146,9 +150,7 @@ function SubCategory() {
   //Load Sub SubCate Null
   const [nullSubSub, setNullSubSub] = useState([]);
   const loadNull = async () => {
-    const result = await axios.get(
-      `http://localhost:8080/api/admin/null-sub-subCate`
-    );
+    const result = await axios.get(`${nullSub}`);
     setNullSubSub(result.data);
   };
 
@@ -260,59 +262,60 @@ function SubCategory() {
                         </td>
                         <td className="td">{item.cateName}</td>
                         <td className="th handle__icon">
-                          <Link
-                            to={`/main-category/sub-category/category/${item.id}`}
-                            className="link__icon"
-                          >
-                            <FaBars className="subcategory__icon subcategory__icon--menu" />
-                          </Link>
-                          <FaPenToSquare
-                            className="subcategory__icon subcategory__icon--edit"
-                            onClick={() => {
-                              setCateIdSubEdit(item.id);
-                              setEditSubCate(item);
-                              handleShowEdit();
-                            }}
-                          />
-                          <Modal show={showEdit} onHide={handleCloseEdit}>
-                            <Modal.Header closeButton>
-                              <Modal.Title>Edit Sub-Category</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                              <Form
-                                id="editSubCateForm"
-                                onSubmit={editSubSubmit}
-                              >
-                                <Form.Group className="mb-3">
-                                  <Form.Label>Sub-Category Name</Form.Label>
-                                  <Form.Control
-                                    type="text"
-                                    name="cateName"
-                                    value={editSubCate.cateName || ""}
-                                    onChange={handleEditInputChange}
-                                    placeholder="Enter category name"
-                                    autoFocus
-                                  />
-                                </Form.Group>
-                              </Form>
-                            </Modal.Body>
-                            <Modal.Footer>
-                              <Button
-                                variant="secondary"
-                                onClick={handleCloseEdit}
-                              >
-                                Close
-                              </Button>
-                              <Button
-                                variant="warning"
-                                type="submit"
-                                form="editSubCateForm"
-                              >
-                                Update
-                              </Button>
-                            </Modal.Footer>
-                          </Modal>
-                          {/* <FaTrash
+                          <div className="icon__container">
+                            <Link
+                              to={`/main-category/sub-category/category/${item.id}`}
+                              className="link__icon"
+                            >
+                              <FaBars className="subcategory__icon subcategory__icon--menu" />
+                            </Link>
+                            <FaPenToSquare
+                              className="subcategory__icon subcategory__icon--edit"
+                              onClick={() => {
+                                setCateIdSubEdit(item.id);
+                                setEditSubCate(item);
+                                handleShowEdit();
+                              }}
+                            />
+                            <Modal show={showEdit} onHide={handleCloseEdit}>
+                              <Modal.Header closeButton>
+                                <Modal.Title>Edit Sub-Category</Modal.Title>
+                              </Modal.Header>
+                              <Modal.Body>
+                                <Form
+                                  id="editSubCateForm"
+                                  onSubmit={editSubSubmit}
+                                >
+                                  <Form.Group className="mb-3">
+                                    <Form.Label>Sub-Category Name</Form.Label>
+                                    <Form.Control
+                                      type="text"
+                                      name="cateName"
+                                      value={editSubCate.cateName || ""}
+                                      onChange={handleEditInputChange}
+                                      placeholder="Enter category name"
+                                      autoFocus
+                                    />
+                                  </Form.Group>
+                                </Form>
+                              </Modal.Body>
+                              <Modal.Footer>
+                                <Button
+                                  variant="secondary"
+                                  onClick={handleCloseEdit}
+                                >
+                                  Close
+                                </Button>
+                                <Button
+                                  variant="warning"
+                                  type="submit"
+                                  form="editSubCateForm"
+                                >
+                                  Update
+                                </Button>
+                              </Modal.Footer>
+                            </Modal>
+                            {/* <FaTrash
                             className="subcategory__icon subcategory__icon--delete"
                             onClick={handleShowDelete}
                           />
@@ -338,6 +341,7 @@ function SubCategory() {
                               </Button>
                             </Modal.Footer>
                           </Modal> */}
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -369,7 +373,9 @@ function SubCategory() {
           <div className="subcategory__body__wrap">
             <div className="subcategory__body">
               <div className="subcategory__body--head">
-                <h4 className="subcategory__body--title">Null Sub Sub-Category</h4>
+                <h4 className="subcategory__body--title">
+                  Null Sub Sub-Category
+                </h4>
               </div>
 
               <div className="subcategory__body--table">
@@ -383,8 +389,10 @@ function SubCategory() {
                   </thead>
                   <tbody>
                     {displayData1.map((item, index) => (
-                      <tr key={index}> 
-                        <td className="td">{index + 1 + currentPage1 * pageCount1}</td>
+                      <tr key={index}>
+                        <td className="td">
+                          {index + 1 + currentPage1 * pageCount1}
+                        </td>
                         <td className="td">{item.cateName}</td>
                         <td className="td">Null</td>
                       </tr>

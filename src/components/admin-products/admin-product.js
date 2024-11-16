@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../sidebar.js";
-import "../../styles/product.css";
+import "../../styles/admin-product/product.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import {
   FaRegSquarePlus,
@@ -22,6 +22,34 @@ import Alert from "react-bootstrap/Alert";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 
+//API
+//Get Product
+const api = "/api/admin/admin-product";
+
+//Update Product
+const updatePro = "/api/admin/product/update";
+
+//Add Product
+const addPro = "/api/admin/add/admin-product";
+
+//Delete Product
+const deletePro = "/api/admin/product/delete";
+
+//Description Title
+const desTitle = "/api/admin/desTitles";
+
+//Add des info
+const addDes = "/api/admin/product/add-desinfo";
+
+//Show Category
+const getCategories = "/api/admin/categories";
+
+//Show size
+const getSize = "/api/admin/sizes";
+
+//Add size, quantity, price
+const addSize = "/api/admin/add-size";
+
 function Product() {
   const [lgShow, setLgShow] = useState(false);
   const handleClose = () => setLgShow(false);
@@ -38,7 +66,7 @@ function Product() {
   const [product, setProduct] = useState([]);
   const loadProduct = async () => {
     try {
-      const result = await axios.get(`http://localhost:8080/api/admin-product`);
+      const result = await axios.get(`${api}`);
       console.log("Product count:", result.data.length);
       setProduct(result.data);
     } catch (error) {
@@ -55,7 +83,7 @@ function Product() {
   const [desTitles, setDesTitles] = useState([]);
   const loadDesTitles = async () => {
     try {
-      const result = await axios.get("http://localhost:8080/api/desTitles");
+      const result = await axios.get(`${desTitle}`);
       setDesTitles(result.data);
     } catch (error) {
       console.error("Error fetching description titles:", error);
@@ -75,12 +103,10 @@ function Product() {
   const [sizes, setSizes] = useState([]);
 
   const loadCategoriesAndSizes = async () => {
-    const categoryResult = await axios.get(
-      "http://localhost:8080/api/categories"
-    );
+    const categoryResult = await axios.get(`${getCategories}`);
     setCategories(categoryResult.data);
 
-    const sizeResult = await axios.get("http://localhost:8080/api/sizes");
+    const sizeResult = await axios.get(`${getSize}`);
     setSizes(sizeResult.data);
   };
 
@@ -155,20 +181,17 @@ function Product() {
         existingProductItem.quantity + Number(newProduct.qtyInStock);
 
       try {
-        await axios.put(
-          `http://localhost:8080/api/product/${existingProduct.productId}/update`,
-          {
-            categoryId: newProduct.categoryId,
-            name: newProduct.name,
-            description: newProduct.description,
-            productImage: productImage,
-            productRating: newProduct.productRating,
-            isDelete: newProduct.isDelete,
-            size: newProduct.size,
-            qtyInStock: updatedQty,
-            price: newProduct.price,
-          }
-        );
+        await axios.put(`${updatePro}/${existingProduct.productId}`, {
+          categoryId: newProduct.categoryId,
+          name: newProduct.name,
+          description: newProduct.description,
+          productImage: productImage,
+          productRating: newProduct.productRating,
+          isDelete: newProduct.isDelete,
+          size: newProduct.size,
+          qtyInStock: updatedQty,
+          price: newProduct.price,
+        });
 
         console.log("Product updated successfully");
         loadProduct();
@@ -189,15 +212,11 @@ function Product() {
       formData.append("price", newProduct.price);
 
       try {
-        const response = await axios.post(
-          "http://localhost:8080/api/add/admin-product",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        const response = await axios.post(`${addPro}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
 
         if (response.status === 201) {
           console.log("Product created successfully:", response.data);
@@ -280,7 +299,7 @@ function Product() {
 
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/product/${updatedProductData.productId}/update`,
+        `${updatePro}/${updatedProductData.productId}`,
         formData,
         {
           headers: {
@@ -320,10 +339,7 @@ function Product() {
 
   const handleAddDesInfo = async () => {
     try {
-      await axios.post(
-        `http://localhost:8080/api/product/${currentProductId}/add-desinfo`,
-        newDesInfo
-      );
+      await axios.post(`${addDes}/${currentProductId}`, newDesInfo);
       console.log("Description info added successfully");
       setDesInfo({ desTitleID: "", desInfo: "", isDelete: 1 });
       handleClose2();
@@ -350,9 +366,7 @@ function Product() {
       );
 
       if (canDelete) {
-        await axios.delete(
-          `http://localhost:8080/api/product/delete/${deleteProId}`
-        );
+        await axios.delete(`${deletePro}/${deleteProId}`);
         handleCloseDelete();
         loadProduct();
       } else {
@@ -387,7 +401,7 @@ function Product() {
   const [selectedProductId, setSelectedProductId] = useState("");
   const [newSize, setNewSize] = useState({
     size: "",
-    qty: 0,
+    qtyInStock: 0,
     price: 0,
   });
 
@@ -404,7 +418,12 @@ function Product() {
     e.preventDefault();
 
     // Check if all required fields are filled
-    if (!selectedProductId || !newSize.size || !newSize.qty || !newSize.price) {
+    if (
+      !selectedProductId ||
+      !newSize.size ||
+      !newSize.qtyInStock ||
+      !newSize.price
+    ) {
       setAlertMessage("Please fill in all fields.");
       setTimeout(() => {
         setAlertMessage("");
@@ -412,21 +431,27 @@ function Product() {
       return;
     }
 
+    if (isNaN(newSize.qtyInStock) || newSize.qtyInStock <= 0) {
+      setAlertMessage("Quantity must be a positive number.");
+      setTimeout(() => setAlertMessage(""), 3000);
+      return;
+    }
+
     const parsedProductId = parseInt(selectedProductId, 10);
     if (isNaN(parsedProductId)) {
       setAlertMessage("Invalid Product ID.");
       setTimeout(() => {
-        setAlertMessage(""); // Clear the alert after 3 seconds
+        setAlertMessage("");
       }, 3000);
       return;
     }
 
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/admin/add-size/${parsedProductId}`,
+        `${addSize}/${parsedProductId}`,
         {
           size: newSize.size,
-          qtyInStock: newSize.qty,
+          qtyInStock: newSize.qtyInStock,
           price: newSize.price,
         },
         {
@@ -439,25 +464,37 @@ function Product() {
       if (response.status === 200 || response.status === 201) {
         setSuccessSize("Size added successfully!");
         setTimeout(() => {
-          setSuccessSize(""); // Clear the alert after 3 seconds
+          setSuccessSize("");
         }, 3000);
         setAlertMessage("");
         setLgShow1(false);
-        loadProduct(); // Reload product list
+        loadProduct();
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
         setAlertMessage(error.response.data);
         setTimeout(() => {
-          setAlertMessage(""); // Clear the alert after 3 seconds
+          setAlertMessage("");
         }, 3000);
       } else {
         setAlertMessage("Error adding size. Please try again.");
         setTimeout(() => {
-          setAlertMessage(""); // Clear the alert after 3 seconds
+          setAlertMessage("");
         }, 3000);
       }
     }
+  };
+
+  //Format Price
+  const formatCurrency = (value) => {
+    if (!value) return "0 VND";
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      minimumFractionDigits: 0,
+    })
+      .format(value)
+      .replace("₫", "VND");
   };
 
   return (
@@ -466,12 +503,18 @@ function Product() {
         <Sidebar />
         <div className="product__wrap">
           <div className="product__head">
-            <h3 className="product__title">Product</h3>
+            <div className="product__head--wrap">
+              <h3 className="product__title">Product</h3>
+              <div className="admin__avatar">
+                <img src="../../images/diddy.jpg" alt="Avatar" />
+              </div>
+            </div>
             <Breadcrumb>
               <Breadcrumb.Item link>Home</Breadcrumb.Item>
               <Breadcrumb.Item active>Catalog</Breadcrumb.Item>
               <Breadcrumb.Item active>Product</Breadcrumb.Item>
             </Breadcrumb>
+
             <hr />
           </div>
 
@@ -479,6 +522,7 @@ function Product() {
             <div className="product__body">
               <div className="product__body--head">
                 <h4 className="product__body--title">Product</h4>
+
                 <FaRegSquarePlus
                   className="product__icon--add"
                   onClick={() => setLgShow(true)}
@@ -554,19 +598,13 @@ function Product() {
                               <Col>
                                 <Form.Group className="mb-3" controlId="size">
                                   <Form.Label>Size</Form.Label>
-                                  <Form.Select
+                                  <Form.Control
+                                    type="text"
                                     name="size"
                                     value={newProduct.size}
                                     onChange={handleChange}
                                     required
-                                  >
-                                    <option value="">Select Size</option>
-                                    {sizes.map((size, index) => (
-                                      <option key={index} value={size}>
-                                        {size}
-                                      </option>
-                                    ))}
-                                  </Form.Select>
+                                  />
                                 </Form.Group>
                               </Col>
                             </Row>
@@ -666,28 +704,25 @@ function Product() {
                               <Col>
                                 <Form.Group className="mb-3" controlId="size">
                                   <Form.Label>Size</Form.Label>
-                                  <Form.Select
+                                  <Form.Control
+                                    type="text"
                                     name="size"
                                     value={newSize.size}
                                     onChange={handleSizeInputChange}
                                     required
-                                  >
-                                    <option value="">Select Size</option>
-                                    {sizes.map((size, index) => (
-                                      <option key={index} value={size}>
-                                        {size}
-                                      </option>
-                                    ))}
-                                  </Form.Select>
+                                  />
                                 </Form.Group>
                               </Col>
                               <Col>
-                                <Form.Group className="mb-3" controlId="qty">
+                                <Form.Group
+                                  className="mb-3"
+                                  controlId="qtyInStock"
+                                >
                                   <Form.Label>Quantity</Form.Label>
                                   <Form.Control
                                     type="number"
-                                    name="qty"
-                                    value={newSize.qty}
+                                    name="qtyInStock"
+                                    value={newSize.qtyInStock || ""}
                                     onChange={handleSizeInputChange}
                                     required
                                   />
@@ -709,10 +744,7 @@ function Product() {
                               </Col>
                             </Row>
                             <Modal.Footer>
-                              <Button
-                                variant="secondary"
-                                onClick={handleClose1}
-                              >
+                              <Button variant="secondary" onClick={handleClose}>
                                 Close
                               </Button>
                               <Button variant="success" type="submit">
@@ -731,142 +763,6 @@ function Product() {
                     </Tab>
                   </Tabs>
                 </Modal>
-                {/* <Modal size="lg" show={lgShow} onHide={handleClose}>
-                  <Modal.Header closeButton>
-                    <Modal.Title>Add Product</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    <Form onSubmit={handleSubmit}>
-                      <Container>
-                        <Row>
-                          <Col>
-                            <Form.Group
-                              className="mb-3"
-                              controlId="productName"
-                            >
-                              <Form.Label>Product Name</Form.Label>
-                              <Form.Control
-                                type="text"
-                                name="name"
-                                value={newProduct.name}
-                                onChange={handleChange}
-                                autoFocus
-                                required
-                              />
-                            </Form.Group>
-                          </Col>
-                          <Col>
-                            <Form.Group className="mb-3" controlId="categoryId">
-                              <Form.Label>Category Name</Form.Label>
-                              <Form.Select
-                                name="categoryId"
-                                value={newProduct.categoryId}
-                                onChange={handleChange}
-                                required
-                              >
-                                <option value="">Select Category</option>
-                                {categories.map((category) => (
-                                  <option key={category.id} value={category.id}>
-                                    {category.cateName}
-                                  </option>
-                                ))}
-                              </Form.Select>
-                            </Form.Group>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>
-                            <Form.Group
-                              className="mb-3"
-                              controlId="description"
-                            >
-                              <Form.Label>Description</Form.Label>
-                              <Form.Control
-                                as="textarea"
-                                name="description"
-                                value={newProduct.description}
-                                onChange={handleChange}
-                                rows={2}
-                                required
-                              />
-                            </Form.Group>
-                          </Col>
-                          <Col>
-                            <Form.Group className="mb-3" controlId="size">
-                              <Form.Label>Size</Form.Label>
-                              <Form.Select
-                                name="size"
-                                value={newProduct.size}
-                                onChange={handleChange}
-                                required
-                              >
-                                <option value="">Select Size</option>
-                                {sizes.map((size, index) => (
-                                  <option key={index} value={size}>
-                                    {size}
-                                  </option>
-                                ))}
-                              </Form.Select>
-                            </Form.Group>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>
-                            <Form.Group
-                              className="mb-3"
-                              controlId="productImage"
-                            >
-                              <Form.Label>Product Image</Form.Label>
-                              <Form.Control
-                                type="file"
-                                onChange={handleImageChange}
-                                required
-                              />
-                            </Form.Group>
-                          </Col>
-                          <Col>
-                            <Form.Group className="mb-3" controlId="qtyInStock">
-                              <Form.Label>Quantity in Stock</Form.Label>
-                              <Form.Control
-                                type="number"
-                                name="qtyInStock"
-                                value={newProduct.qtyInStock}
-                                onChange={handleChange}
-                                required
-                              />
-                            </Form.Group>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>
-                            <Form.Group className="mb-3" controlId="price">
-                              <Form.Label>Price</Form.Label>
-                              <Form.Control
-                                type="number"
-                                name="price"
-                                value={newProduct.price}
-                                onChange={handleChange}
-                                required
-                              />
-                            </Form.Group>
-                          </Col>
-                        </Row>
-                        <Modal.Footer>
-                          <Button variant="secondary" onClick={handleClose}>
-                            Close
-                          </Button>
-                          <Button
-                            variant="success"
-                            type="submit"
-                            onSubmit={handleSubmit}
-                          >
-                            Create
-                          </Button>
-                        </Modal.Footer>
-                      </Container>
-                    </Form>
-                  </Modal.Body>
-                </Modal> */}
               </div>
 
               <div className="product__body--table">
@@ -921,7 +817,7 @@ function Product() {
                             </Form.Select>
                           </td>
                           <td className="td">{currentSize.quantity}</td>
-                          <td className="td">{currentSize.price} VND</td>
+                          <td className="td">{formatCurrency(currentSize.price)}</td>
                           <td className="td">
                             <div className="icon-container">
                               <div className="icon-container1">

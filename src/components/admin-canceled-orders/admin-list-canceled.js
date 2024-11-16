@@ -1,5 +1,5 @@
 import Sidebar from "../sidebar.js";
-import "../../styles/list-canceled-order.css";
+import "../../styles/admin-cancel-order/list-canceled-order.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaBars, FaRegCircleLeft } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
@@ -7,6 +7,10 @@ import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect } from "react";
+
+//API
+//GET DETAIL
+const api = "/api/admin/cancel-order/detail";
 
 function ListCanceledOrder() {
   const { id } = useParams();
@@ -16,9 +20,7 @@ function ListCanceledOrder() {
 
   const loadDetail = async () => {
     try {
-      const result = await axios.get(
-        `http://localhost:8080/api/cancel-order/detail/${id}`
-      );
+      const result = await axios.get(`${api}/${id}`);
       newDetail(result.data);
     } catch (error) {
       console.log("Error connect to: ", error);
@@ -31,6 +33,17 @@ function ListCanceledOrder() {
 
   const navigate = useNavigate();
 
+  //Format Price
+  const formatCurrency = (value) => {
+    if (!value) return "0 VND";
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      minimumFractionDigits: 0,
+    })
+      .format(value)
+      .replace("₫", "VND");
+  };
   return (
     <>
       <div className="main__wrap">
@@ -89,11 +102,15 @@ function ListCanceledOrder() {
                         <td className="td">{index + 1}</td>
                         <td className="td">{item.fullName}</td>
                         <td className="td">{item.totalProduct}</td>
-                        <td className="td">{item.orderTotal}</td>
+                        <td className="td">{formatCurrency(item.orderTotal)}</td>
                         <td className="td">{item.cancelDate}</td>
                         <td className="td">{item.cancelReason}</td>
                         <td className="th handle__icon">
-                          <Link to={(`/detail-canceled/${item.id}`)} className="link__icon" href="">
+                          <Link
+                            to={`/detail-canceled/${item.id}`}
+                            className="link__icon"
+                            href=""
+                          >
                             <FaBars
                               className="list__canceled--icon list__canceled--icon--menu"
                               onClick={() => navigate("/detail-canceled")}

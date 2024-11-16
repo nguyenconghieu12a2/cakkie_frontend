@@ -2,7 +2,7 @@
     display: flex;
 }
 
-.category__wrap {
+.subcategory__wrap {
     margin-left: 250px;
     flex: 1;
     height: 100vh;
@@ -11,12 +11,12 @@
     padding: 20px;
 }
 
-.category__head--main {
+.subcategory__head--main {
     display: flex;
     justify-content: space-between;
 }
 
-.category__title {
+.subcategory__title {
     text-align: left;
 }
 
@@ -27,33 +27,33 @@
     border-radius: 50%;
 }
 
-/* category Body */
-.category__body {
+/* subcategory Body */
+.subcategory__body {
     background-color: #F0E8D6;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.category__body--head {
+.subcategory__body--head {
     position: relative;
     margin-bottom: 25px;
 }
 
-.category__body--title {
+.subcategory__body--title {
     text-align: center;
     font-size: 28px;
     font-weight: 700;
 }
 
-.category__icon--add {
+.subcategory__icon--add {
     position: absolute;
     top: 0;
     right: 0;
     font-size: 20px;
 }
 
-.category__icon--add:hover {
+.subcategory__icon--add:hover {
     font-size: 24px;
     color: #106d37;
     font-weight: 700;
@@ -68,27 +68,27 @@
     /* Stronger borders for clarity */
 }
 
-.category__icon {
+.subcategory__icon {
     margin-left: 20px;
 }
 
-.category__icon:nth-child(1) {
+.subcategory__icon:nth-child(1) {
     margin-left: 0;
 }
 
-.category__icon--menu:hover {
+.subcategory__icon--menu:hover {
     color: #725B3C    ;
     font-weight: 900;
     transition: all ease-in-out 0.2s; 
 }
 
-.category__icon--edit:hover {
+.subcategory__icon--edit:hover {
     color: #FFCCBC;
     font-weight: 900;
     transition: all ease-in-out 0.2s; 
 }
 
-.category__icon--delete:hover {
+.subcategory__icon--delete:hover {
     color: #C1473C ;
     font-weight: 900;
     transition: all ease-in-out 0.2s; 
@@ -104,15 +104,12 @@
     margin: 0;
 }
 
-.deleted__category--body--table {
-    margin-bottom: 20px;
+.subcategory__body__wrap {
+    margin-bottom: 40px;
 }
 
-.deleted__subCategory--body--table {
-    margin-bottom: 20px;
-}
-
-.modal-backdrop.show {
-    opacity: 0.3;
-    background-color: #bebebe;
+.icon__container {
+    display: flex;
+    justify-content: center;
+    align-content: center;
 }

@@ -3,15 +3,32 @@ import { useEffect, useState } from "react";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaRegSquarePlus, FaPenToSquare, FaTrash } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
-import "../../styles/coupon.css";
+import "../../styles/admin-coupons/coupon.css";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+//Get coupons api
+const api = "/api/admin/coupons";
+const addCou = "/api/admin/add-coupons";
+const updateCou = "/api/admin/update-coupons";
+const deleteCou = "/api/admin/delete-coupons";
 
-function Coupon() {
+function Coupon({ onLogout }) {
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const jwtToken = sessionStorage.getItem("jwt");
+    if (!jwtToken) {
+      navigate("/admin-login");
+    }
+  }, [navigate]);
+
   const [lgShow, setLgShow] = useState(false);
   const handleClose = () => setLgShow(false);
 
@@ -26,7 +43,7 @@ function Coupon() {
   // Fetch coupon data
   const [coupons, setCoupons] = useState([]);
   const loadCoupons = async () => {
-    const result = await axios.get(`http://localhost:8080/api/coupons`);
+    const result = await axios.get(`${api}`);
     setCoupons(result.data);
   };
 
@@ -60,6 +77,7 @@ function Coupon() {
   };
 
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const startDate = new Date(newCoupon.startDate);
   const endDate = new Date(newCoupon.endDate);
   const quantity = new Number(newCoupon.quantity);
@@ -78,26 +96,40 @@ function Coupon() {
       newCoupon.endDate === ""
     ) {
       setError("Please fill in all required fields.");
+      setTimeout(() => {
+        setError("");
+      }, 3000);
       return;
     } else if (startDate < currentDate) {
       setError("The start date must be from now to the future");
+      setTimeout(() => {
+        setError("");
+      }, 3000);
       return;
     } else if (endDate <= startDate) {
       setError("The end date must be later than the start date.");
+      setTimeout(() => {
+        setError("");
+      }, 3000);
       return;
     } else if (quantity <= 0) {
       setError("The quantity must be greater than 0.");
+      setTimeout(() => {
+        setError("");
+      }, 3000);
       return;
     } else if (priceDiscount <= 1000) {
       setError("The price discount must be greater than 1000");
+      setTimeout(() => {
+        setError("");
+      }, 3000);
       return;
     }
-    setError("");
 
     try {
-      await axios.post(`http://localhost:8080/api/coupons`, newCoupon);
-      handleClose();
-      loadCoupons(); 
+      await axios.post(`${addCou}`, newCoupon);
+      // handleClose();
+      loadCoupons();
       setNewCoupon({
         code: "",
         name: "",
@@ -107,6 +139,10 @@ function Coupon() {
         endDate: "",
         isDeleted: 1,
       });
+      setSuccess("Coupon updated successfully!");
+      setTimeout(() => {
+        setSuccess("");
+      }, 3000);
     } catch (error) {
       console.error("Error saving coupon:", error);
     }
@@ -116,11 +152,13 @@ function Coupon() {
   const [showEdit, setShowEdit] = useState(false);
   const handleCloseEdit = () => {
     setShowEdit(false);
-    setEditCoupon({}); 
+    setEditCoupon({});
   };
 
   const [editCoupon, setEditCoupon] = useState([]);
   const [couponIdEdit, setCouponIdEdit] = useState(null);
+  const [errorEdit, setErrorEdit] = useState("");
+  const [editSuccess, setEditSuccess] = useState("");
 
   const handleEditInputChange = (e) => {
     setEditCoupon({ ...editCoupon, [e.target.name]: e.target.value });
@@ -128,13 +166,56 @@ function Coupon() {
 
   const editCouponSubmit = async (e) => {
     e.preventDefault();
+    if (
+      editCoupon.code === "" ||
+      editCoupon.name === "" ||
+      editCoupon.quantity === "" ||
+      editCoupon.priceDiscount === "" ||
+      editCoupon.startDate === "" ||
+      editCoupon.endDate === ""
+    ) {
+      setErrorEdit("Please fill all fields.");
+      setTimeout(() => {
+        setErrorEdit("");
+      }, 3000);
+      return;
+    } else if (editCoupon.quantity <= 0) {
+      setErrorEdit("The quantity can not less than 0");
+      setTimeout(() => {
+        setErrorEdit("");
+      }, 3000);
+      return;
+    } else if (editCoupon.priceDiscount <= 1000) {
+      setErrorEdit("The price discount must be greater than 1000");
+      setTimeout(() => {
+        setErrorEdit("");
+      }, 3000);
+      return;
+    } else if (editCoupon.endDate <= editCoupon.startDate) {
+      setErrorEdit("The end date must be later than the start date.");
+      setTimeout(() => {
+        setErrorEdit("");
+      }, 3000);
+      return;
+    } else if (editCoupon.startDate < currentDate) {
+      setErrorEdit("The start date must be from now to the future");
+      setTimeout(() => {
+        setErrorEdit("");
+      }, 3000);
+      return;
+    }
+
     try {
       await axios.put(
-        `http://localhost:8080/api/coupons/update/${couponIdEdit}`,
+        `${updateCou}/${couponIdEdit}`,
         editCoupon
       );
-      handleCloseEdit();
+      // handleCloseEdit();
       loadCoupons();
+      setEditSuccess("Update coupons successfully!");
+      setTimeout(() => {
+        setEditSuccess("");
+      }, 3000);
     } catch (error) {
       console.error("Error editing coupon:", error);
     }
@@ -146,7 +227,7 @@ function Coupon() {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `http://localhost:8080/api/coupons/delete/${deleteId}`
+        `${deleteCou}/${deleteId}`
       );
       loadCoupons(); // Reload the coupon list after deletion
       handleClose2(); // Close the confirmation modal
@@ -166,6 +247,28 @@ function Coupon() {
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
+  };
+
+  //FORMAT DATETIME
+  const formatToDateTimeLocal = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+  
+  //Format Price
+  const formatCurrency = (value) => {
+    if (!value) return "0 VND"; 
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      minimumFractionDigits: 0, 
+    }).format(value).replace("₫", "VND"); 
   };
 
   return (
@@ -256,7 +359,7 @@ function Coupon() {
                         <Form.Group className="mb-3">
                           <Form.Label>Start Date</Form.Label>
                           <Form.Control
-                            type="date"
+                            type="datetime-local"
                             value={newCoupon.startDate}
                             name="startDate"
                             onChange={handleInputChange}
@@ -265,7 +368,7 @@ function Coupon() {
                         <Form.Group className="mb-3">
                           <Form.Label>End Date</Form.Label>
                           <Form.Control
-                            type="date"
+                            type="datetime-local"
                             value={newCoupon.endDate}
                             name="endDate"
                             onChange={handleInputChange}
@@ -282,6 +385,7 @@ function Coupon() {
                       </Form>
                     </Modal.Body>
                     {error && <Alert variant="danger">{error}</Alert>}
+                    {success && <Alert variant="success">{success}</Alert>}
                   </Modal>
                 </a>
               </div>
@@ -309,9 +413,9 @@ function Coupon() {
                         <td className="td">{item.code}</td>
                         <td className="td">{item.name}</td>
                         <td className="td">{item.quantity}</td>
-                        <td className="td">{item.priceDiscount} VND</td>
-                        <td className="td">{item.startDate}</td>
-                        <td className="td">{item.endDate}</td>
+                        <td className="td">{formatCurrency(item.priceDiscount)}</td>
+                        <td className="td">{formatToDateTimeLocal(item.startDate)}</td>
+                        <td className="td">{formatToDateTimeLocal(item.endDate)}</td>
                         <td className="td handle__icon">
                           <a className="link__icon">
                             <FaPenToSquare
@@ -320,8 +424,8 @@ function Coupon() {
                                 setCouponIdEdit(item.id);
                                 setEditCoupon({
                                   ...item,
-                                  startDate: formatDate(item.startDate),
-                                  endDate: formatDate(item.endDate),
+                                  startDate: formatToDateTimeLocal(item.startDate),
+                                  endDate: formatToDateTimeLocal(item.endDate),
                                 });
                                 setShowEdit(true);
                               }}
@@ -382,7 +486,7 @@ function Coupon() {
                                   <Form.Group className="mb-3">
                                     <Form.Label>Start Date</Form.Label>
                                     <Form.Control
-                                      type="date"
+                                      type="datetime-local"
                                       value={editCoupon.startDate}
                                       name="startDate"
                                       onChange={handleEditInputChange}
@@ -391,7 +495,7 @@ function Coupon() {
                                   <Form.Group className="mb-3">
                                     <Form.Label>End Date</Form.Label>
                                     <Form.Control
-                                      type="date"
+                                      type="datetime-local"
                                       value={editCoupon.endDate}
                                       name="endDate"
                                       onChange={handleEditInputChange}
@@ -410,11 +514,16 @@ function Coupon() {
                                   </Modal.Footer>
                                 </Form>
                               </Modal.Body>
-                              {error && <Alert variant="danger">{error}</Alert>}
+                              {errorEdit && (
+                                <Alert variant="danger">{errorEdit}</Alert>
+                              )}
+                              {editSuccess && (
+                                <Alert variant="success">{editSuccess}</Alert>
+                              )}
                             </Modal>
                           </a>
 
-                          <a className="link__icon">
+                          <Link className="link__icon">
                             <FaTrash
                               className="coupon__icon coupon__icon--delete"
                               onClick={() => handleShow2(item.id)}
@@ -443,7 +552,7 @@ function Coupon() {
                                 </Button>
                               </Modal.Footer>
                             </Modal>
-                          </a>
+                          </Link>
                         </td>
                       </tr>
                     ))}

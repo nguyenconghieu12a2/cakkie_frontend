@@ -1,5 +1,5 @@
 import Sidebar from "../sidebar.js";
-import "../../styles/orderDetail.css";
+import "../../styles/admin-orders/orderDetail.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import Table from "react-bootstrap/Table";
 import { useEffect, useState } from "react";
@@ -8,6 +8,9 @@ import ReactPaginate from "react-paginate";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
+//API
+const api = "/api/admin/detail-order"
+
 function DetailOrder() {
   const { id } = useParams();
   const [details, setDetails] = useState({});
@@ -15,7 +18,7 @@ function DetailOrder() {
   // Fetch Detail
   const loadDetail = async (id) => {
     try {
-      const result = await axios.get(`http://localhost:8080/api/order/${id}`);
+      const result = await axios.get(`${api}/${id}`);
       const data = result.data;
 
       // Set `details` as an object for proper rendering
@@ -58,7 +61,7 @@ function DetailOrder() {
             <div className="order__detail__head--main">
               <h3 className="order__detail__title">Order Detail</h3>
               <div className="admin__avatar">
-                <img src="../images/diddy.jpg" alt="Avatar" />
+                <img src="../../images/diddy.jpg" alt="Avatar" />
               </div>
             </div>
 

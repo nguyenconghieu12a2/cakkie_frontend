@@ -16,6 +16,12 @@
     justify-content: space-between;
 }
 
+.product__head--wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .product__title {
     text-align: left;
 }

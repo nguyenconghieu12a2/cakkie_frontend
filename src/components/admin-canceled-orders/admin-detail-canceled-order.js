@@ -1,11 +1,15 @@
 import Sidebar from "../sidebar";
-import "../../styles/detail-canceled-order.css";
+import "../../styles/admin-cancel-order/detail-canceled-order.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaRegCircleLeft } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+
+//API
+//GET PRODUCT DETAIL
+const orderDetailPro = "/api/admin/cancel-order/product-detail";
 
 function DetailCanceledOrder() {
   const { id } = useParams();
@@ -14,15 +18,25 @@ function DetailCanceledOrder() {
   const [productCancel, setProductCancel] = useState([]);
 
   const loadProductCancel = async () => {
-    const result = await axios.get(
-      `http://localhost:8080/api/cancel-order/product-detail/${id}`
-    );
+    const result = await axios.get(`${orderDetailPro}/${id}`);
     setProductCancel(result.data);
   };
 
   useEffect(() => {
     loadProductCancel();
   }, []);
+
+  //Format Price
+  const formatCurrency = (value) => {
+    if (!value) return "0 VND";
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      minimumFractionDigits: 0,
+    })
+      .format(value)
+      .replace("₫", "VND");
+  };
 
   return (
     <>
@@ -52,7 +66,7 @@ function DetailCanceledOrder() {
           </div>
 
           <div className="link__back">
-            <Link to={(`/canceled-order`)}>
+            <Link to={`/canceled-order`}>
               <FaRegCircleLeft className="back__icon" />
             </Link>
           </div>
@@ -86,7 +100,7 @@ function DetailCanceledOrder() {
                             <td className="td">{order.fullName}</td>
                             <td className="td">{product.productName}</td>
                             <td className="td">{item.quantity}</td>
-                            <td className="td">{item.price}</td>
+                            <td className="td">{formatCurrency(item.price)}</td>
                             <td className="td">{item.size}</td>
                           </tr>
                         ))

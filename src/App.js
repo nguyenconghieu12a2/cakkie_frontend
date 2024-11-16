@@ -8,20 +8,29 @@ import Login from "./components/Login/admin-login";
 import ResetPasswordEmail from "./components/Login/reset-password-email";
 import NewPassword from "./components/Login/new-password";
 
-import Product from "./components/Product/admin-product";
-import Category from "./components/Category/admin-category";
-import Order from "./components/Orders/admin-order";
-import DetailOrder from "./components/Orders/admin-detail-order";
-import Coupon from "./components/Coupons/admin-coupon";
-import DeletedProduct from "./components/Product/admin-deleted-product";
-import DeletedCategory from "./components/Category/admin-deleted-category";
-import SubCategory from "./components/Category/admin-sub-category";
-import SubSubCategory from "./components/Category/admin-sub-sub-category";
-import CanceledOrder from "./components/Orders/admin-canceled-order";
-import ListCanceledOrder from "./components/Orders/admin-list-canceled";
-import DetailCanceledOrder from "./components/Orders/admin-detail-canceled-order";
-import ProductDetail from "./components/Product/admin-detail-product";
-import OutOfStock from "./components/Product/out-of-stock";
+//PRODUCT
+import Product from "./components/admin-products/admin-product";
+import DeletedProduct from "./components/admin-products/admin-deleted-product";
+import ProductDetail from "./components/admin-products/admin-detail-product";
+import OutOfStock from "./components/admin-products/out-of-stock";
+
+//CATEGORY
+import Category from "./components/admin-categories/admin-category";
+import DeletedCategory from "./components/admin-categories/admin-deleted-category";
+import SubCategory from "./components/admin-categories/admin-sub-category";
+import SubSubCategory from "./components/admin-categories/admin-sub-sub-category";
+
+//CANCELED ORDER
+import CanceledOrder from "./components/admin-canceled-orders/admin-canceled-order";
+import ListCanceledOrder from "./components/admin-canceled-orders/admin-list-canceled";
+import DetailCanceledOrder from "./components/admin-canceled-orders/admin-detail-canceled-order";
+
+//ORDER
+import Order from "./components/admin-orders/admin-order";
+import DetailOrder from "./components/admin-orders/admin-detail-order";
+
+//COUPON
+import Coupon from "./components/admin-coupons/admin-coupon";
 
 function App() {
   return (
