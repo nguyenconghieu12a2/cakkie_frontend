@@ -24,11 +24,13 @@ const Product = () => {
   const [cart, setCart] = useState([]);
   const navigate = useNavigate();
   const [disabled, setDisibled] = useState(false);
+  const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
     fetchProduct();
     fetchCoupon();
-    
+    fetchReviews();
+
     if (userId) {
       fetchCart();
     }
@@ -46,6 +48,16 @@ const Product = () => {
       }
     }
   }, []);
+
+  const fetchReviews = async () => {
+    try {
+      const response = await axios.get(`/Product/${id}/reviews`);
+      setReviews(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Failed to fetch reviews:", error);
+    }
+  };
 
   const fetchCart = async () => {
     try {
@@ -122,15 +134,15 @@ const Product = () => {
   };
 
   const selectedDescription = () => {
-    setContent(selectedProduct.description);
-    setSpec(false);
-    setToogle(!toogle);
-    console.log(toogle, spec);
+    setToogle("description");
   };
 
   const selectedSpecification = () => {
-    setSpec(!spec);
-    setToogle(false);
+    setToogle("specification");
+  };
+
+  const selectedReviews = () => {
+    setToogle("reviews");
   };
 
   const chooseSize = (size) => {
@@ -257,7 +269,7 @@ const Product = () => {
         <div className="product-info">
           <h2>{selectedProduct.name}</h2>
           <div className="product-rating">
-          <p className="text-yellow-500">
+            <p className="text-yellow-500">
               {"★".repeat(Math.round(selectedProduct.averageRating))}
               {"☆".repeat(5 - Math.round(selectedProduct.averageRating))}
             </p>
@@ -277,11 +289,10 @@ const Product = () => {
                 return (
                   <button
                     key={product}
-                    className={`size-button ${
-                      selectedSize === product.size && !isDisabled
-                        ? "selected"
-                        : ""
-                    }
+                    className={`size-button ${selectedSize === product.size && !isDisabled
+                      ? "selected"
+                      : ""
+                      }
                     ${isDisabled ? "disabled" : ""}`}
                     onClick={() => chooseSize(product.size)}
                     disabled={isDisabled}
@@ -361,41 +372,104 @@ const Product = () => {
 
       <div className="product-description">
         <div className="tabs">
-          <button onClick={() => selectedDescription()}>Description</button>
-          <button onClick={() => selectedSpecification()}>Specification</button>
-          <button>Reviews</button>
+          <button onClick={selectedDescription}>Description</button>
+          <button onClick={selectedSpecification}>Specification</button>
+          <button onClick={selectedReviews}>Reviews</button>
         </div>
         <div className="tab-content">
-          {toogle ? (
-            <p>{content}</p>
-          ) : (
-            spec && (
-              <div className="flex justify-center mt-8">
-                <table className="min-w-full bg-white shadow-md rounded-lg ">
-                  <thead>
-                    <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                      <th className="py-3 px-6 text-start">Title</th>
-                      <th className="py-3 px-6 text-start">Description</th>
+          {toogle === "description" && (
+            <p>{selectedProduct.description}</p>
+          )}
+
+          {toogle === "specification" && (
+            <div className="flex justify-center mt-8">
+              <table className="min-w-full bg-white shadow-md rounded-lg">
+                <thead>
+                  <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                    <th className="py-3 px-6 text-start">Title</th>
+                    <th className="py-3 px-6 text-start">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {descriptionList.map((des) => (
+                    <tr
+                      key={des.desId}
+                      className="bg-gray-100 hover:bg-gray-200 border-b border-gray-300"
+                    >
+                      <td className="px-4 py-2 text-gray-800 font-semibold text-start">
+                        {des.descriptionTitle}
+                      </td>
+                      <td className="px-4 py-2 text-gray-700 text-start">
+                        {des.description}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {descriptionList.map((des) => (
-                      <tr
-                        key={des.desId}
-                        className="bg-gray-100 hover:bg-gray-200 border-b border-gray-300"
-                      >
-                        <td className="px-4 py-2 text-gray-800 font-semibold text-start">
-                          {des.descriptionTitle}
-                        </td>
-                        <td className="px-4 py-2 text-gray-700 text-start">
-                          {des.description}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {toogle === "reviews" && (
+            <div>
+              <h3 className="text-xl font-bold mb-4">Customer Reviews</h3>
+              {reviews.length > 0 ? (
+                reviews.map((review, index) => (
+                  <div
+                    key={index}
+                    className="border-b border-gray-300 py-4 flex items-start space-x-4"
+                  >
+                    {/* Profile Picture */}
+                    <img
+                      src={
+                        review.profilePicture
+                          ? `/images/${review.profilePicture}`
+                          : "/images/default-avatar.png"
+                      }
+                      alt={`${review.username || "Anonymous"}'s profile`}
+                      className="w-10 h-10 rounded-full"
+                    />
+
+                    <div className="flex-1">
+                      <div className="flex justify-between items-center">
+                        {/* Username */}
+                        <p className="text-lg font-bold text-gray-800">
+                          {review.username || "Anonymous"}
+                        </p>
+                        {/* Date */}
+                        <p className="text-xs text-gray-500">
+                          {review.commentDate
+                            ? new Date(review.commentDate).toLocaleDateString("en-US", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })
+                            : "No Date Provided"}
+                        </p>
+                      </div>
+
+                      {/* Rating */}
+                      <p className="text-yellow-500 mt-1">
+                        {"★".repeat(review.rating || 0)}
+                        {"☆".repeat(5 - (review.rating || 0))}
+                      </p>
+
+                      {/* Size */}
+                      <p className="text-sm text-gray-500 mt-1">
+                        <strong>Size:</strong>{" "}
+                        {review.size ? `${review.size}` : "Not specified"}
+                      </p>
+
+                      {/* Feedback */}
+                      <p className="text-sm text-gray-600 mt-2">
+                        {review.feedback || "No feedback provided."}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p>No reviews yet. Be the first to review this product!</p>
+              )}
+            </div>
           )}
         </div>
       </div>
