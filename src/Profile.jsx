@@ -56,8 +56,6 @@ const Profile = ({ onLogout }) => {
 
     const handleLogoutClick = () => {
         onLogout();
-        localStorage.removeItem('email');
-        localStorage.removeItem('jwt');
         navigate('/');
     };
 

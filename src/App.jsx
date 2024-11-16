@@ -37,9 +37,12 @@ function App() {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUser(null);
+    localStorage.removeItem('email');
     localStorage.removeItem('jwt');
     localStorage.removeItem('user');
+    localStorage.removeItem('userId');
     sessionStorage.removeItem('jwt');
+    sessionStorage.removeItem('userId');
   };
 
   const location = useLocation();

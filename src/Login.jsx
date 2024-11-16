@@ -29,17 +29,21 @@ const Login = ({ onLoginSuccess }) => {
     e.preventDefault();
   
     try {
+      // Perform login to get JWT and user data
       const response = await axios.post(api, {
         email: formData.email,
-        password: formData.password
+        password: formData.password,
       });
   
-      const { jwt } = response.data;
+      const { jwt, id } = response.data; // Extract jwt and id from login response
   
+      // Store jwt and id based on rememberMe option
       if (formData.rememberMe) {
         localStorage.setItem('jwt', jwt);
+        localStorage.setItem('userId', id);
       } else {
         sessionStorage.setItem('jwt', jwt);
+        sessionStorage.setItem('userId', id);
       }
   
       setMessage('Login successful!');
