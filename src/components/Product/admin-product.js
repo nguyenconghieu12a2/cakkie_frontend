@@ -381,6 +381,85 @@ function Product() {
     setCurrentPage(event.selected);
   };
 
+  //Create new size
+  const [alertMessage, setAlertMessage] = useState("");
+  const [successSize, setSuccessSize] = useState("");
+  const [selectedProductId, setSelectedProductId] = useState("");
+  const [newSize, setNewSize] = useState({
+    size: "",
+    qty: 0,
+    price: 0,
+  });
+
+  // Function to handle size, price, and quantity input changes
+  const handleSizeInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewSize({
+      ...newSize,
+      [name]: value,
+    });
+  };
+
+  const handleAddSize = async (e) => {
+    e.preventDefault();
+
+    // Check if all required fields are filled
+    if (!selectedProductId || !newSize.size || !newSize.qty || !newSize.price) {
+      setAlertMessage("Please fill in all fields.");
+      setTimeout(() => {
+        setAlertMessage("");
+      }, 3000);
+      return;
+    }
+
+    const parsedProductId = parseInt(selectedProductId, 10);
+    if (isNaN(parsedProductId)) {
+      setAlertMessage("Invalid Product ID.");
+      setTimeout(() => {
+        setAlertMessage(""); // Clear the alert after 3 seconds
+      }, 3000);
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/api/admin/add-size/${parsedProductId}`,
+        {
+          size: newSize.size,
+          qtyInStock: newSize.qty,
+          price: newSize.price,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200 || response.status === 201) {
+        setSuccessSize("Size added successfully!");
+        setTimeout(() => {
+          setSuccessSize(""); // Clear the alert after 3 seconds
+        }, 3000);
+        setAlertMessage("");
+        setLgShow1(false);
+        loadProduct(); // Reload product list
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        setAlertMessage(error.response.data);
+        setTimeout(() => {
+          setAlertMessage(""); // Clear the alert after 3 seconds
+        }, 3000);
+      } else {
+        setAlertMessage("Error adding size. Please try again.");
+        setTimeout(() => {
+          setAlertMessage(""); // Clear the alert after 3 seconds
+        }, 3000);
+      }
+    }
+  };
+
   return (
     <>
       <div className="main__wrap">
@@ -552,7 +631,103 @@ function Product() {
                       </Modal.Body>
                     </Tab>
                     <Tab eventKey="add-size" title="Add Size">
-
+                      <Modal.Body>
+                        <Form onSubmit={handleAddSize}>
+                          <Container>
+                            <Row>
+                              <Col>
+                                <Form.Group
+                                  className="mb-3"
+                                  controlId="productName"
+                                >
+                                  <Form.Label>Product Name</Form.Label>
+                                  <Form.Select
+                                    name="productId"
+                                    value={selectedProductId}
+                                    onChange={(e) =>
+                                      setSelectedProductId(e.target.value)
+                                    }
+                                    required
+                                  >
+                                    <option value="">Select Product</option>
+                                    {product.map((productItem) => (
+                                      <option
+                                        key={productItem.productId}
+                                        value={productItem.productId}
+                                      >
+                                        {productItem.productName}
+                                      </option>
+                                    ))}
+                                  </Form.Select>
+                                </Form.Group>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col>
+                                <Form.Group className="mb-3" controlId="size">
+                                  <Form.Label>Size</Form.Label>
+                                  <Form.Select
+                                    name="size"
+                                    value={newSize.size}
+                                    onChange={handleSizeInputChange}
+                                    required
+                                  >
+                                    <option value="">Select Size</option>
+                                    {sizes.map((size, index) => (
+                                      <option key={index} value={size}>
+                                        {size}
+                                      </option>
+                                    ))}
+                                  </Form.Select>
+                                </Form.Group>
+                              </Col>
+                              <Col>
+                                <Form.Group className="mb-3" controlId="qty">
+                                  <Form.Label>Quantity</Form.Label>
+                                  <Form.Control
+                                    type="number"
+                                    name="qty"
+                                    value={newSize.qty}
+                                    onChange={handleSizeInputChange}
+                                    required
+                                  />
+                                </Form.Group>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col>
+                                <Form.Group className="mb-3" controlId="price">
+                                  <Form.Label>Price</Form.Label>
+                                  <Form.Control
+                                    type="number"
+                                    name="price"
+                                    value={newSize.price}
+                                    onChange={handleSizeInputChange}
+                                    required
+                                  />
+                                </Form.Group>
+                              </Col>
+                            </Row>
+                            <Modal.Footer>
+                              <Button
+                                variant="secondary"
+                                onClick={handleClose1}
+                              >
+                                Close
+                              </Button>
+                              <Button variant="success" type="submit">
+                                Save
+                              </Button>
+                            </Modal.Footer>
+                            {alertMessage && (
+                              <Alert variant="danger">{alertMessage}</Alert>
+                            )}
+                            {successSize && (
+                              <Alert variant="success">{successSize}</Alert>
+                            )}
+                          </Container>
+                        </Form>
+                      </Modal.Body>
                     </Tab>
                   </Tabs>
                 </Modal>
