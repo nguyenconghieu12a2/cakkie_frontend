@@ -16,6 +16,7 @@ import ReactPaginate from "react-paginate";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import Alert from "react-bootstrap/Alert";
+import { Col, Container, Row } from "react-bootstrap";
 
 //API
 //Get Sub SubCate
@@ -31,6 +32,27 @@ const updateSubSubCate = "/api/admin/update-category";
 const deleteSubSub = "/api/admin/delete/sub-sub-category";
 
 function SubSubCategory() {
+  //Search Logic
+  const [filteredOrders, setFilteredOrders] = useState([]); // For filtered results
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearchChange = (e) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+
+    const filtered = subSubCate.filter((item) =>
+      Object.values(item)
+        .map((value) => String(value))
+        .join(" ")
+        .toLowerCase()
+        .includes(term)
+    );
+
+    setFilteredOrders(filtered);
+    setCurrentPage(0);
+  };
+
+  //Logic
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -49,17 +71,16 @@ function SubSubCategory() {
 
   const handleClose2 = () => setShow2(false);
   const handleShow2 = (id) => {
-    setDeleteSubId(id); 
+    setDeleteSubId(id);
     setShow2(true);
   };
   const [subSubCate, setSubSubCate] = useState([]);
   // Fetch Subcategories
   const loadSubSub = async () => {
     try {
-      const result = await axios.get(
-        `${api}/${parentId}`
-      );
+      const result = await axios.get(`${api}/${parentId}`);
       setSubSubCate(result.data);
+      setFilteredOrders(result.data);
     } catch (error) {
       console.error("Error fetching subcategories:", error);
     }
@@ -116,13 +137,10 @@ function SubSubCategory() {
     try {
       console.log("Submitting new sub-category data:", newSubSubCate);
 
-      const response = await axios.post(
-        `${addSubSubCate}/${parentId}`,
-        {
-          cateName: newSubSubCate.cateName,
-          isDeleted: newSubSubCate.isDeleted,
-        }
-      );
+      const response = await axios.post(`${addSubSubCate}/${parentId}`, {
+        cateName: newSubSubCate.cateName,
+        isDeleted: newSubSubCate.isDeleted,
+      });
 
       setSuccess("Subcategory created successfully!");
       loadSubSub();
@@ -149,6 +167,8 @@ function SubSubCategory() {
   const handleShowEdit = () => setShowEdit(true);
   const [editSubCate, setEditSubCate] = useState({});
   const [cateIdSubEdit, setCateIdSubEdit] = useState(null);
+  const [editError, setEditError] = useState("");
+  const [editSuccess, setEditSuccess] = useState("");
 
   const handleEditInputChange = (e) => {
     setEditSubCate({ ...editSubCate, [e.target.name]: e.target.value });
@@ -157,30 +177,60 @@ function SubSubCategory() {
 
   const editSubSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitting edit for ID:", cateIdSubEdit);
-    console.log("Data to submit:", editSubCate);
+
+    const regex = /^[a-zA-Z][a-zA-Z0-9\s]*$/; // Valid name: starts with a letter, allows spaces and alphanumeric
+    const cateExisted = subSubCate.some(
+      (item) =>
+        item.cateName.toLowerCase() === editSubCate.cateName.toLowerCase() &&
+        item.id !== cateIdSubEdit // Exclude the current category being edited
+    );
+
+    // Validation conditions
+    if (!regex.test(editSubCate.cateName)) {
+      setEditError(
+        "Category name cannot start with whitespace or contain special characters!"
+      );
+      setEditSuccess("");
+      setTimeout(() => setEditError(""), 3000); // Clear error after 3 seconds
+      return;
+    } else if (editSubCate.cateName.length > 30) {
+      setEditError("Category name should be less than 30 characters!");
+      setEditSuccess("");
+      setTimeout(() => setEditError(""), 3000);
+      return;
+    } else if (editSubCate.cateName.length < 4) {
+      setEditError("Category name should be greater than 4 characters!");
+      setEditSuccess("");
+      setTimeout(() => setEditError(""), 3000);
+      return;
+    } else if (cateExisted) {
+      setEditError("Category name already exists!");
+      setEditSuccess("");
+      setTimeout(() => setEditError(""), 3000);
+      return;
+    }
+
+    // Proceed with API call if validations pass
     try {
       const response = await axios.put(
         `${updateSubSubCate}/${cateIdSubEdit}`,
         editSubCate
       );
+
       if (response.status === 200) {
-        setSuccess("Category updated successfully!");
+        setEditSuccess("Category updated successfully!");
+        setEditError("");
+        setTimeout(() => setEditSuccess(""), 3000);
+        // handleCloseEdit();
+        loadSubSub();
       } else {
-        setError("Unexpected response status: " + response.status);
+        setEditError(`Unexpected response status: ${response.status}`);
+        setTimeout(() => setEditError(""), 3000);
       }
-      handleCloseEdit();
-      loadSubSub();
-      setTimeout(() => {
-        setSuccess("");
-        setError("");
-      }, 5000);
     } catch (error) {
       console.error("Error editing sub-category:", error);
-      setError("Failed to update sub-category. Please try again.");
-      setTimeout(() => {
-        setError("");
-      }, 5000);
+      setEditError("Failed to update sub-category. Please try again.");
+      setTimeout(() => setEditError(""), 3000);
     }
   };
 
@@ -188,9 +238,7 @@ function SubSubCategory() {
   const [deleteSubId, setDeleteSubId] = useState(null);
   const handleDelete = async () => {
     try {
-      await axios.delete(
-        `${deleteSubSub}/${deleteSubId}`
-      );
+      await axios.delete(`${deleteSubSub}/${deleteSubId}`);
       loadSubSub();
       handleClose2();
     } catch (error) {
@@ -202,9 +250,9 @@ function SubSubCategory() {
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
 
-  const pageCount = Math.ceil(subSubCate.length / itemsPerPage);
+  const pageCount = Math.ceil(filteredOrders.length / itemsPerPage);
 
-  const displayData = subSubCate.slice(
+  const displayData = filteredOrders.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
@@ -236,6 +284,24 @@ function SubSubCategory() {
               </Breadcrumb>
             </div>
             <hr />
+          </div>
+
+          <div className="search__bar">
+            <Container>
+              <Row>
+                <Col></Col>
+                <Col></Col>
+                <Col>
+                  <Form.Control
+                    type="text"
+                    placeholder="Search orders..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    className="search__input"
+                  />
+                </Col>
+              </Row>
+            </Container>
           </div>
 
           <div className="link__back">
@@ -340,6 +406,14 @@ function SubSubCategory() {
                                       autoFocus
                                     />
                                   </Form.Group>
+                                  {editSuccess && (
+                                    <Alert variant="success">
+                                      {editSuccess}
+                                    </Alert>
+                                  )}
+                                  {editError && (
+                                    <Alert variant="danger">{editError}</Alert>
+                                  )}
                                 </Form>
                               </Modal.Body>
                               <Modal.Footer>
@@ -385,7 +459,9 @@ function SubSubCategory() {
                                 >
                                   Close
                                 </Button>
-                                <Button variant="danger" onClick={handleDelete}>Delete</Button>
+                                <Button variant="danger" onClick={handleDelete}>
+                                  Delete
+                                </Button>
                               </Modal.Footer>
                             </Modal>
                           </a>

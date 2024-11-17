@@ -315,3 +315,7 @@
     opacity: 0.3;
     background-color: #dfdfdf;
 }
+
+.description__add {
+    padding: 20px 0;
+}

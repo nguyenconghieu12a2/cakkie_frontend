@@ -10,6 +10,7 @@ import ReactPaginate from "react-paginate";
 import axios from "axios";
 import Form from "react-bootstrap/Form";
 import { Link } from "react-router-dom";
+import { Col, Container, Row } from "react-bootstrap";
 
 //API
 //Get Deleted
@@ -20,6 +21,26 @@ const cateNotDelete = "/api/admin/admin-product/category-not-deleted";
 const recoverPro = "/api/admin/product-recovery";
 
 function DeletedProduct() {
+  //Search Logic
+  const [filteredOrders, setFilteredOrders] = useState([]); // For filtered results
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearchChange = (e) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+
+    const filtered = deletedProduct.filter((item) =>
+      Object.values(item)
+        .map((value) => String(value))
+        .join(" ")
+        .toLowerCase()
+        .includes(term)
+    );
+
+    setFilteredOrders(filtered);
+    setCurrentPage(0);
+  };
+
   const [productIdRecover, setProductIdRecover] = useState(null);
   const [show1, setShow1] = useState(false);
   const handleClose1 = () => setShow1(false);
@@ -34,6 +55,7 @@ function DeletedProduct() {
   const loadDeleted = async () => {
     const result = await axios.get(`${api}`);
     setDeletedProduct(result.data);
+    setFilteredOrders(result.data);
   };
 
   useEffect(() => {
@@ -57,10 +79,32 @@ function DeletedProduct() {
   };
 
   // Fetch Deleted Product Not Effected By Category
+  //Search Logic
+  //Search Logic
+  const [filteredOrders1, setFilteredOrders1] = useState([]); // For filtered results
+  const [searchTerm1, setSearchTerm1] = useState("");
+
+  const handleSearchChange1 = (e) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm1(term);
+
+    const filtered = deletedProductNotEffect.filter((item) =>
+      Object.values(item)
+        .map((value) => String(value))
+        .join(" ")
+        .toLowerCase()
+        .includes(term)
+    );
+
+    setFilteredOrders1(filtered);
+    setCurrentPage(0);
+  };
+
   const [deletedProductNotEffect, setDeletedProductNotEffect] = useState([]);
   const loadDeletedPro = async () => {
     const result = await axios.get(`${cateNotDelete}`);
     setDeletedProductNotEffect(result.data);
+    setFilteredOrders1(result.data);
   };
 
   useEffect(() => {
@@ -99,9 +143,9 @@ function DeletedProduct() {
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
 
-  const pageCount = Math.ceil(deletedProduct.length / itemsPerPage);
+  const pageCount = Math.ceil(filteredOrders.length / itemsPerPage);
 
-  const displayData = deletedProduct.slice(
+  const displayData = filteredOrders.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
@@ -114,9 +158,9 @@ function DeletedProduct() {
   const [currentPage1, setCurrentPage1] = useState(0);
   const itemsPerPage1 = 10;
 
-  const pageCount1 = Math.ceil(deletedProductNotEffect.length / itemsPerPage);
+  const pageCount1 = Math.ceil(filteredOrders1.length / itemsPerPage);
 
-  const displayData1 = deletedProductNotEffect.slice(
+  const displayData1 = filteredOrders1.slice(
     currentPage1 * itemsPerPage1,
     (currentPage1 + 1) * itemsPerPage1
   );
@@ -160,6 +204,24 @@ function DeletedProduct() {
               </Breadcrumb>
             </div>
             <hr />
+          </div>
+
+          <div className="search__bar">
+            <Container>
+              <Row>
+                <Col></Col>
+                <Col></Col>
+                <Col>
+                  <Form.Control
+                    type="text"
+                    placeholder="Search orders..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    className="search__input"
+                  />
+                </Col>
+              </Row>
+            </Container>
           </div>
 
           <div className="deleted__body__wrap">
@@ -221,7 +283,9 @@ function DeletedProduct() {
                             </Form.Select>
                           </td>
                           <td className="td">{currentSize.quantity}</td>
-                          <td className="td">{formatCurrency(currentSize.price)}</td>
+                          <td className="td">
+                            {formatCurrency(currentSize.price)}
+                          </td>
                         </tr>
                       );
                     })}
@@ -250,6 +314,24 @@ function DeletedProduct() {
                   />
                 </div>
               </div>
+            </div>
+
+            <div className="search__bar">
+              <Container>
+                <Row>
+                  <Col></Col>
+                  <Col></Col>
+                  <Col>
+                    <Form.Control
+                      type="text"
+                      placeholder="Search orders..."
+                      value={searchTerm1}
+                      onChange={handleSearchChange1}
+                      className="search__input"
+                    />
+                  </Col>
+                </Row>
+              </Container>
             </div>
 
             <div className="deleted__body">
@@ -309,7 +391,9 @@ function DeletedProduct() {
                             </Form.Select>
                           </td>
                           <td className="td">{currentSize1.quantity}</td>
-                          <td className="td">{formatCurrency(currentSize1.price)}</td>
+                          <td className="td">
+                            {formatCurrency(currentSize1.price)}
+                          </td>
                           <td className="td">
                             <Link className="link__icon" to="#">
                               <FaArrowsRotate

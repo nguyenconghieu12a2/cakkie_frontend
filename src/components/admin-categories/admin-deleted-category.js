@@ -9,6 +9,8 @@ import Modal from "react-bootstrap/Modal";
 import { Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
+import { Col, Container, Row } from "react-bootstrap";
+import Form from "react-bootstrap/Form";
 
 //API
 //Get Deleted SubSubCate
@@ -18,15 +20,34 @@ const api = "/api/admin/view-deleted/sub-sub-category";
 const recoverApi = "/api/admin/recover/sub-sub-category";
 
 function DeletedCategory() {
+  //Search Logic
+  const [filteredOrders, setFilteredOrders] = useState([]); // For filtered results
+  const [searchTerm, setSearchTerm] = useState("");
+  
+  const handleSearchChange = (e) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+
+    const filtered = deletedSubSub.filter((item) =>
+      Object.values(item)
+        .map((value) => String(value))
+        .join(" ")
+        .toLowerCase()
+        .includes(term)
+    );
+
+    setFilteredOrders(filtered);
+    setCurrentPage(0);
+  };
+
   //Fetch Deleted Category Level 3
   const [deletedSubSub, setDeletedSubSub] = useState([]);
 
   const loadDeletedSubSub = async () => {
     try {
-      const result = await axios.get(
-        `${api}`
-      );
+      const result = await axios.get(`${api}`);
       setDeletedSubSub(result.data);
+      setFilteredOrders(result.data);
     } catch (error) {
       console.log("Error fetching subcategories:", error);
     }
@@ -48,9 +69,7 @@ function DeletedCategory() {
 
   const recoverySubSubCate = async () => {
     try {
-      await axios.delete(
-        `${recoverApi}/${subSubRecoverId}`
-      );
+      await axios.delete(`${recoverApi}/${subSubRecoverId}`);
       handleCloseDelete();
       loadDeletedSubSub();
     } catch (error) {
@@ -60,8 +79,8 @@ function DeletedCategory() {
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
-  const pageCount = Math.ceil(deletedSubSub.length / itemsPerPage);
-  const displayData = deletedSubSub.slice(
+  const pageCount = Math.ceil(filteredOrders.length / itemsPerPage);
+  const displayData = filteredOrders.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
@@ -96,6 +115,24 @@ function DeletedCategory() {
             <hr />
           </div>
 
+          <div className="search__bar">
+            <Container>
+              <Row>
+                <Col></Col>
+                <Col></Col>
+                <Col>
+                  <Form.Control
+                    type="text"
+                    placeholder="Search orders..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    className="search__input"
+                  />
+                </Col>
+              </Row>
+            </Container>
+          </div>
+
           <div className="deleted__subSubCategory--body--wrap">
             <div className="deleted__subSubCategory--body">
               <div className="deleted__subSubCategory--body--head">
@@ -114,42 +151,53 @@ function DeletedCategory() {
                     </tr>
                   </thead>
                   <tbody>
-                    {displayData.map((item, index) => (
+                    {displayData.length > 0 ? (
+                      displayData.map((item, index) => (
+                        <tr>
+                          <td className="td">{index + 1}</td>
+                          <td className="td">{item.cateName}</td>
+                          <td className="th handle__icon">
+                            <Link className="link__icon">
+                              <FaArrowsRotate
+                                className="deleted__subSubCategory--icon deleted__subSubCategory--icon--edit"
+                                onClick={() => handleShowDelete(item.id)}
+                              />
+                              <Modal
+                                show={showDelete}
+                                onHide={handleCloseDelete}
+                              >
+                                <Modal.Header closeButton>
+                                  <Modal.Title>Recovery Category</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                  Are you sure to recovery this category?
+                                </Modal.Body>
+                                <Modal.Footer>
+                                  <Button
+                                    variant="secondary"
+                                    onClick={handleCloseDelete}
+                                  >
+                                    Close
+                                  </Button>
+                                  <Button
+                                    variant="success"
+                                    onClick={recoverySubSubCate}
+                                  >
+                                    Recovery
+                                  </Button>
+                                </Modal.Footer>
+                              </Modal>
+                            </Link>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
                       <tr>
-                        <td className="td">{index + 1}</td>
-                        <td className="td">{item.cateName}</td>
-                        <td className="th handle__icon">
-                          <Link className="link__icon">
-                            <FaArrowsRotate
-                              className="deleted__subSubCategory--icon deleted__subSubCategory--icon--edit"
-                              onClick={() => handleShowDelete(item.id)}
-                            />
-                            <Modal show={showDelete} onHide={handleCloseDelete}>
-                              <Modal.Header closeButton>
-                                <Modal.Title>Recovery Category</Modal.Title>
-                              </Modal.Header>
-                              <Modal.Body>
-                                Are you sure to recovery this category?
-                              </Modal.Body>
-                              <Modal.Footer>
-                                <Button
-                                  variant="secondary"
-                                  onClick={handleCloseDelete}
-                                >
-                                  Close
-                                </Button>
-                                <Button
-                                  variant="success"
-                                  onClick={recoverySubSubCate}
-                                >
-                                  Recovery
-                                </Button>
-                              </Modal.Footer>
-                            </Modal>
-                          </Link>
+                        <td colSpan="3" className="text-center">
+                          No data available.
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </Table>
 

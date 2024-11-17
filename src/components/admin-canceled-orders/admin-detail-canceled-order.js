@@ -6,6 +6,7 @@ import Table from "react-bootstrap/Table";
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import ReactPaginate from "react-paginate";
 
 //API
 //GET PRODUCT DETAIL
@@ -37,6 +38,19 @@ function DetailCanceledOrder() {
       .format(value)
       .replace("₫", "VND");
   };
+
+  const handlePageClick = (event) => {
+    setCurrentPage(event.selected);
+  };
+
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 10;
+  const pageCount = Math.ceil(productCancel.length / itemsPerPage);
+  const displayData = productCancel.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
 
   return (
     <>
@@ -92,7 +106,7 @@ function DetailCanceledOrder() {
                     </tr>
                   </thead>
                   <tbody>
-                    {productCancel.map((order) =>
+                    {displayData.map((order) =>
                       order.product.map((product) =>
                         product.productItem.map((item, index) => (
                           <tr key={index}>
@@ -108,6 +122,28 @@ function DetailCanceledOrder() {
                     )}
                   </tbody>
                 </Table>
+
+                <div>
+                  <ReactPaginate
+                    className="pagination"
+                    breakLabel="..."
+                    nextLabel="next >"
+                    onPageChange={handlePageClick}
+                    pageRangeDisplayed={5}
+                    pageCount={pageCount}
+                    previousLabel="< previous"
+                    pageClassName="page-item"
+                    pageLinkClassName="page-link"
+                    previousClassName="page-item"
+                    previousLinkClassName="page-link"
+                    nextClassName="page-item"
+                    nextLinkClassName="page-link"
+                    breakClassName="page-item"
+                    breakLinkClassName="page-link"
+                    containerClassName="pagination"
+                    activeClassName="active"
+                  />
+                </div>
               </div>
             </div>
           </div>

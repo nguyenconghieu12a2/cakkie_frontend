@@ -10,29 +10,37 @@ import { Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import Form from "react-bootstrap/Form";
+import { Col, Container, Row } from "react-bootstrap";
 
 //API
-//Get Order
 const api = "/api/admin/order";
-
-//Get order status
 const status = "/api/admin/order/statuses";
-
-//Load by id
-const orderById = "/api/admin/detail-order";
-
-//Update Status
-const updateStatus = "/api/admin/order/update-status";
-
-//View status
 const orderStatus = "/api/admin/order/status";
+const updateStatus = "/api/admin/order/update-status";
 
 function Order() {
   const [show, setShow] = useState(false);
   const [editOrderId, setEditOrderId] = useState(null);
   const [order, setOrder] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]); // For filtered orders
   const [allStatuses, setAllStatuses] = useState([]);
   const [statusById, setStatusById] = useState(null);
+  const [searchTerm, setSearchTerm] = useState(""); // For search input
+
+  // Pagination setup
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 10;
+
+  const pageCount = Math.ceil(filteredOrders.length / itemsPerPage);
+
+  const displayData = filteredOrders.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
+  const handlePageClick = (event) => {
+    setCurrentPage(event.selected);
+  };
 
   // Close and open modal
   const handleClose = () => {
@@ -48,6 +56,7 @@ function Order() {
     try {
       const result = await axios.get(`${api}`);
       setOrder(result.data);
+      setFilteredOrders(result.data); // Initialize filtered orders
     } catch (error) {
       console.error("Failed to load orders", error);
     }
@@ -63,18 +72,11 @@ function Order() {
     }
   };
 
-  useEffect(() => {
-    loadOrders();
-    loadAllStatuses();
-  }, []);
-
   // Load the current status by order ID
   const loadStatusById = async (orderId) => {
     try {
-      console.log("Loading status for order ID:", orderId);
       const result = await axios.get(`${orderStatus}/${orderId}`);
       setStatusById(result.data.orderStatusId);
-      console.log("Loaded status:", result.data.orderStatusId);
     } catch (error) {
       console.error("Failed to load current order status", error);
     }
@@ -82,11 +84,10 @@ function Order() {
 
   // Called when clicking the edit icon
   const handleEditClick = async (orderId) => {
-    console.log("Editing order ID:", orderId); // Debug log
     if (orderId) {
-      setEditOrderId(orderId); // Set the order ID first
-      await loadStatusById(orderId); // Load status by ID
-      handleShow(); // Show the modal after loading the status
+      setEditOrderId(orderId);
+      await loadStatusById(orderId);
+      handleShow();
     } else {
       console.error("Order ID is not valid");
     }
@@ -115,22 +116,12 @@ function Order() {
 
   // Update the order status by order ID
   const handleUpdateStatus = async () => {
-    console.log("Attempting to update status with:", {
-      editOrderId,
-      statusById,
-    }); // Log for debugging
     if (!editOrderId || !statusById) {
       console.error("Order ID or Status ID is not set");
       return;
     }
 
     try {
-      console.log(
-        "Updating order ID:",
-        editOrderId,
-        "to status ID:",
-        statusById
-      ); // Debug log
       await axios.put(`${updateStatus}/${editOrderId}`, {
         statusId: parseInt(statusById),
       });
@@ -141,21 +132,33 @@ function Order() {
     }
   };
 
-  // Pagination setup
-  const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 10;
-  const pageCount = Math.ceil(order.length / itemsPerPage);
+  useEffect(() => {
+    loadOrders();
+    loadAllStatuses();
+  }, []);
 
-  const displayData = order.slice(
-    currentPage * itemsPerPage,
-    (currentPage + 1) * itemsPerPage
-  );
+  useEffect(() => {
+    setFilteredOrders(order);
+  }, [order]);
 
-  const handlePageClick = (event) => {
-    setCurrentPage(event.selected);
+  // Search logic
+  const handleSearchChange = (e) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+
+    const filtered = order.filter((item) =>
+      Object.values(item)
+        .map((value) => String(value))
+        .join(" ")
+        .toLowerCase()
+        .includes(term)
+    );
+
+    setFilteredOrders(filtered);
+    setCurrentPage(0);
   };
 
-  //Format Price
+  // Format price
   const formatCurrency = (value) => {
     if (!value) return "0 VND";
     return new Intl.NumberFormat("vi-VN", {
@@ -189,7 +192,23 @@ function Order() {
             </div>
             <hr />
           </div>
-
+          <div className="search__bar">
+            <Container>
+              <Row>
+                <Col></Col>
+                <Col></Col>
+                <Col>
+                  <Form.Control
+                    type="text"
+                    placeholder="Search orders..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    className="search__input"
+                  />
+                </Col>
+              </Row>
+            </Container>
+          </div>
           <div className="order__body__wrap">
             <div className="order__body">
               <div className="order__body--head">

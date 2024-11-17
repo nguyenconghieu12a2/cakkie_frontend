@@ -12,6 +12,7 @@ import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { Col, Container, Row } from "react-bootstrap";
 //Get coupons api
 const api = "/api/admin/coupons";
 const addCou = "/api/admin/add-coupons";
@@ -19,6 +20,20 @@ const updateCou = "/api/admin/update-coupons";
 const deleteCou = "/api/admin/delete-coupons";
 
 function Coupon({ onLogout }) {
+  //Search
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredCoupons, setFilteredCoupons] = useState([]);
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+    const filtered = coupons.filter((coupon) =>
+      Object.values(coupon).join(" ").toLowerCase().includes(term)
+    );
+    setFilteredCoupons(filtered);
+    setCurrentPage(0); // Reset to first page on new search
+  };
 
   const navigate = useNavigate();
 
@@ -45,6 +60,7 @@ function Coupon({ onLogout }) {
   const loadCoupons = async () => {
     const result = await axios.get(`${api}`);
     setCoupons(result.data);
+    setFilteredCoupons(result.data);
   };
 
   useEffect(() => {
@@ -206,10 +222,7 @@ function Coupon({ onLogout }) {
     }
 
     try {
-      await axios.put(
-        `${updateCou}/${couponIdEdit}`,
-        editCoupon
-      );
+      await axios.put(`${updateCou}/${couponIdEdit}`, editCoupon);
       // handleCloseEdit();
       loadCoupons();
       setEditSuccess("Update coupons successfully!");
@@ -226,9 +239,7 @@ function Coupon({ onLogout }) {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(
-        `${deleteCou}/${deleteId}`
-      );
+      await axios.delete(`${deleteCou}/${deleteId}`);
       loadCoupons(); // Reload the coupon list after deletion
       handleClose2(); // Close the confirmation modal
     } catch (error) {
@@ -239,8 +250,8 @@ function Coupon({ onLogout }) {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10; // Number of items to display per page
-  const pageCount = Math.ceil(coupons.length / itemsPerPage);
-  const displayData = coupons.slice(
+  const pageCount = Math.ceil(filteredCoupons.length / itemsPerPage);
+  const displayData = filteredCoupons.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
@@ -248,7 +259,6 @@ function Coupon({ onLogout }) {
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
-
   //FORMAT DATETIME
   const formatToDateTimeLocal = (dateString) => {
     if (!dateString) return "";
@@ -260,15 +270,17 @@ function Coupon({ onLogout }) {
     const minutes = String(date.getMinutes()).padStart(2, "0");
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
-  
+
   //Format Price
   const formatCurrency = (value) => {
-    if (!value) return "0 VND"; 
+    if (!value) return "0 VND";
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
-      minimumFractionDigits: 0, 
-    }).format(value).replace("₫", "VND"); 
+      minimumFractionDigits: 0,
+    })
+      .format(value)
+      .replace("₫", "VND");
   };
 
   return (
@@ -292,6 +304,24 @@ function Coupon({ onLogout }) {
               </Breadcrumb>
             </div>
             <hr />
+          </div>
+
+          <div className="search__bar">
+            <Container>
+              <Row>
+                <Col></Col>
+                <Col></Col>
+                <Col>
+                  <Form.Control
+                    type="text"
+                    placeholder="Search coupons..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    className="search__input"
+                  />
+                </Col>
+              </Row>
+            </Container>
           </div>
 
           <div className="coupon__body__wrap">
@@ -413,9 +443,15 @@ function Coupon({ onLogout }) {
                         <td className="td">{item.code}</td>
                         <td className="td">{item.name}</td>
                         <td className="td">{item.quantity}</td>
-                        <td className="td">{formatCurrency(item.priceDiscount)}</td>
-                        <td className="td">{formatToDateTimeLocal(item.startDate)}</td>
-                        <td className="td">{formatToDateTimeLocal(item.endDate)}</td>
+                        <td className="td">
+                          {formatCurrency(item.priceDiscount)}
+                        </td>
+                        <td className="td">
+                          {formatToDateTimeLocal(item.startDate)}
+                        </td>
+                        <td className="td">
+                          {formatToDateTimeLocal(item.endDate)}
+                        </td>
                         <td className="td handle__icon">
                           <a className="link__icon">
                             <FaPenToSquare
@@ -424,7 +460,9 @@ function Coupon({ onLogout }) {
                                 setCouponIdEdit(item.id);
                                 setEditCoupon({
                                   ...item,
-                                  startDate: formatToDateTimeLocal(item.startDate),
+                                  startDate: formatToDateTimeLocal(
+                                    item.startDate
+                                  ),
                                   endDate: formatToDateTimeLocal(item.endDate),
                                 });
                                 setShowEdit(true);

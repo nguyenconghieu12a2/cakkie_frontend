@@ -51,6 +51,27 @@ const getSize = "/api/admin/sizes";
 const addSize = "/api/admin/add-size";
 
 function Product() {
+  //Search Logic
+  const [filteredOrders, setFilteredOrders] = useState([]); // For filtered results
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearchChange = (e) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+
+    const filtered = product.filter((item) =>
+      Object.values(item)
+        .map((value) => String(value))
+        .join(" ")
+        .toLowerCase()
+        .includes(term)
+    );
+
+    setFilteredOrders(filtered);
+    setCurrentPage(0);
+  };
+
+  //Logic
   const [lgShow, setLgShow] = useState(false);
   const handleClose = () => setLgShow(false);
 
@@ -69,6 +90,7 @@ function Product() {
       const result = await axios.get(`${api}`);
       console.log("Product count:", result.data.length);
       setProduct(result.data);
+      setFilteredOrders(result.data);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -142,96 +164,158 @@ function Product() {
         setImageError(
           "File name contains spaces or special characters. Please rename it."
         );
+        setTimeout(() => {
+          setImageError("");
+        }, 3000);
         setProductImage(null);
         return;
       }
 
       if (fileSizeInMB > 1) {
         setImageError("File size exceeds 1 MB. Please upload a smaller image.");
+        setTimeout(() => {
+          setImageError("");
+        }, 3000);
         setProductImage(null);
         return;
       }
 
       if (fileType === "image/jpeg" || fileType === "image/png") {
         setProductImage(file);
+        setTimeout(() => {
+          setImageError("");
+        }, 3000);
         setImageError("");
       } else {
         setImageError("Only .jpg and .png files are allowed.");
+        setTimeout(() => {
+          setImageError("");
+        }, 3000);
         setProductImage(null);
       }
     }
   };
 
+  //Error and success create product
+  const [createError, setCreateError] = useState("");
+  const [createSuccess, setCreateSuccess] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validation: Check if all fields are filled
+    if (
+      !newProduct.name ||
+      !newProduct.categoryId ||
+      !newProduct.description ||
+      !newProduct.size ||
+      !newProduct.price ||
+      !newProduct.qtyInStock
+    ) {
+      setCreateError("Please fill all the required fields!");
+      setTimeout(() => setCreateError(""), 3000);
+      return;
+    }
+
+    // Validation: Check if product name length is valid
+    const regex = /^[a-zA-Z][a-zA-Z0-9\s]*$/;
+    if (newProduct.name.trim().length < 3) {
+      setCreateError("Product name must be at least 3 characters long.");
+      setTimeout(() => setCreateError(""), 3000);
+      return;
+    } else if (!regex.test(newProduct.name)) {
+      setCreateError(
+        "Product name cannot start with whitespace or contain special characters!"
+      );
+      setTimeout(() => setCreateError(""), 3000);
+      return;
+    }
+
+    const validSizes = ["S", "M", "L"];
+    const numericRangeRegex = /^\d+\s*x\s*\d+$/;
+
+    if (
+      !validSizes.includes(newProduct.size.toUpperCase()) &&
+      !numericRangeRegex.test(newProduct.size)
+    ) {
+      setCreateError(
+        "Invalid size format. Please use 'S', 'M', 'L', or 'number x number' (e.g., '5 x 10')."
+      );
+      setTimeout(() => setCreateError(""), 3000);
+      return;
+    }
+
+    // Validation: Check if price is a positive number
+    if (isNaN(newProduct.price) || Number(newProduct.price) <= 0) {
+      setCreateError("Price must be a positive number.");
+      setTimeout(() => setCreateError(""), 3000);
+      return;
+    }
+
+    // Validation: Check if quantity in stock is a positive integer
+    if (isNaN(newProduct.qtyInStock) || Number(newProduct.qtyInStock) < 1000) {
+      setCreateError(
+        "Quantity in stock must be a positive number and greater than 1.000 VND."
+      );
+      setTimeout(() => setCreateError(""), 3000);
+      return;
+    }
+
+    // Check if product already exists in the selected category
     const existingProduct = product.find(
       (p) =>
-        p.categoryId === newProduct.categoryId &&
-        p.productName === newProduct.name &&
-        p.productItem.some((item) => item.size === newProduct.size)
+        p.categoryId === parseInt(newProduct.categoryId) &&
+        p.productName.toLowerCase() === newProduct.name.toLowerCase()
     );
 
     if (existingProduct) {
-      const existingProductItem = existingProduct.productItem.find(
-        (item) => item.size === newProduct.size
+      setCreateError(
+        "This product is already in the system. Please go to 'Add Size' to add a new size."
       );
+      setTimeout(() => {
+        setCreateError("");
+      }, 3000);
+      return;
+    }
+    // Proceed with product creation
+    const formData = new FormData();
+    formData.append("categoryId", newProduct.categoryId);
+    formData.append("name", newProduct.name);
+    formData.append("description", newProduct.description);
+    formData.append("productImage", productImage);
+    formData.append("productRating", newProduct.productRating);
+    formData.append("isDelete", 1);
+    formData.append("size", newProduct.size);
+    formData.append("qtyInStock", newProduct.qtyInStock);
+    formData.append("price", newProduct.price);
 
-      const updatedQty =
-        existingProductItem.quantity + Number(newProduct.qtyInStock);
+    try {
+      const response = await axios.post(`${addPro}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-      try {
-        await axios.put(`${updatePro}/${existingProduct.productId}`, {
-          categoryId: newProduct.categoryId,
-          name: newProduct.name,
-          description: newProduct.description,
-          productImage: productImage,
-          productRating: newProduct.productRating,
-          isDelete: newProduct.isDelete,
-          size: newProduct.size,
-          qtyInStock: updatedQty,
-          price: newProduct.price,
-        });
-
-        console.log("Product updated successfully");
+      if (response.status === 201) {
+        setCreateSuccess("Product created successfully!");
+        setTimeout(() => setCreateSuccess(""), 3000);
         loadProduct();
         handleClose();
-      } catch (error) {
-        console.error("Failed to update product:", error);
+      } else {
+        setCreateError("Unexpected error. Please try again.");
+        setTimeout(() => setCreateError(""), 3000);
       }
-    } else {
-      const formData = new FormData();
-      formData.append("categoryId", newProduct.categoryId);
-      formData.append("name", newProduct.name);
-      formData.append("description", newProduct.description);
-      formData.append("productImage", productImage);
-      formData.append("productRating", newProduct.productRating);
-      formData.append("isDelete", 1);
-      formData.append("size", newProduct.size);
-      formData.append("qtyInStock", newProduct.qtyInStock);
-      formData.append("price", newProduct.price);
-
-      try {
-        const response = await axios.post(`${addPro}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-
-        if (response.status === 201) {
-          console.log("Product created successfully:", response.data);
-          loadProduct();
-          handleClose();
-        } else {
-          console.error("Unexpected response:", response);
-        }
-      } catch (error) {
-        console.error("Failed to create product:", error);
-      }
+    } catch (error) {
+      console.error("Error creating product:", error);
+      setCreateError("Failed to create product. Please try again.");
+      setTimeout(() => setCreateError(""), 3000);
     }
   };
 
   // State for updating product
+  const [updateError, setUpdateError] = useState("");
+  const [updateSuccess, setUpdateSuccess] = useState("");
+
   const [editProduct, setEditProduct] = useState({
     categoryId: "",
     name: "",
@@ -272,17 +356,132 @@ function Product() {
   };
 
   // Handle updating product submission
+  // const handleUpdateSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   const updatedProductData = {
+  //     productId: editProduct.productId,
+  //     categoryId: editProduct.categoryId || 0,
+  //     name: editProduct.name || "",
+  //     description: editProduct.description || "",
+  //     productRating: editProduct.productRating || 0,
+  //     isDelete: editProduct.isDelete || 1,
+  //     sizes: editProduct.sizes.length > 0 ? editProduct.sizes : [],
+  //   };
+
+  //   const formData = new FormData();
+  //   formData.append("categoryId", updatedProductData.categoryId);
+  //   formData.append("name", updatedProductData.name);
+  //   formData.append("description", updatedProductData.description);
+  //   formData.append("productRating", updatedProductData.productRating);
+  //   formData.append("isDelete", updatedProductData.isDelete);
+  //   formData.append("sizes", JSON.stringify(updatedProductData.sizes));
+
+  //   if (editProductImage) {
+  //     formData.append("productImage", editProductImage);
+  //   }
+
+  //   try {
+  //     const response = await axios.put(
+  //       `${updatePro}/${updatedProductData.productId}`,
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
+
+  //     if (response.status === 200) {
+  //       console.log("Product updated successfully:", response.data);
+  //       loadProduct();
+  //       handleClose1();
+  //     } else {
+  //       console.error("Unexpected response:", response);
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to update product:", error);
+  //   }
+  // };
+
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
 
+    // Clear previous messages
+    setUpdateError("");
+    setUpdateSuccess("");
+
+    // Validation: Check if all required fields are filled
+    if (
+      !editProduct.name ||
+      !editProduct.categoryId ||
+      !editProduct.description ||
+      editProduct.sizes.length === 0
+    ) {
+      setUpdateError("Please fill all the required fields!");
+      setTimeout(() => setUpdateError(""), 3000);
+      return;
+    }
+
+    // Validation: Check if product name length and format are valid
+    const nameRegex = /^[a-zA-Z0-9,.]+([ ]?[a-zA-Z0-9,.]+)*$/;
+    if (editProduct.name.trim().length < 3) {
+      setUpdateError("Product name must be at least 3 characters long.");
+      setTimeout(() => setUpdateError(""), 3000);
+      return;
+    }
+    // } else if (!nameRegex.test(editProduct.name)) {
+    //   setUpdateError(
+    //     "Product name cannot start with whitespace or contain special characters!"
+    //   );
+    //   setTimeout(() => setUpdateError(""), 3000);
+    //   return;
+    // }
+
+    // Validation: Check sizes
+    const validSizes = ["S", "M", "L"];
+    const numericRangeRegex = /^\d+\s*x\s*\d+$/;
+
+    for (const sizeData of editProduct.sizes) {
+      if (
+        !validSizes.includes(sizeData.size.toUpperCase()) &&
+        !numericRangeRegex.test(sizeData.size)
+      ) {
+        setUpdateError(
+          "Invalid size format. Please use 'S', 'M', 'L', or 'number x number' (e.g., '5 x 10')."
+        );
+        setTimeout(() => setUpdateError(""), 3000);
+        return;
+      }
+
+      // Validation: Check price for each size
+      if (isNaN(sizeData.price) || Number(sizeData.price) <= 0) {
+        setUpdateError(
+          `Price for size ${sizeData.size} must be a positive number.`
+        );
+        setTimeout(() => setUpdateError(""), 3000);
+        return;
+      }
+
+      // Validation: Check quantity in stock for each size
+      if (isNaN(sizeData.qtyInStock) || Number(sizeData.qtyInStock) < 0) {
+        setUpdateError(
+          `Quantity for size ${sizeData.size} must be a non-negative number.`
+        );
+        setTimeout(() => setUpdateError(""), 3000);
+        return;
+      }
+    }
+
+    // Prepare updated product data
     const updatedProductData = {
       productId: editProduct.productId,
-      categoryId: editProduct.categoryId || 0,
-      name: editProduct.name || "",
-      description: editProduct.description || "",
+      categoryId: editProduct.categoryId,
+      name: editProduct.name.trim(),
+      description: editProduct.description.trim(),
       productRating: editProduct.productRating || 0,
       isDelete: editProduct.isDelete || 1,
-      sizes: editProduct.sizes.length > 0 ? editProduct.sizes : [],
+      sizes: editProduct.sizes,
     };
 
     const formData = new FormData();
@@ -297,6 +496,7 @@ function Product() {
       formData.append("productImage", editProductImage);
     }
 
+    // Send update request
     try {
       const response = await axios.put(
         `${updatePro}/${updatedProductData.productId}`,
@@ -309,18 +509,25 @@ function Product() {
       );
 
       if (response.status === 200) {
-        console.log("Product updated successfully:", response.data);
-        loadProduct();
-        handleClose1();
+        setUpdateSuccess("Product updated successfully!");
+        setTimeout(() => setUpdateSuccess(""), 3000);
+        loadProduct(); // Reload products after successful update
+        // handleClose1(); // Close the modal
       } else {
-        console.error("Unexpected response:", response);
+        setUpdateError("Unexpected error. Please try again.");
+        setTimeout(() => setUpdateError(""), 3000);
       }
     } catch (error) {
       console.error("Failed to update product:", error);
+      setUpdateError("Failed to update product. Please try again.");
+      setTimeout(() => setUpdateError(""), 3000);
     }
   };
 
   //Create description
+  const [desError, setDesError] = useState("");
+  const [desSuccess, setDesSuccess] = useState("");
+
   const [newDesInfo, setDesInfo] = useState({
     desTitleID: "",
     desInfo: "",
@@ -338,13 +545,45 @@ function Product() {
   };
 
   const handleAddDesInfo = async () => {
+    setDesError("");
+    setDesSuccess("");
+
+    if (!newDesInfo.desTitleID || !newDesInfo.desInfo) {
+      setDesError(
+        "Please select a description title and enter description information."
+      );
+      setTimeout(() => setDesError(""), 3000);
+      return;
+    }
+
+    const desRegex = /^[a-zA-Z0-9,.]+([ ]?[a-zA-Z0-9,.]+)*$/;
+    if (!desRegex.test(newDesInfo.desInfo.trim())) {
+      setDesError(
+        "Description information cannot start with whitespace or contain special characters!"
+      );
+      setTimeout(() => setDesError(""), 3000);
+      return;
+    }
+
     try {
-      await axios.post(`${addDes}/${currentProductId}`, newDesInfo);
-      console.log("Description info added successfully");
-      setDesInfo({ desTitleID: "", desInfo: "", isDelete: 1 });
-      handleClose2();
+      const response = await axios.post(
+        `${addDes}/${currentProductId}`,
+        newDesInfo
+      );
+
+      if (response.status === 201 || response.status === 200) {
+        setDesSuccess("Description information added successfully!");
+        setTimeout(() => setDesSuccess(""), 3000);
+
+        setDesInfo({ desTitleID: "", desInfo: "", isDelete: 1 });
+      } else {
+        setDesError("Unexpected response. Please try again.");
+        setTimeout(() => setDesError(""), 3000);
+      }
     } catch (error) {
       console.error("Error adding description info:", error);
+      setDesError("Failed to add description information. Please try again.");
+      setTimeout(() => setDesError(""), 3000);
     }
   };
 
@@ -380,19 +619,6 @@ function Product() {
     } catch (error) {
       console.error("Error deleting product:", error);
     }
-  };
-
-  //Pagination
-  const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 10;
-  const pageCount = Math.ceil(product.length / itemsPerPage);
-  const displayData = product.slice(
-    currentPage * itemsPerPage,
-    (currentPage + 1) * itemsPerPage
-  );
-
-  const handlePageClick = (event) => {
-    setCurrentPage(event.selected);
   };
 
   //Create new size
@@ -497,6 +723,18 @@ function Product() {
       .replace("₫", "VND");
   };
 
+  //Pagination
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 10;
+  const pageCount = Math.ceil(filteredOrders.length / itemsPerPage);
+  const displayData = filteredOrders.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
+  const handlePageClick = (event) => {
+    setCurrentPage(event.selected);
+  };
   return (
     <>
       <div className="main__wrap">
@@ -518,6 +756,24 @@ function Product() {
             <hr />
           </div>
 
+          <div className="search__bar">
+            <Container>
+              <Row>
+                <Col></Col>
+                <Col></Col>
+                <Col>
+                  <Form.Control
+                    type="text"
+                    placeholder="Search orders..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    className="search__input"
+                  />
+                </Col>
+              </Row>
+            </Container>
+          </div>
+
           <div className="product__body__wrap">
             <div className="product__body">
               <div className="product__body--head">
@@ -531,7 +787,30 @@ function Product() {
                   <Modal.Header closeButton>
                     <Modal.Title>Add Product</Modal.Title>
                   </Modal.Header>
-                  <Tabs defaultActiveKey="add-product" id="product-tabs">
+                  <Tabs defaultActiveKey="description" id="product-tabs">
+                    <Tab eventKey="description" title="Description">
+                      <Container>
+                        <Row>
+                          <Col>
+                            <p className="description__add">
+                              You can add a new product by navigating to the tab
+                              labeled <strong>"Add Product"</strong>. This is
+                              where you can enter all the necessary details to
+                              register a brand-new product in the system. These
+                              details typically include the product's name,
+                              description, category, price, and other essential
+                              attributes. <br /> <br />
+                              If the product you are working with already exists
+                              in the system, and you simply want to add a new
+                              size or update specific size-related information
+                              (such as stock quantity or price for a particular
+                              size), then you should head over to the
+                              <strong>"Add Size"</strong> tab.
+                            </p>
+                          </Col>
+                        </Row>
+                      </Container>
+                    </Tab>
                     <Tab eventKey="add-product" title="Add Product">
                       <Modal.Body>
                         <Form onSubmit={handleSubmit}>
@@ -652,6 +931,15 @@ function Product() {
                                 </Form.Group>
                               </Col>
                             </Row>
+                            {imageError && (
+                              <Alert variant="danger">{imageError}</Alert>
+                            )}
+                            {createError && (
+                              <Alert variant="danger">{createError}</Alert>
+                            )}
+                            {createSuccess && (
+                              <Alert variant="success">{createSuccess}</Alert>
+                            )}
                             <Modal.Footer>
                               <Button variant="secondary" onClick={handleClose}>
                                 Close
@@ -817,10 +1105,13 @@ function Product() {
                             </Form.Select>
                           </td>
                           <td className="td">{currentSize.quantity}</td>
-                          <td className="td">{formatCurrency(currentSize.price)}</td>
+                          <td className="td">
+                            {formatCurrency(currentSize.price)}
+                          </td>
                           <td className="td">
                             <div className="icon-container">
                               <div className="icon-container1">
+                                {/* Create description information */}
                                 <FaRegSquarePlus
                                   className="product__icon1 product__icon--menu"
                                   onClick={() => {
@@ -891,6 +1182,14 @@ function Product() {
                                       Create
                                     </Button>
                                   </Modal.Footer>
+                                  {desError && (
+                                    <Alert variant="danger">{desError}</Alert>
+                                  )}
+                                  {desSuccess && (
+                                    <Alert variant="success">
+                                      {desSuccess}
+                                    </Alert>
+                                  )}
                                 </Modal>
 
                                 <Link
@@ -902,6 +1201,7 @@ function Product() {
                               </div>
 
                               <div className="icon-container2">
+                                {/* Update Product */}
                                 <FaPenToSquare
                                   className="product__icon1 product__icon--edit"
                                   onClick={() => openEditModal(item)}
@@ -1105,6 +1405,16 @@ function Product() {
                                             Update
                                           </Button>
                                         </Modal.Footer>
+                                        {updateError && (
+                                          <Alert variant="danger">
+                                            {updateError}
+                                          </Alert>
+                                        )}
+                                        {updateSuccess && (
+                                          <Alert variant="success">
+                                            {updateSuccess}
+                                          </Alert>
+                                        )}
                                       </Container>
                                     </Form>
                                   </Modal.Body>

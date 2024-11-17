@@ -16,6 +16,7 @@ import Modal from "react-bootstrap/Modal";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import Alert from "react-bootstrap/Alert";
+import { Col, Container, Row } from "react-bootstrap";
 
 //API
 //Get SubCate
@@ -28,6 +29,27 @@ const updateSub = "/api/admin/update-category";
 const nullSub = "/api/admin/null-sub-subCate";
 
 function SubCategory() {
+  //Search Logic
+  const [filteredOrders, setFilteredOrders] = useState([]); // For filtered results
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearchChange = (e) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+
+    const filtered = subCate.filter((item) =>
+      Object.values(item)
+        .map((value) => String(value))
+        .join(" ")
+        .toLowerCase()
+        .includes(term)
+    );
+
+    setFilteredOrders(filtered);
+    setCurrentPage(0);
+  };
+
+  //Logic
   const { parentId } = useParams();
   const [showAdd, setShowAdd] = useState(false);
   const handleCloseAdd = () => setShowAdd(false);
@@ -47,6 +69,7 @@ function SubCategory() {
     try {
       const result = await axios.get(`${api}/${parentId}`);
       setSubCate(result.data);
+      setFilteredOrders(result.data);
     } catch (error) {
       console.error("Error fetching subcategories:", error);
     }
@@ -70,6 +93,36 @@ function SubCategory() {
 
   const saveSubCate = async (e) => {
     e.preventDefault();
+    const regex = /^[a-zA-Z][a-zA-Z0-9\s]*$/;
+    const cateExisted = subCate.some(
+      (item) =>
+        item.cateName.toLowerCase() === newSubCate.cateName.toLowerCase()
+    );
+    if (!regex.test(newSubCate.cateName)) {
+      setError(
+        "Category name cannot start with whitespace or contain special characters!"
+      );
+      setSuccess("");
+      return;
+    } else if (newSubCate.cateName.length > 30) {
+      setError("Category name should be less than 30 characters!");
+      setSuccess("");
+      return;
+    } else if (newSubCate.cateName.length < 4) {
+      setError("Category name should be greater than 4 characters!");
+      setSuccess("");
+      setTimeout(() => {
+        setError("");
+      }, 5000); // Clear error after 5 seconds
+      return;
+    } else if (cateExisted) {
+      setError("Category has been existed!");
+      setSuccess("");
+      setTimeout(() => {
+        setError("");
+      }, 5000); // Clear error after 5 seconds
+      return;
+    }
     try {
       console.log("Submitting new sub-category data:", newSubCate);
       const response = await axios.post(`${addSub}/${parentId}`, {
@@ -100,6 +153,8 @@ function SubCategory() {
   //Edit
   const [editSubCate, setEditSubCate] = useState({});
   const [cateIdSubEdit, setCateIdSubEdit] = useState(null);
+  const [editError, setEditError] = useState("");
+  const [editSuccess, setEditSuccess] = useState("");
 
   const handleEditInputChange = (e) => {
     setEditSubCate({ ...editSubCate, [e.target.name]: e.target.value });
@@ -108,37 +163,70 @@ function SubCategory() {
 
   const editSubSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitting edit for ID:", cateIdSubEdit);
-    console.log("Data to submit:", editSubCate);
+
+    const regex = /^[a-zA-Z][a-zA-Z0-9\s]*$/; // Alphanumeric and spaces, cannot start with whitespace
+    const cateExisted = subCate.some(
+      (item) =>
+        item.cateName.toLowerCase() === editSubCate.cateName.toLowerCase() &&
+        item.id !== cateIdSubEdit // Exclude the current item being edited
+    );
+
+    // Validation conditions
+    if (!regex.test(editSubCate.cateName)) {
+      setEditError(
+        "Category name cannot start with whitespace or contain special characters!"
+      );
+      setEditSuccess("");
+      setTimeout(() => setEditError(""), 3000); // Clear error after 3 seconds
+      return;
+    } else if (editSubCate.cateName.length > 30) {
+      setEditError("Category name should be less than 30 characters!");
+      setEditSuccess("");
+      setTimeout(() => setEditError(""), 3000);
+      return;
+    } else if (editSubCate.cateName.length < 4) {
+      setEditError("Category name should be greater than 4 characters!");
+      setEditSuccess("");
+      setTimeout(() => setEditError(""), 3000);
+      return;
+    } else if (cateExisted) {
+      setEditError("Category name already exists!");
+      setEditSuccess("");
+      setTimeout(() => setEditError(""), 3000);
+      return;
+    }
+
+    // Proceed with submission if validations pass
     try {
+      console.log("Submitting edit for ID:", cateIdSubEdit);
+      console.log("Data to submit:", editSubCate);
+
       const response = await axios.put(
         `${updateSub}/${cateIdSubEdit}`,
         editSubCate
       );
+
       if (response.status === 200) {
-        setSuccess("Category updated successfully!");
+        setEditSuccess("Sub-category updated successfully!");
+        setEditError("");
+        setTimeout(() => setEditSuccess(""), 3000);
+        // handleCloseEdit();
+        loadSub();
       } else {
-        setError("Unexpected response status: " + response.status);
+        setEditError("Unexpected response status: " + response.status);
+        setTimeout(() => setEditError(""), 3000);
       }
-      handleCloseEdit();
-      loadSub();
-      setTimeout(() => {
-        setSuccess("");
-        setError("");
-      }, 5000);
     } catch (error) {
       console.error("Error editing sub-category:", error);
-      setError("Failed to update sub-category. Please try again.");
-      setTimeout(() => {
-        setError("");
-      }, 5000);
+      setEditError("Failed to update sub-category. Please try again.");
+      setTimeout(() => setEditError(""), 3000);
     }
   };
   //Pagination
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
-  const pageCount = Math.ceil(subCate.length / itemsPerPage);
-  const displayData = subCate.slice(
+  const pageCount = Math.ceil(filteredOrders.length / itemsPerPage);
+  const displayData = filteredOrders.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
@@ -196,6 +284,25 @@ function SubCategory() {
             </div>
             <hr />
           </div>
+
+          <div className="search__bar">
+            <Container>
+              <Row>
+                <Col></Col>
+                <Col></Col>
+                <Col>
+                  <Form.Control
+                    type="text"
+                    placeholder="Search orders..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    className="search__input"
+                  />
+                </Col>
+              </Row>
+            </Container>
+          </div>
+
           <div className="link__back">
             <Link to="/main-category">
               <FaRegCircleLeft className="back__icon" />
@@ -297,6 +404,14 @@ function SubCategory() {
                                       autoFocus
                                     />
                                   </Form.Group>
+                                  {editSuccess && (
+                                    <Alert variant="success">
+                                      {editSuccess}
+                                    </Alert>
+                                  )}
+                                  {editError && (
+                                    <Alert variant="danger">{editError}</Alert>
+                                  )}
                                 </Form>
                               </Modal.Body>
                               <Modal.Footer>

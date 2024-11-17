@@ -14,6 +14,7 @@ import Button from "react-bootstrap/Button";
 import axios from "axios";
 import { useParams, Link } from "react-router-dom";
 import Form from "react-bootstrap/Form";
+import Alert from "react-bootstrap/Alert";
 
 //API
 //get productbyId
@@ -26,13 +27,16 @@ const addDes = "/api/admin/product/add-desinfo";
 const updateDes = "/api/admin/product/update-desinfo";
 //Delete des info
 const deleteDes = "/api/admin/product/delete-desinfo";
+//Get Size
+const getSize = "/api/admin/detail-size";
+//Delete Size
+const deleteSize = "/api/admin/delete-size";
 
 function ProductDetail() {
   const { id } = useParams();
 
   const [productDetail, setProductDetail] = useState(null);
   const [loading, setLoading] = useState(true); // Add loading state
-
   const loadProduct = async () => {
     try {
       const result = await axios.get(`${proById}/${id}`);
@@ -44,10 +48,26 @@ function ProductDetail() {
     }
   };
 
+  // Modal state for deleting size
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedProItemId, setSelectedProItemId] = useState(null);
+
   useEffect(() => {
     loadProduct();
     loadDesTitles();
+    loadGetSize();
   }, [id]);
+
+  //Fetch size
+  const [getSizes, setSize] = useState([]);
+  const loadGetSize = async () => {
+    try {
+      const result = await axios.get(`${getSize}/${id}`);
+      setSize(result.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // Create Des
   const [show2, setShow2] = useState(false);
@@ -67,7 +87,7 @@ function ProductDetail() {
   const [newDesInfo, setDesInfo] = useState({
     desTitleID: "",
     desInfo: "",
-    isDelete: 1, 
+    isDelete: 1,
   });
 
   const [currentProductId, setCurrentProductId] = useState(null);
@@ -80,26 +100,74 @@ function ProductDetail() {
     }));
   };
 
+  //Add Des
+  const [desError, setDesError] = useState("");
+  const [desSuccess, setDesSuccess] = useState("");
+
   const handleAddDesInfo = async () => {
+    setDesError("");
+    setDesSuccess("");
+
+    if (!newDesInfo.desInfo.trim()) {
+      setDesError("Please enter description information.");
+      setTimeout(() => setDesError(""), 3000);
+      return;
+    }
+
+    const desRegex = /^[a-zA-Z0-9,.]+([ ]?[a-zA-Z0-9,.]+)*$/;
+    if (!desRegex.test(newDesInfo.desInfo.trim())) {
+      setDesError(
+        "Description information can only contain letters, numbers, commas, dots, and single spaces between words."
+      );
+      setTimeout(() => setDesError(""), 3000);
+      return;
+    }
+
+    const existingDescription = productDetail.productInfo.some(
+      (info) =>
+        info.desInfo.toLowerCase() === newDesInfo.desInfo.trim().toLowerCase()
+    );
+
+    if (existingDescription) {
+      setDesError(
+        "This description information already exists for the product."
+      );
+      setTimeout(() => setDesError(""), 3000);
+      return;
+    }
+
     try {
-      await axios.post(
+      // Submit the description information
+      const response = await axios.post(
         `${addDes}/${currentProductId}`,
         newDesInfo
       );
-      console.log("Description info added successfully");
-      setDesInfo({ desTitleID: "", desInfo: "", isDelete: 1 });
-      loadProduct();
-      handleClose2();
+
+      if (response.status === 201 || response.status === 200) {
+        setDesSuccess("Description added successfully!");
+        setTimeout(() => setDesSuccess(""), 3000);
+
+        // Reset the form and reload data
+        setDesInfo({ desTitleID: "", desInfo: "", isDelete: 1 });
+        loadProduct();
+        // handleClose2(); // Close modal after success
+      } else {
+        setDesError("Unexpected error occurred while adding description.");
+        setTimeout(() => setDesError(""), 3000);
+      }
     } catch (error) {
       console.error("Error adding description info:", error);
+      setDesError("Failed to add description. Please try again.");
+      setTimeout(() => setDesError(""), 3000);
     }
   };
 
-  // Update DesInfo
+  //Edit
   const [showEdit, setShowEdit] = useState(false);
-
   const handleCloseEdit = () => setShowEdit(false);
   const handleShowEdit = () => setShowEdit(true);
+  const [editDesError, setEditDesError] = useState("");
+  const [editDesSuccess, setEditDesSuccess] = useState("");
 
   const [editDes, setEditDes] = useState({
     desTitleId: "",
@@ -118,21 +186,51 @@ function ProductDetail() {
 
   // Fix: Update only desInfo
   const editDesSubmit = async (e) => {
+    // Clear previous error or success messages
+    setEditDesError("");
+    setEditDesSuccess("");
+
+    // Validation: Check if description info is filled
+    if (!editDes.desInfo.trim()) {
+      setEditDesError("Please enter description information.");
+      setTimeout(() => setEditDesError(""), 3000);
+      return;
+    }
+
+    // Validation: Ensure description information is formatted correctly
+    const desRegex = /^[a-zA-Z0-9,.:]+([ ]?[a-zA-Z0-9,.:]+)*$/;
+    if (!desRegex.test(editDes.desInfo.trim())) {
+      setEditDesError(
+        "Description information can only contain letters, numbers, commas, dots, and single spaces between words."
+      );
+      setTimeout(() => setEditDesError(""), 3000);
+      return;
+    }
     e.preventDefault();
     try {
       const payload = {
         desTitleId: editDes.desTitleId,
-        desInfo: editDes.desInfo,
+        desInfo: editDes.desInfo.trim(),
       };
 
-      await axios.put(
-        `${updateDes}/${id}`,
-        payload
-      );
-      handleCloseEdit();
-      loadProduct(); // Reload the product details to reflect the updated description
+      const response = await axios.put(`${updateDes}/${id}`, payload);
+
+      if (response.status === 200) {
+        setEditDesSuccess("Description updated successfully!");
+        setTimeout(() => setEditDesSuccess(""), 3000);
+
+        // handleCloseEdit(); // Close the modal after a successful update
+        loadProduct(); // Reload the product details to reflect changes
+      } else {
+        setEditDesError(
+          "Unexpected error occurred while updating the description."
+        );
+        setTimeout(() => setEditDesError(""), 3000);
+      }
     } catch (error) {
       console.error("Error editing description information:", error);
+      setEditDesError("Failed to update description. Please try again.");
+      setTimeout(() => setEditDesError(""), 3000);
     }
   };
 
@@ -153,12 +251,9 @@ function ProductDetail() {
       const payload = {
         desTitleId: deleteDesTitleId,
       };
-      await axios.delete(
-        `${deleteDes}/${id}`,
-        {
-          data: payload,
-        }
-      );
+      await axios.delete(`${deleteDes}/${id}`, {
+        data: payload,
+      });
       console.log("Description info deleted successfully");
       setDeleteDesTitleId(null);
       loadProduct(); // Reload product details after delete
@@ -176,6 +271,29 @@ function ProductDetail() {
     return <div>No product details available.</div>;
   }
 
+  const handleDeleteSize = async () => {
+    try {
+      await axios.put(`${deleteSize}/${selectedProItemId}`);
+      setShowDeleteModal(false);
+      loadGetSize();
+    } catch (error) {
+      console.error("Error deleting size:", error);
+      alert("Failed to delete product size. Please try again.");
+    }
+  };
+
+  //Format Price
+  const formatCurrency = (value) => {
+    if (!value) return "0 VND";
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      minimumFractionDigits: 0,
+    })
+      .format(value)
+      .replace("₫", "VND");
+  };
+
   return (
     <>
       <div className="main__wrap">
@@ -185,7 +303,7 @@ function ProductDetail() {
             <div className="product__head--main">
               <h3 className="product__title">Product</h3>
               <div className="admin__avatar">
-                <img src="../images/diddy.jpg" alt="Avatar" />
+                <img src="../../images/diddy.jpg" alt="Avatar" />
               </div>
             </div>
 
@@ -257,6 +375,8 @@ function ProductDetail() {
                       Create
                     </Button>
                   </Modal.Footer>
+                  {desError && <Alert variant="danger">{desError}</Alert>}
+                  {desSuccess && <Alert variant="success">{desSuccess}</Alert>}
                 </Modal>
               </div>
               <div className="product__body--table">
@@ -360,6 +480,16 @@ function ProductDetail() {
                                       Update
                                     </Button>
                                   </Modal.Footer>
+                                  {editDesError && (
+                                    <Alert variant="danger">
+                                      {editDesError}
+                                    </Alert>
+                                  )}
+                                  {editDesSuccess && (
+                                    <Alert variant="success">
+                                      {editDesSuccess}
+                                    </Alert>
+                                  )}
                                 </Modal>
                               </div>
                               <div className="icon-container5">
@@ -401,6 +531,71 @@ function ProductDetail() {
                         </tr>
                       );
                     })}
+                  </tbody>
+                </Table>
+              </div>
+            </div>
+
+            <div className="product__body">
+              <div className="product__body--head">
+                <h4 className="product__body--title">Product Details Size</h4>
+              </div>
+
+              <div className="product__body--table">
+                <Table className="table">
+                  <thead className="thead">
+                    <tr>
+                      <th className="th">Product ID</th>
+                      <th className="th">Detail Size</th>
+                      <th className="th">Price</th>
+                      <th className="th">Quantity in Stock</th>
+                      <th className="th">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {getSizes.map((item, index) => (
+                      <tr key={index}>
+                        <td className="td">{index + 1}</td>
+                        <td className="td">{item.size}</td>
+                        <td className="td">{formatCurrency(item.price)}</td>
+                        <td className="td">{item.qtyInStock}</td>
+                        <td className="td">
+                          <FaTrash
+                            className="product__icon1 product__icon--delete"
+                            onClick={() => {
+                              setSelectedProItemId(item.proItemId);
+                              setShowDeleteModal(true);
+                            }}
+                          />
+                          {/* Delete Size Modal */}
+                          <Modal
+                            show={showDeleteModal}
+                            onHide={() => setShowDeleteModal(false)}
+                          >
+                            <Modal.Header closeButton>
+                              <Modal.Title>Delete Size</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                              Are you sure you want to delete this size?
+                            </Modal.Body>
+                            <Modal.Footer>
+                              <Button
+                                variant="secondary"
+                                onClick={() => setShowDeleteModal(false)}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                variant="danger"
+                                onClick={handleDeleteSize}
+                              >
+                                Delete
+                              </Button>
+                            </Modal.Footer>
+                          </Modal>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </Table>
               </div>

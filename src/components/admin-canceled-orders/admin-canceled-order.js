@@ -11,31 +11,31 @@ import { Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import Form from "react-bootstrap/Form";
+import { Col, Container, Row } from "react-bootstrap";
 
 //API
-//GET CANCELED
 const api = "/api/admin/cacel-order";
-
-//BAN CUSTOMER
 const banApi = "/api/admin/ban-user";
 
 function CanceledOrder() {
+  const [filteredOrders, setFilteredOrders] = useState([]); // For filtered results
+  const [searchTerm, setSearchTerm] = useState("");
+
   const [show2, setShow2] = useState(false);
-  const [showNotificationModal, setShowNotificationModal] = useState(false); // Notification modal state
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
   const handleClose2 = () => setShow2(false);
   const handleShow2 = () => setShow2(true);
   const handleCloseNotificationModal = () => setShowNotificationModal(false);
 
-  // State for managing banned users
   const [bannedUsers, setBannedUsers] = useState(new Set());
   const [alertVisible, setAlertVisible] = useState(false);
 
-  // Fetch canceled orders
   const [cancelOrder, setCancelOrder] = useState([]);
   const loadCancel = async () => {
     try {
       const result = await axios.get(`${api}`);
       setCancelOrder(result.data);
+      setFilteredOrders(result.data); // Initialize filtered orders
     } catch (error) {
       console.error("Error fetching canceled orders:", error);
     }
@@ -45,7 +45,11 @@ function CanceledOrder() {
     loadCancel();
   }, []);
 
-  // Lock Customer functionality
+  useEffect(() => {
+    // Update filtered orders whenever cancelOrder changes
+    setFilteredOrders(cancelOrder);
+  }, [cancelOrder]);
+
   const [banReason, setBanReason] = useState("");
   const [selectedUserId, setSelectedUserId] = useState(null);
 
@@ -55,16 +59,12 @@ function CanceledOrder() {
       return;
     }
     try {
-      await axios.post(
-        `${banApi}/${selectedUserId}`,
-        banReason,
-        {
-          headers: { "Content-Type": "text/plain" },
-        }
-      );
+      await axios.post(`${banApi}/${selectedUserId}`, banReason, {
+        headers: { "Content-Type": "text/plain" },
+      });
       setBannedUsers((prev) => new Set(prev).add(selectedUserId));
-      setAlertVisible(true); // Show success alert
-      setTimeout(() => setAlertVisible(false), 3000); // Hide alert after 3 seconds
+      setAlertVisible(true);
+      setTimeout(() => setAlertVisible(false), 3000);
       handleClose2();
       setBanReason("");
       loadCancel();
@@ -74,17 +74,32 @@ function CanceledOrder() {
     }
   };
 
-  // Pagination
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
-  const pageCount = Math.ceil(cancelOrder.length / itemsPerPage);
-  const displayData = cancelOrder.slice(
+  const pageCount = Math.ceil(filteredOrders.length / itemsPerPage);
+  const displayData = filteredOrders.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
+  };
+
+  const handleSearchChange = (e) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+
+    const filtered = cancelOrder.filter((item) =>
+      Object.values(item)
+        .map((value) => String(value))
+        .join(" ")
+        .toLowerCase()
+        .includes(term)
+    );
+
+    setFilteredOrders(filtered);
+    setCurrentPage(0);
   };
 
   return (
@@ -110,6 +125,24 @@ function CanceledOrder() {
               </Breadcrumb>
             </div>
             <hr />
+          </div>
+
+          <div className="search__bar">
+            <Container>
+              <Row>
+                <Col></Col>
+                <Col></Col>
+                <Col>
+                  <Form.Control
+                    type="text"
+                    placeholder="Search orders..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    className="search__input"
+                  />
+                </Col>
+              </Row>
+            </Container>
           </div>
 
           {alertVisible && (

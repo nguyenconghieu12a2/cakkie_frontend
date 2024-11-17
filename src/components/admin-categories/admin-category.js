@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import Alert from "react-bootstrap/Alert";
+import { Col, Container, Row } from "react-bootstrap";
 
 //API
 //Get Cate
@@ -21,6 +22,27 @@ const addCate = "/api/admin/add-category";
 const updateCate = "/api/admin/update-category";
 
 function Category() {
+  //Search
+  const [filteredOrders, setFilteredOrders] = useState([]); // For filtered results
+  const [searchTerm, setSearchTerm] = useState("");
+  
+  const handleSearchChange = (e) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+
+    const filtered = cate.filter((item) =>
+      Object.values(item)
+        .map((value) => String(value))
+        .join(" ")
+        .toLowerCase()
+        .includes(term)
+    );
+
+    setFilteredOrders(filtered);
+    setCurrentPage(0);
+  };
+
+  //Fectach
   const [show, setShow] = useState(false);
   const handleClose = () => {
     setShow(false);
@@ -47,6 +69,7 @@ function Category() {
   const loadCate = async () => {
     const result = await axios.get(`${api}`);
     setCate(result.data);
+    setFilteredOrders(result.data);
   };
 
   useEffect(() => {
@@ -132,52 +155,6 @@ function Category() {
     setEditCate({ ...editCate, [e.target.name]: e.target.value });
   };
 
-  // const editCateSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   const regex = /^[a-zA-Z][a-zA-Z0-9\s]*$/;
-  //   const cateExisted = cate.some(
-  //     (item) => item.cateName.toLowerCase() === newCate.cateName.toLowerCase()
-  //   );
-  //   if (!regex.test(newCate.cateName)) {
-  //     setEditError(
-  //       "Category name cannot start with whitespace or contain special characters!"
-  //     );
-  //     setEditSuccess("");
-  //     return;
-  //   } else if (newCate.cateName.length > 30) {
-  //     setEditError("Category name should be less than 30 characters!");
-  //     setEditSuccess("");
-  //     return;
-  //   } else if (newCate.cateName.length < 4) {
-  //     setEditError("Category name should be greater than 4 characters!");
-  //     setEditSuccess("");
-  //     setTimeout(() => {
-  //       setEditError("");
-  //     }, 3000);
-  //     return;
-  //   } else if (cateExisted) {
-  //     setEditError("Category has been existed!");
-  //     setEditSuccess("");
-  //     setTimeout(() => {
-  //       setError("");
-  //     }, 3000);
-  //     return;
-  //   }
-
-  //   try {
-  //     await axios.put(`${updateCate}/${categoryIdToEdit}`, editCate);
-  //     setEditSuccess("Category update successfully!");
-  //     // handleCloseEdit();
-  //     setTimeout(() => {
-  //       setEditSuccess("");
-  //     }, 5000);
-  //     loadCate();
-  //   } catch (error) {
-  //     console.error("Error editing category:", error);
-  //   }
-  // };
-
   const editCateSubmit = async (e) => {
     e.preventDefault();
 
@@ -185,7 +162,7 @@ function Category() {
     const cateExisted = cate.some(
       (item) =>
         item.cateName.toLowerCase() === editCate.cateName.toLowerCase() &&
-        item.id !== categoryIdToEdit 
+        item.id !== categoryIdToEdit
     );
 
     if (!regex.test(editCate.cateName)) {
@@ -194,14 +171,14 @@ function Category() {
       );
       setEditSuccess("");
       setTimeout(() => {
-        setEditError(""); 
+        setEditError("");
       }, 3000);
       return;
     } else if (editCate.cateName.length > 30) {
       setEditError("Category name should be less than 30 characters!");
       setEditSuccess("");
       setTimeout(() => {
-        setEditError(""); 
+        setEditError("");
       }, 3000);
       return;
     } else if (editCate.cateName.length < 4) {
@@ -215,7 +192,7 @@ function Category() {
       setEditError("Category already exists!");
       setEditSuccess("");
       setTimeout(() => {
-        setEditError(""); 
+        setEditError("");
       }, 3000);
       return;
     }
@@ -225,16 +202,16 @@ function Category() {
       setEditSuccess("Category updated successfully!");
       setEditError("");
       setTimeout(() => {
-        setEditSuccess(""); 
+        setEditSuccess("");
       }, 3000);
       loadCate();
-      handleCloseEdit(); 
+      // handleCloseEdit();
     } catch (error) {
       console.error("Error editing category:", error);
       setEditError("Failed to update category. Please try again.");
       setEditSuccess("");
       setTimeout(() => {
-        setEditError(""); 
+        setEditError("");
       }, 3000);
     }
   };
@@ -256,8 +233,8 @@ function Category() {
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
-  const pageCount = Math.ceil(cate.length / itemsPerPage);
-  const displayData = cate.slice(
+  const pageCount = Math.ceil(filteredOrders.length / itemsPerPage);
+  const displayData = filteredOrders.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
@@ -290,6 +267,24 @@ function Category() {
               </Breadcrumb>
             </div>
             <hr />
+          </div>
+
+          <div className="search__bar">
+            <Container>
+              <Row>
+                <Col></Col>
+                <Col></Col>
+                <Col>
+                  <Form.Control
+                    type="text"
+                    placeholder="Search orders..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    className="search__input"
+                  />
+                </Col>
+              </Row>
+            </Container>
           </div>
 
           <div className="category__body__wrap">
