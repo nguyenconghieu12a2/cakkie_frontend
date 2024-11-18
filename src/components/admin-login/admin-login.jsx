@@ -16,7 +16,7 @@ const AdminLogin = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const jwtToken = sessionStorage.getItem("jwt");
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
     if (!jwtToken) {
       navigate("/admin-login");
     }else{
@@ -43,14 +43,14 @@ const AdminLogin = () => {
 
       console.log("Full API response:", response.data);
 
-      const { image, jwt, id } = response.data;
+      const { image, jwtAdmin, id } = response.data;
 
-      sessionStorage.setItem("jwt", jwt);
+      sessionStorage.setItem("jwtAdmin", jwtAdmin);
       // sessionStorage.setItem("image", image);
       sessionStorage.setItem("id", id);
 
       setMessage("Login successful!");
-      console.log("JWT Token: ", jwt);
+      console.log("JWT Token: ", jwtAdmin);
       // console.log("IMG: ", image);
       console.log("ADMIN: ", id);
 

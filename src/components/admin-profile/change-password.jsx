@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Sidebar from "../sidebar/sidebar";
+import Sidebar from "../admin-sidebar/sidebar";
 import "../../styles/admin-profile/change-password.css";
 import axios from "axios";
 
 const api = "/api/admin/change-password";
 
-const ChangePassword = ({ onLogout }) => {
+const AdminChangePassword = ({ onLogout }) => {
   const navigate = useNavigate();
   const adminid = sessionStorage.getItem("id");
   const [oldPassword, setOldPassword] = useState("");
@@ -14,14 +14,14 @@ const ChangePassword = ({ onLogout }) => {
   const [alert, setAlert] = useState("");
 
   useEffect(() => {
-    const jwtToken = sessionStorage.getItem("jwt");
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
     if (!jwtToken) {
       navigate("/admin-login");
     }
   }, [navigate]);
 
   const handleLogoutClick = () => {
-    sessionStorage.removeItem("jwt");
+    sessionStorage.removeItem("jwtAdmin");
     onLogout();
     navigate("/admin-login");
   };
@@ -32,6 +32,12 @@ const ChangePassword = ({ onLogout }) => {
     // Check if the new password is the same as the old password
     if (oldPassword === newPassword) {
       setAlert("New password is the same as the old password. Please choose a different password.");
+      return;
+    }
+
+    // Check for whitespace at the beginning or end of the new password
+    if (newPassword.trim() !== newPassword) {
+      setAlert("New password should not have whitespace at the beginning or end.");
       return;
     }
 
@@ -58,7 +64,7 @@ const ChangePassword = ({ onLogout }) => {
 
     // Check if both fields are filled
     if (!oldPassword.trim() || !newPassword.trim()) {
-      setAlert("Both fields are required!");
+      setAlert("Password can not be white space!");
       return;
     }
 
@@ -114,6 +120,7 @@ const ChangePassword = ({ onLogout }) => {
           <form onSubmit={handleSubmit} className="password-form">
             <label htmlFor="oldPassword">Old Password</label>
             <input
+              required
               type="password"
               id="oldPassword"
               value={oldPassword}
@@ -122,6 +129,7 @@ const ChangePassword = ({ onLogout }) => {
 
             <label htmlFor="newPassword">New Password</label>
             <input
+              required
               type="password"
               id="newPassword"
               value={newPassword}
@@ -139,4 +147,4 @@ const ChangePassword = ({ onLogout }) => {
     </div>
   );
 };
-export default ChangePassword;
+export default AdminChangePassword;

@@ -1,92 +1,130 @@
-import { BrowserRouter, Routes, Route, Navigate  } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { FlowProvider, useFlow } from "./components/admin-login/Flow";
 import "./App.css";
 // LOGIN PAGE
 import AdminLogin from "./components/admin-login/admin-login";
-import ResetPasswordEmail from "./components/admin-login/reset-password-email";
-import NewPassword from "./components/admin-login/new-password";
-import OTPEmail from "./components/admin-login/otp-email";
+import AdminResetPasswordEmail from "./components/admin-login/reset-password-email";
+import AdminNewPassword from "./components/admin-login/new-password";
+import AdminOTPEmail from "./components/admin-login/otp-email";
 //DASHBOARD
 import Dashboard from "./components/dashboard/dashboard";
 //BANNERS
 import AdminBanner from "./components/admin-banners/admin-banner";
-import AddBanner from "./components/admin-banners/admin-add-banner";
-import EditBanner from "./components/admin-banners/admin-edit-banner";
+import AdminAddBanner from "./components/admin-banners/admin-add-banner";
+import AdminEditBanner from "./components/admin-banners/admin-edit-banner";
 //ADMIN PROFILES
 import AdminProfile from "./components/admin-profile/manage-profile";
-import EditProfile from "./components/admin-profile/edit-profile";
-import ChangePassword from "./components/admin-profile/change-password";
+import AdminEditProfile from "./components/admin-profile/edit-profile";
+import AdminChangePassword from "./components/admin-profile/change-password";
 //CUSTOMERS
-import ManageCustomer from "./components/customers/admin-manage-customer";
-import BannedCustomer from "./components/customers/admin-banned-customer";
-import DeletedCustomer from "./components/customers/admin-deleted-customer";
-import DetailCustomer from "./components/customers/admin-detail-customer";
-import DetailBannedCustomer from "./components/customers/admin-detail-banned-customer";
-import EditCustomer from "./components/customers/admin-edit-customer";
+import AdminManageCustomer from "./components/admin-customers/admin-manage-customer";
+import AdminBannedCustomer from "./components/admin-customers/admin-banned-customer";
+import AdminDeletedCustomer from "./components/admin-customers/admin-deleted-customer";
+import AdminDetailCustomer from "./components/admin-customers/admin-detail-customer";
+import AdminDetailBannedCustomer from "./components/admin-customers/admin-detail-banned-customer";
+import AdminEditCustomer from "./components/admin-customers/admin-edit-customer";
 //REPORTS (X2)
-import Reports from "./components/reports/admin-report";
-import Statistic from "./components/statistic/admin-statistic";
+import AdminReports from "./components/admin-reports/admin-report";
+import AdminStatistic from "./components/admin-statistic/admin-statistic";
 //OTHERS
-import Header from "./components/header/admin-header";
 import FourOhFour from "./components/not-found/not-found";
 
-// import Login from "./components/user-login/login";
-
+import CategoryDiscount from "./components/admin-discount/category-discount";
+import CommonDiscount from "./components/admin-discount/common-discount/common-discount";
+import DetailCateDiscount from "./components/admin-discount/detail-discount/detail-cate-discount";
 
 const ProtectedRoute = ({ allowedStep, element }) => {
   const { flowStep } = useFlow();
-  return flowStep === allowedStep ? element : <Navigate to="/admin-reset-email" />;
+  return flowStep === allowedStep ? (
+    element
+  ) : (
+    <Navigate to="/admin-reset-email" />
+  );
 };
 
 function App() {
   return (
     <div className="">
       <BrowserRouter>
-      <FlowProvider>
-        <Routes>
-
-
-          {/* LOGIN PAGE */}
-          <Route path="/admin-login" element={<AdminLogin />} />
-            <Route path="/admin-reset-email" element={<ResetPasswordEmail />} />
+        <FlowProvider>
+          <Routes>
+            {/* LOGIN PAGE */}
+            <Route path="/admin-login" element={<AdminLogin />} />
+            <Route
+              path="/admin-reset-email"
+              element={<AdminResetPasswordEmail />}
+            />
             <Route
               path="/admin-reset-otp"
-              element={<ProtectedRoute allowedStep="otp" element={<OTPEmail />} />}
+              element={
+                <ProtectedRoute allowedStep="otp" element={<AdminOTPEmail />} />
+              }
             />
             <Route
               path="/admin-reset-password"
-              element={<ProtectedRoute allowedStep="new-password" element={<NewPassword />} />}
+              element={
+                <ProtectedRoute
+                  allowedStep="new-password"
+                  element={<AdminNewPassword />}
+                />
+              }
             />
-          {/* DASHBOARD */}
-          <Route path="/dashboard" element={<Dashboard />} />
+            {/* DASHBOARD */}
+            <Route path="/dashboard" element={<Dashboard />} />
 
-          {/* BANNERS */}
-          <Route path="/banners" element={<AdminBanner />} />
-          <Route path="/add-banners" element={<AddBanner />} />
-          <Route path="/edit-banners" element={<EditBanner />} />
+            {/* BANNERS */}
+            <Route path="/admin-banners" element={<AdminBanner />} />
+            <Route path="/admin-add-banners" element={<AdminAddBanner />} />
+            <Route path="/admin-edit-banners" element={<AdminEditBanner />} />
 
-          {/* ADMIN PROFILES */}
-          <Route path="/admin-profile" element={<AdminProfile />} />
-          <Route path="/admin-profile/edit" element={<EditProfile />} />
-          <Route path="/change-password" element={<ChangePassword />} />
-          {/* CUSTOMERS */}
-          <Route path="/customers" element={<ManageCustomer />} />
-          <Route path="/banned-customers" element={<BannedCustomer />} />
-          <Route
-            path="/banned-customers/detail/:id"
-            element={<DetailBannedCustomer />}
-          />
-          <Route path="/deleted-customers" element={<DeletedCustomer />} />
-          <Route path="/customers/detail/:id" element={<DetailCustomer />} />
-          <Route path="/customers/edit/:id" element={<EditCustomer />} />
+            {/* ADMIN PROFILES */}
+            <Route path="/admin-profile" element={<AdminProfile />} />
+            <Route path="/admin-profile/edit" element={<AdminEditProfile />} />
+            <Route
+              path="/admin-change-password"
+              element={<AdminChangePassword />}
+            />
+            {/* CUSTOMERS */}
+            <Route path="/admin-customers" element={<AdminManageCustomer />} />
+            <Route
+              path="/admin-banned-customers"
+              element={<AdminBannedCustomer />}
+            />
+            <Route
+              path="/admin-banned-customers/detail/:id"
+              element={<AdminDetailBannedCustomer />}
+            />
+            <Route
+              path="/admin-deleted-customers"
+              element={<AdminDeletedCustomer />}
+            />
+            <Route
+              path="/admin-customers/detail/:id"
+              element={<AdminDetailCustomer />}
+            />
+            <Route
+              path="/admin-customers/edit/:id"
+              element={<AdminEditCustomer />}
+            />
 
-          {/* REPORTS (X2) */}
-          <Route path="/reports" element={<Reports />}/>
-          <Route path="/statistics" element={<Statistic />} />
+            {/* DISCOUNT */}
+            <Route path="/admin-discount" element={<CategoryDiscount />} />
+            <Route
+              path="/admin-common-discount/:commonDiscountId"
+              element={<CommonDiscount />}
+            />
+            <Route
+              path="/admin-detail-category-discount/:discountCategoryId"
+              element={<DetailCateDiscount />}
+            />
 
-          {/* 404 Not Found Route */}
-          <Route path="*" element={<FourOhFour />} />
-        </Routes>
+            {/* REPORTS (X2) */}
+            <Route path="/admin-reports" element={<AdminReports />} />
+            <Route path="/admin-statistics" element={<AdminStatistic />} />
+
+            {/* 404 Not Found Route */}
+            <Route path="*" element={<FourOhFour />} />
+          </Routes>
         </FlowProvider>
       </BrowserRouter>
     </div>

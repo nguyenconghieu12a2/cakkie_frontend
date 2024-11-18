@@ -5,11 +5,10 @@ import { BsArrowLeftSquareFill } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
 import {useFlow} from './Flow'
 import axios from "axios";
-import { responsivePropType } from "react-bootstrap/esm/createUtilityClasses";
 
 const api = "/api/admin/forgotPassword/verifyEmail"
 
-const ResetPasswordEmail = () => {
+const AdminResetPasswordEmail = () => {
   const {advanceFlow, saveEmail} = useFlow();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -81,4 +80,4 @@ const ResetPasswordEmail = () => {
     </>
   );
 };
-export default ResetPasswordEmail;
+export default AdminResetPasswordEmail;

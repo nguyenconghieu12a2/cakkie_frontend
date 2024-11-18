@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../../styles/banner/edit-banner.css";
+import "../../styles/admin-banner/edit-banner.css";
 
 const api = "/api/admin/update-banners";
 
-const EditBanner = ({ banner, onClose, onUpdate }) => {
+const AdminEditBanner = ({ banner, onClose, onUpdate }) => {
   const [title, setTitle] = useState("");
   const [image, setImage] = useState( "");
   const [link, setLink] = useState("");
@@ -15,7 +15,7 @@ const EditBanner = ({ banner, onClose, onUpdate }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const jwtToken = sessionStorage.getItem("jwt");
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
     if (!jwtToken) {
       navigate("/admin-login");
     }
@@ -26,7 +26,7 @@ const EditBanner = ({ banner, onClose, onUpdate }) => {
       setTitle(banner.title || "");
       setImage(banner.image || "");
       setLink(banner.link || "");
-      setImagePreview(banner.image || "");
+      // setImagePreview(banner.image || "");
     }
   }, [banner]);
 
@@ -34,6 +34,27 @@ const EditBanner = ({ banner, onClose, onUpdate }) => {
     const file = e.target.files[0];
     if (file) {
       const fileType = file.type;
+      const fileName = file.name;
+      const fileSizeInMB = file.size / (1024 * 1024); // Convert file size to MB
+      
+      // Regex to check for spaces or special characters
+      const invalidFileNameRegex = /[^a-zA-Z0-9-_().]/;
+      
+      if (invalidFileNameRegex.test(fileName)) {
+        setImageError("File name contains spaces or special characters. Please rename it.");
+        setImage(null);
+        // setImagePreview(banner.adminImage); // Reset to default image preview
+        return;
+      }
+      
+      // Check file size (1 MB limit)
+      if (fileSizeInMB > 1) {
+        setImageError("File size exceeds 1 MB. Please upload a smaller image.");
+        setImage(null);
+        setImagePreview(null); // Optionally clear the image preview
+        return;
+    }
+
       if (fileType === "image/jpeg" || fileType === "image/png") {
         setImage(file); // Store the actual image file
         setImageError("");
@@ -41,7 +62,7 @@ const EditBanner = ({ banner, onClose, onUpdate }) => {
       } else {
         setImageError("Only .jpg and .png files are allowed.");
         setImage(null); // Clear the image if invalid
-        setImagePreview(`${banner.image}`);
+        // setImagePreview(`${banner.image}`);
       }
     }
   };
@@ -129,7 +150,7 @@ const EditBanner = ({ banner, onClose, onUpdate }) => {
               {imageError && <p className="error-text">{imageError}</p>}
               {imagePreview && (
                 <img
-                  src={`/images/${imagePreview}`}
+                  src={URL.createObjectURL(image)}
                   alt="Banner Preview"
                   className="banner-previeww"
                 />
@@ -161,4 +182,4 @@ const EditBanner = ({ banner, onClose, onUpdate }) => {
     </div>
   );
 };
-export default EditBanner;
+export default AdminEditBanner;

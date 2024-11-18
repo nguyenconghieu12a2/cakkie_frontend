@@ -1,0 +1,45 @@
+.discount-table-container {
+  width: 100%;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+}
+
+.discount-subtable-container{
+  width: 80%;
+  margin-left: 270px;
+}
+
+.profile-header1{
+  margin-left: 0px;
+}
+
+.profile-header1 h2 {
+  margin: 0px;
+  padding-top: 10px;
+  text-align: start;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.profile-header1 p {
+  color: gray;
+  margin-top: 5px;
+}
+
+.hrr{
+  margin-top:0rem;
+}
+
+.add-cate-btn{
+  display: flex;
+  justify-content: end;
+}
+
+.add-cate-btn button{
+  background-color: #C2F19B;
+  color: black;
+}
+
+.add-cate-btn button:hover{
+  background-color: #C2F19B;
+}

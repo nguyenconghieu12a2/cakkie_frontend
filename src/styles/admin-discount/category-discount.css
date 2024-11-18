@@ -1,0 +1,79 @@
+
+.discount-table-container {
+  width: 100%;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+}
+
+.discount-subtable-container{
+  width: 80%;
+  margin-left: 270px;
+}
+
+.profile-header1{
+  margin-left: 0px;
+}
+
+.profile-header1 h2 {
+  margin: 0px;
+  padding-top: 10px;
+  text-align: start;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.profile-header1 p {
+  color: gray;
+  margin-top: 5px;
+}
+
+.hrr{
+  margin-top:0rem;
+}
+
+/* App.css */
+.discount-card {
+  background-color: #f5f0e1;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+  margin: 0;
+}
+
+.pagination {
+  margin-top: 10px;
+}
+
+.btn-outline-secondaryy{
+  padding: 0px;
+}
+
+.btn-outline-secondaryy svg{
+  width: 30px;
+  height: 30px;
+}
+
+h3 {
+  font-weight: bold;
+  font-size: 25px;
+}
+
+.items-per-page{
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 20px 10px 0px;
+}
+
+.button{
+  width: 40px;
+  height: 40px;
+  padding: 0px;
+}
+
+.add-new-common-discount{
+  width: 40px;
+  height: 40px;
+}

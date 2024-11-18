@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "../../styles/banner/banner.css";
+import "../../styles/admin-banner/banner.css";
 import { useNavigate, Link } from "react-router-dom";
-import Sidebar from "../sidebar/sidebar";
+import Sidebar from "../admin-sidebar/sidebar";
 import AdminEditBanner from "./admin-edit-banner";
 import AdminAddBanner from "./admin-add-banner";
-import AvatarHeader from "../header/admin-header";
+import AvatarHeader from "../admin-header/admin-header";
 
 import { FaEdit, FaTrashAlt, FaPlusCircle } from "react-icons/fa";
 
 const api = "/api/admin/banners";
 const deleteApi = "/api/admin/delete-banners";
 
-const Banners = ({ onLogout }) => {
+const AdminBanners = ({ onLogout }) => {
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
   const [isAddPopupOpen, setIsAddPopupOpen] = useState(false);
   const [selectedBanner, setSelectedBanner] = useState(null);
@@ -21,11 +21,17 @@ const Banners = ({ onLogout }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const jwtToken = sessionStorage.getItem("jwt");
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
     if (!jwtToken) {
       navigate("/admin-login");
     }
   }, [navigate]);
+
+  const handleLogoutClick = () => {
+    sessionStorage.removeItem("jwtAdmin");
+    onLogout();
+    navigate("/admin-login");
+  };
 
   useEffect(() => {
     fetchAllBanners();
@@ -48,12 +54,6 @@ const Banners = ({ onLogout }) => {
     } catch (error) {
       console.log("catch error: ", error);
     }
-  };
-
-  const handleLogoutClick = () => {
-    sessionStorage.removeItem("jwt");
-    onLogout();
-    navigate("/admin-login");
   };
 
   const openEditPopup = (banner) => {
@@ -86,7 +86,7 @@ const Banners = ({ onLogout }) => {
   return (
     <div className="banners-container">
       <div>
-        <Sidebar onLogout={handleLogoutClick}/>
+        <Sidebar onLogout={handleLogoutClick} />
       </div>
       <div className="content">
         <div className="upper-title">
@@ -118,40 +118,69 @@ const Banners = ({ onLogout }) => {
             </tr>
           </thead>
           <tbody>
-            {banners.map((banner, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{banner.title}</td>
-                <td>
-                  <div className="img-containerr">
-                    <img
-                      className="imagesss"
-                      src={`images/${banner.image}`}
-                      alt={banner.image}
-                    />
-                  </div>
-                </td>
-                <td>{banner.link}</td>
-                <td className="actionss">
-                  <FaEdit
-                    onClick={() => openEditPopup(banner)}
-                    className="edit-icon"
-                  />
-                  {isEditPopupOpen && (
-                    <AdminEditBanner
-                      banner={selectedBanner}
-                      onClose={closeEditPopup}
-                      onUpdate={fetchAllBanners}
-                    />
-                  )}
-                  &emsp;|&emsp;
-                  <FaTrashAlt
-                    className="delete-icon"
-                    onClick={() => deleteBanners(banner.id)}
-                  />
+            {/* Check if there are no banned customers to display */}
+            {banners.length === 0 ? (
+              <tr>
+                <td
+                  colSpan="7"
+                  style={{ textAlign: "center", padding: "20px" }}
+                >
+                  <div className="no-data-message">No banners found.</div>
                 </td>
               </tr>
-            ))}
+            ) : (
+              banners.map((banner, index) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>{banner.title}</td>
+                  <td
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderTop: "0px",
+                      borderLeft: "0px",
+                      borderRight: "0px",
+                      height: "29vh",
+                    }}
+                  >
+                    <div className="img-containerr">
+                      <img
+                        className="imagesss"
+                        src={`/images/${banner.image}`}
+                        alt={banner.image}
+                      />
+                    </div>
+                  </td>
+                  <td>{banner.link}</td>
+                  <td
+                    className="actionss"
+                    style={{
+                      borderTop: "0px",
+                      borderLeft: "0px",
+                      height: "31vh",
+                    }}
+                  >
+                    <FaEdit
+                      onClick={() => openEditPopup(banner)}
+                      className="edit-icon"
+                    />
+                    {isEditPopupOpen && (
+                      <AdminEditBanner
+                        banner={selectedBanner}
+                        onClose={closeEditPopup}
+                        onUpdate={fetchAllBanners}
+                      />
+                    )}
+                    &emsp;|&emsp;
+                    <FaTrashAlt
+                      className="delete-icon"
+                      onClick={() => deleteBanners(banner.id)}
+                    />
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
@@ -159,4 +188,4 @@ const Banners = ({ onLogout }) => {
   );
 };
 
-export default Banners;
+export default AdminBanners;

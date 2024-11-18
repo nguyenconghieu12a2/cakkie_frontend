@@ -1,14 +1,13 @@
 import React, {useState} from "react";
 import "../../styles/admin-login/new-password.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { BsArrowLeftSquareFill } from "react-icons/bs";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {useFlow} from './Flow';
 import axios from "axios";
 
 const api = "/api/admin/forgotPassword/changePassword"
 
-const NewPassword = () => {
+const AdminNewPassword = () => {
   const { advanceFlow, email } = useFlow();
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
@@ -141,4 +140,4 @@ const NewPassword = () => {
     </>
   );
 };
-export default NewPassword;
+export default AdminNewPassword;

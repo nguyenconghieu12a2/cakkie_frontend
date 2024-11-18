@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
 import "../../styles/admin-profile/edit-profile.css";
 import { BsArrowLeftSquareFill } from "react-icons/bs";
-import Sidebar from "../sidebar/sidebar";
+import Sidebar from "../admin-sidebar/sidebar";
 import axios from "axios";
 
 const api2 = "/api/admin/update-admin-profile";
@@ -22,14 +22,14 @@ const AdminProfile = ({ onLogout }) => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const jwtToken = sessionStorage.getItem("jwt");
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
     if (!jwtToken) {
       navigate("/admin-login");
     }
   }, [navigate]);
 
   const handleLogoutClick = () => {
-    sessionStorage.removeItem("jwt");
+    sessionStorage.removeItem("jwtAdmin");
     onLogout();
     navigate("/admin-login");
   };
@@ -39,12 +39,14 @@ const AdminProfile = ({ onLogout }) => {
     if (file) {
       const fileType = file.type;
       const fileName = file.name;
-      
+
       // Regex to check for spaces or special characters
       const invalidFileNameRegex = /[^a-zA-Z0-9-_().]/;
-      
+
       if (invalidFileNameRegex.test(fileName)) {
-        setImageError("File name contains spaces or special characters. Please rename it.");
+        setImageError(
+          "File name contains spaces or special characters. Please rename it."
+        );
         setImage(null);
         setImagePreview(profile.adminImage); // Reset to default image preview
         return;
@@ -61,8 +63,6 @@ const AdminProfile = ({ onLogout }) => {
       }
     }
   };
-
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -103,8 +103,8 @@ const AdminProfile = ({ onLogout }) => {
         setError("Failed to update the profile. Please try again.");
       }
     } catch (err) {
-      console.error("Error uploading banner:", err);
-      setError("Failed to upload banner. Please try again.");
+      console.error("Error uploading profile:", err);
+      setError("Failed to upload profile. Please try again.");
     }
   };
 
@@ -173,7 +173,7 @@ const AdminProfile = ({ onLogout }) => {
                 <label>Avatar:</label>
                 <div className="avatar-circlee">
                   <img
-                    src={`/images/${profile.adminImage}`}
+                    src={`/images/admin-avt/${profile.adminImage}`}
                     alt="Avatar"
                     className="avatar-img"
                   />

@@ -9,7 +9,7 @@ import axios from "axios";
 const api = "/api/admin/forgotPassword/verifyOtp"
 // /986417/hieuncce180986@fpt.edu.vn
 
-const OTPEmail = () => {
+const AdminOTPEmail = () => {
 
     const { advanceFlow, email } = useFlow();
     const navigate = useNavigate();
@@ -82,4 +82,4 @@ const OTPEmail = () => {
       </>
     );
   };
-  export default OTPEmail;
+  export default AdminOTPEmail;

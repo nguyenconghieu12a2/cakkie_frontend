@@ -1,0 +1,153 @@
+/* Banners.css */
+.banners-container {
+    display: flex;
+  }
+  
+  .sidebar {
+    width: 100%;
+    max-width: 250px;
+    /* padding: 20px; */
+    color: #222;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  /* .sidebar h2 {
+    font-size: 1.5rem;
+  }
+  
+  .sidebar ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .sidebar ul li {
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  
+  .sidebar .logout {
+    margin-top: auto;
+    padding: 10px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  } */
+  
+  .content {
+    width: 80%;
+    margin-left: 270px;
+  }
+  
+  header h3 {
+    font-size: 1.8rem;
+    margin: 0;
+  }
+  
+  header p {
+    margin: 5px 0;
+    color: #888;
+  }
+  
+  .banners-table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+  }
+  
+  .banners-table th,
+  .banners-table td {
+    border: 1px solid #adadad;
+    padding: 15px;
+    text-align: center;
+    vertical-align: middle;
+  }
+  .banners-table td{
+    height: 209px;
+  }
+
+  .img-containerr{
+    width: 300px; 
+    height: 150px;
+  }
+  
+  
+  .imagesss {
+    width: 300px; 
+    height: 150px; 
+    object-fit: contain; 
+  }
+  
+  .banners-table th {
+    background-color: #F7DA8E;
+  }
+  
+  
+  .actionss{
+    display: flex;
+    justify-content: center;
+    align-items:center;
+  }
+  
+  .edit-icon,
+  .delete-icon {
+    cursor: pointer;
+    width: 23px;
+    height: 23px;
+  }
+  
+  .edit-icon {
+    color: #007bff;
+  }
+  
+  .delete-icon {
+    color: #dc3545;
+  }
+
+  .add-button{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+  }
+
+  .add-icon{
+    cursor: pointer;
+    color: #0cae3a;
+    padding-right: 20px;
+    width: 50px;
+    height: 50px;
+  }
+
+  .lower{
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+    align-items: center;
+  }
+  
+  .removed-banners {
+    margin-top: 20px;
+    background-color: #ff6f6f;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+  }
+
+.image-preview{
+  height: 100px;
+  width: 100px;
+  object-fit: cover;
+}
+
+.error-message{
+  color: red;
+  margin: 0;
+}
+
+.no-data-message{
+  font-size: 17px;
+}
+  

@@ -32,13 +32,36 @@ body {
   .hrr{
     margin-top:0rem;
   }
+
+  .view-options{
+    background-color: rgb(233, 221, 166);
+  }
+
+  .view-options,.sub-view-options{
+    padding: 7px 10px;
+    border-radius: 10px;
+    border: none;
+  }
+  .sub-view-options{
+    margin: 0px 10px;
+    background-color: rgb(237, 236, 229);
+  }
+
+  .div-card{
+    width: 16rem;
+  }
   
   .value-report{
     text-align: left;
+    font-size: 27px;
   }
 
   .table th, .table td{
     font-size: 15px;
+  }
+
+  .pagging{
+    width: 300px;
   }
 
   .items-per-page{
@@ -49,9 +72,9 @@ body {
     font-size: 15px;
   }
 
-  .pagination{
+  /* .pagination{
     padding-left: 40px;
-  }
+  } */
 
   .title-table{
     margin-left: 30px;

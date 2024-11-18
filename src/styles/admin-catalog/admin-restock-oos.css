@@ -1,0 +1,26 @@
+.modal-title {
+  font-weight: bold;
+}
+
+.modal-footer .btn-danger {
+  background-color: #ff4500;
+  color: white;
+  font-weight: bold;
+  border: none;
+  margin: 0;
+  padding: 10px;
+}
+
+.modal-footer .btn-success {
+  background-color: #32cd32;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 23px;
+  margin-left: 10px;
+}
+
+.pagging{
+  width: 300px;
+}

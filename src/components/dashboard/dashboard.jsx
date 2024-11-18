@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Card from "./card";
 import Chart from "./chart";
-import Sidebar from "../sidebar/sidebar";
+import Sidebar from "../admin-sidebar/sidebar";
 import Pagination from "react-bootstrap/Pagination";
 import { Link, useNavigate } from "react-router-dom";
 import { Row, Col } from "react-bootstrap";
 import "../../styles/dashboard/dashboard.css";
 // import customerData from "./data/customer";
 // import ordersData from "./data/order";
-import AvatarHeader from "../header/admin-header";
+import AvatarHeader from "../admin-header/admin-header";
 
 const api1 = "/api/admin/table-order";
 const api2 = "/api/admin/table-customer";
@@ -55,14 +55,14 @@ const Dashboard = ({ onLogout }) => {
   }, []);
 
   useEffect(() => {
-    const jwtToken = sessionStorage.getItem("jwt");
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
     if (!jwtToken) {
       navigate("/admin-login");
     }
   }, [navigate]);
 
   const handleLogoutClick = () => {
-    sessionStorage.removeItem("jwt");
+    sessionStorage.removeItem("jwtAdmin");
     onLogout();
     navigate("/admin-login");
   };
@@ -172,15 +172,17 @@ const Dashboard = ({ onLogout }) => {
               <h2 className="title-table">Orders</h2>
             </div>
             <div className="items-per-page">
-              <label>Items per page: </label>
-              <select
-                value={itemPerPageOrder}
-                onChange={handleItemPerPageChangeOrder}
-              >
-                <option value={5}>5</option>
-                <option value={10}>10</option>
-                <option value={15}>15</option>
-              </select>
+              <div>
+                <label>Items per page: </label>
+                <select
+                  value={itemPerPageOrder}
+                  onChange={handleItemPerPageChangeOrder}
+                >
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={15}>15</option>
+                </select>
+              </div>
             </div>
             <table className="table table-bordered" style={{ width: "100%" }}>
               <thead>
@@ -188,13 +190,21 @@ const Dashboard = ({ onLogout }) => {
                   <th style={{ background: "#F4D68A" }}>#</th>
                   <th style={{ background: "#F4D68A" }}>Username</th>
                   <th style={{ background: "#F4D68A" }}>Ship method</th>
-                  <th style={{ background: "#F4D68A" }}>Payment method</th>
-                  <th style={{ background: "#F4D68A" }}>Order status</th>
+                  <th style={{ background: "#F4D68A" }}>Payment</th>
+                  <th style={{ background: "#F4D68A" }}>Status</th>
                   <th style={{ background: "#F4D68A" }}>Total</th>
                 </tr>
               </thead>
               <tbody>
-                {pagedResultOrder.map((order, index) => (
+                {/* Check if there are no banned customers to display */}
+                {ordersData.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" style={{ textAlign: "center", padding: "20px" }}>
+                      <div className="no-data-message">No orders found</div>
+                    </td>
+                  </tr>
+                ) : (
+                pagedResultOrder.map((order, index) => (
                   <tr key={index}>
                     <td>
                       {(currentPageOrder - 1) * itemPerPageOrder + index + 1}
@@ -205,47 +215,51 @@ const Dashboard = ({ onLogout }) => {
                     <td style={{ textAlign: "center" }}>{order.status}</td>
                     <td>{order.orderTotal}</td>
                   </tr>
-                ))}
+                )))}
               </tbody>
             </table>
-            <Pagination className="custom-pagination">
-              <Pagination.First
-                onClick={goToFirstPageOrder}
-                disabled={currentPageOrder <= 1}
-              />
-              <Pagination.Prev
-                onClick={goToPreviousPageOrder}
-                disabled={currentPageOrder <= 1}
-              />
+            <div className="pagging">
+              <Pagination className="custom-pagination">
+                <Pagination.First
+                  onClick={goToFirstPageOrder}
+                  disabled={currentPageOrder <= 1}
+                />
+                <Pagination.Prev
+                  onClick={goToPreviousPageOrder}
+                  disabled={currentPageOrder <= 1}
+                />
 
-              <Pagination.Item>
-                {currentPageOrder} / {totalPagesOrder}
-              </Pagination.Item>
+                <Pagination.Item>
+                  {currentPageOrder} / {totalPagesOrder}
+                </Pagination.Item>
 
-              <Pagination.Next
-                onClick={goToNextPageOrder}
-                disabled={currentPageOrder >= totalPagesOrder}
-              />
-              <Pagination.Last
-                onClick={goToLastPageOrder}
-                disabled={currentPageOrder >= totalPagesOrder}
-              />
-            </Pagination>
+                <Pagination.Next
+                  onClick={goToNextPageOrder}
+                  disabled={currentPageOrder >= totalPagesOrder}
+                />
+                <Pagination.Last
+                  onClick={goToLastPageOrder}
+                  disabled={currentPageOrder >= totalPagesOrder}
+                />
+              </Pagination>
+            </div>
           </Col>
           <Col md={6} style={{padding:"0px 0px 0px 30px", margin: "0"}}>
             <div>
               <h2 className="title-table">Customers</h2>
             </div>
             <div className="items-per-page">
-              <label>Items per page: </label>
-              <select
-                value={itemPerPageCustomer}
-                onChange={handleItemPerPageChangeCustomer}
-              >
-                <option value={5}>5</option>
-                <option value={10}>10</option>
-                <option value={15}>15</option>
-              </select>
+              <div>
+                <label>Items per page: </label>
+                <select
+                  value={itemPerPageCustomer}
+                  onChange={handleItemPerPageChangeCustomer}
+                >
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={15}>15</option>
+                </select>
+              </div>
             </div>
             {/* User Data Table */}
             <table className="table table-bordered" style={{ width: "100%" }}>
@@ -255,11 +269,19 @@ const Dashboard = ({ onLogout }) => {
                   <th style={{ background: "#A6DEF2" }}>Username</th>
                   <th style={{ background: "#A6DEF2" }}>Email</th>
                   <th style={{ background: "#A6DEF2" }}>Total Order</th>
-                  <th style={{ background: "#A6DEF2" }}>Total Payment</th>
+                  <th style={{ background: "#A6DEF2" }}>Total</th>
                 </tr>
               </thead>
               <tbody>
-                {pagedResultCustomer.map((customer, index) => (
+                {/* Check if there are no banned customers to display */}
+                {customerData.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" style={{ textAlign: "center", padding: "20px" }}>
+                      <div className="no-data-message">No customers found</div>
+                    </td>
+                  </tr>
+                ) : (
+                pagedResultCustomer.map((customer, index) => (
                   <tr key={index}>
                     <td>
                       {(currentPageCustomer - 1) * itemPerPageCustomer +
@@ -273,32 +295,34 @@ const Dashboard = ({ onLogout }) => {
                     </td>
                     <td>{customer.totalPayment}</td>
                   </tr>
-                ))}
+                )))}
               </tbody>
             </table>
-            <Pagination className="custom-pagination">
-              <Pagination.First
-                onClick={goToFirstPageCustomer}
-                disabled={currentPageCustomer <= 1}
-              />
-              <Pagination.Prev
-                onClick={goToPreviousPageCustomer}
-                disabled={currentPageCustomer <= 1}
-              />
+            <div className="pagging">
+              <Pagination className="custom-pagination">
+                <Pagination.First
+                  onClick={goToFirstPageCustomer}
+                  disabled={currentPageCustomer <= 1}
+                />
+                <Pagination.Prev
+                  onClick={goToPreviousPageCustomer}
+                  disabled={currentPageCustomer <= 1}
+                />
 
-              <Pagination.Item>
-                {currentPageCustomer} / {totalPagesCustomer}
-              </Pagination.Item>
+                <Pagination.Item>
+                  {currentPageCustomer} / {totalPagesCustomer}
+                </Pagination.Item>
 
-              <Pagination.Next
-                onClick={goToNextPageCustomer}
-                disabled={currentPageCustomer >= totalPagesCustomer}
-              />
-              <Pagination.Last
-                onClick={goToLastPageCustomer}
-                disabled={currentPageCustomer >= totalPagesCustomer}
-              />
-            </Pagination>
+                <Pagination.Next
+                  onClick={goToNextPageCustomer}
+                  disabled={currentPageCustomer >= totalPagesCustomer}
+                />
+                <Pagination.Last
+                  onClick={goToLastPageCustomer}
+                  disabled={currentPageCustomer >= totalPagesCustomer}
+                />
+              </Pagination>
+            </div>
           </Col>
         </Row>
         {/* </div> */}

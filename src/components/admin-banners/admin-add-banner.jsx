@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../../styles/banner/add-banner.css";
+import "../../styles/admin-banner/add-banner.css";
 
 const api = "/api/admin/add-banners"; // Adjust backend URL
 
-const AddBanner = ({ onClose, onAdd }) => {
+const AdminAddBanner = ({ onClose, onAdd }) => {
   const [title, setTitle] = useState("");
   const [image, setImage] = useState(null); // Store the actual file
   const [link, setLink] = useState("#");
   const [error, setError] = useState("");
   const [imageError, setImageError] = useState("");
+  const [imagePreview, setImagePreview] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    const jwtToken = sessionStorage.getItem("jwt");
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
     if (!jwtToken) {
       navigate("/admin-login");
     }
@@ -24,6 +25,27 @@ const AddBanner = ({ onClose, onAdd }) => {
     const file = e.target.files[0];
     if (file) {
       const fileType = file.type;
+      const fileName = file.name;
+      const fileSizeInMB = file.size / (1024 * 1024); // Convert file size to MB
+      
+      // Regex to check for spaces or special characters
+      const invalidFileNameRegex = /[^a-zA-Z0-9-_().]/;
+      
+      if (invalidFileNameRegex.test(fileName)) {
+        setImageError("File name contains spaces or special characters. Please rename it.");
+        setImage(null);
+        // setImagePreview(banner.adminImage); // Reset to default image preview
+        return;
+      }
+
+      // Check file size (1 MB limit)
+      if (fileSizeInMB > 1) {
+        setImageError("File size exceeds 1 MB. Please upload a smaller image.");
+        setImage(null);
+        setImagePreview(null); // Optionally clear the image preview
+        return;
+    }
+
       if (fileType === "image/jpeg" || fileType === "image/png") {
         setImage(file); // Store the actual image file
         setImageError("");
@@ -48,9 +70,9 @@ const AddBanner = ({ onClose, onAdd }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title.trim() || !image) {
+    if (!title.trim() || !image || !link.trim()) {
       setError(
-        "Missing information at these fields (Title, Image). Please fill in!"
+        "Missing information at these fields (Title, Image, or Link). Please fill in!"
       );
       return;
     }
@@ -155,4 +177,4 @@ const AddBanner = ({ onClose, onAdd }) => {
   );
 };
 
-export default AddBanner;
+export default AdminAddBanner;

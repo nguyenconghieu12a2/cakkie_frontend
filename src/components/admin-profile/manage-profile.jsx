@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../styles/admin-profile/manage-profile.css";
-import Sidebar from "../sidebar/sidebar";
+import Sidebar from "../admin-sidebar/sidebar";
 import axios from "axios";
 
 const api = "/api/admin/admin-profile";
@@ -13,14 +13,14 @@ const AdminProfile = ({ onLogout }) => {
   const adminid = sessionStorage.getItem("id");
 
   useEffect(() => {
-    const jwtToken = sessionStorage.getItem("jwt");
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
     if (!jwtToken) {
       navigate("/admin-login");
     }
   }, [navigate]);
 
   const handleLogoutClick = () => {
-    sessionStorage.removeItem("jwt");
+    sessionStorage.removeItem("jwtAdmin");
     onLogout();
     navigate("/admin-login");
   };
@@ -73,7 +73,7 @@ const AdminProfile = ({ onLogout }) => {
               <div className="profile-avatar">
                 <p>Avatar:</p>
                 <div className="avatar-circlee">
-                  <img src={`/images/${profile.adminImage}`} />
+                  <img src={`/images/admin-avt/${profile.adminImage}`} />
                 </div>
               </div>
             </div>
@@ -81,7 +81,7 @@ const AdminProfile = ({ onLogout }) => {
               <button className="edit-btn" onClick={() => handleEditProfile()}>
                 Edit Profile
               </button>
-              <Link to="/change-password">
+              <Link to="/admin-change-password">
                 <button className="change-password-btn">Change Password</button>
               </Link>
             </div>
