@@ -6,7 +6,7 @@ import axios from "axios";
 
 const api = "/api/admin/admin-profile";
 
-const AdminProfile = ({ onLogout }) => {
+const AdminProfile = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState({});
 
@@ -20,8 +20,9 @@ const AdminProfile = ({ onLogout }) => {
   }, [navigate]);
 
   const handleLogoutClick = () => {
+    console.log("Logging out...");
     sessionStorage.removeItem("jwtAdmin");
-    onLogout();
+    // onLogout();
     navigate("/admin-login");
   };
 

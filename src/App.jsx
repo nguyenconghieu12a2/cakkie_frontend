@@ -23,6 +23,8 @@ import AdminDeletedCustomer from "./components/admin-customers/admin-deleted-cus
 import AdminDetailCustomer from "./components/admin-customers/admin-detail-customer";
 import AdminDetailBannedCustomer from "./components/admin-customers/admin-detail-banned-customer";
 import AdminEditCustomer from "./components/admin-customers/admin-edit-customer";
+//MANAGE REVIEWS
+import ManageReviews from "./components/admin-reviews/manage-reviews";
 //REPORTS (X2)
 import AdminReports from "./components/admin-reports/admin-report";
 import AdminStatistic from "./components/admin-statistic/admin-statistic";
@@ -118,6 +120,8 @@ function App() {
               element={<DetailCateDiscount />}
             />
 
+            {/* MANAGE REVIEW */}
+            <Route path="/admin-reviews" element={<ManageReviews />} />
             {/* REPORTS (X2) */}
             <Route path="/admin-reports" element={<AdminReports />} />
             <Route path="/admin-statistics" element={<AdminStatistic />} />

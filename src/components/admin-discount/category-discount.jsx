@@ -16,7 +16,7 @@ const api1 = "/api/admin/category-discount-list";
 const api2 = "/api/admin/common-discount-list";
 const apiAddCommonDiscount = "/api/admin/add-common-discount";
 
-const CategoryDiscount = ({ onLogout }) => {
+const CategoryDiscount = () => {
   const navigate = useNavigate();
   const [categoryDiscount, setCategoryDiscount] = useState([]);
   const [discountCommon, setDiscountCommon] = useState([]);
@@ -37,8 +37,9 @@ const CategoryDiscount = ({ onLogout }) => {
   }, [navigate]);
 
   const handleLogoutClick = () => {
+    console.log("Logging out...");
     sessionStorage.removeItem("jwtAdmin");
-    onLogout();
+    // onLogout();
     navigate("/admin-login");
   };
 
@@ -265,7 +266,7 @@ const CategoryDiscount = ({ onLogout }) => {
                   </td>
                   <td>{cateDis.cateName}</td>
                   <td>{cateDis.currentDiscount}</td>
-                  <td>{cateDis.discountRate}</td>
+                  <td>{cateDis.discountRate}%</td>
                   <td>
                     <button className="btn btn-outline-secondaryy">
                       <CiViewList
@@ -361,7 +362,7 @@ const CategoryDiscount = ({ onLogout }) => {
                     {(currentPageCommon - 1) * itemPerPageCommon + index + 1}
                   </td>
                   <td>{comdis.discountName}</td>
-                  <td>{comdis.discountRate}</td>
+                  <td>{comdis.discountRate}%</td>
                   <td>{comdis.startDate}</td>
                   <td>{comdis.endDate}</td>
                   <td>

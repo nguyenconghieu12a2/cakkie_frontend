@@ -6,7 +6,7 @@ import axios from "axios";
 
 const api = "/api/admin/change-password";
 
-const AdminChangePassword = ({ onLogout }) => {
+const AdminChangePassword = () => {
   const navigate = useNavigate();
   const adminid = sessionStorage.getItem("id");
   const [oldPassword, setOldPassword] = useState("");
@@ -21,8 +21,9 @@ const AdminChangePassword = ({ onLogout }) => {
   }, [navigate]);
 
   const handleLogoutClick = () => {
+    console.log("Logging out...");
     sessionStorage.removeItem("jwtAdmin");
-    onLogout();
+    // onLogout();
     navigate("/admin-login");
   };
 
@@ -31,13 +32,17 @@ const AdminChangePassword = ({ onLogout }) => {
 
     // Check if the new password is the same as the old password
     if (oldPassword === newPassword) {
-      setAlert("New password is the same as the old password. Please choose a different password.");
+      setAlert(
+        "New password is the same as the old password. Please choose a different password."
+      );
       return;
     }
 
     // Check for whitespace at the beginning or end of the new password
     if (newPassword.trim() !== newPassword) {
-      setAlert("New password should not have whitespace at the beginning or end.");
+      setAlert(
+        "New password should not have whitespace at the beginning or end."
+      );
       return;
     }
 
@@ -112,9 +117,12 @@ const AdminChangePassword = ({ onLogout }) => {
         </div>
         <div className="password-container">
           <div>
-          <h2 style={{fontWeight:"bold"}}>Change Password</h2>
-        <p>Your password must be at least 8 characters and should include a combination of numbers, letters, uppercase letter and special characters (!$@%).</p>
-
+            <h2 style={{ fontWeight: "bold" }}>Change Password</h2>
+            <p>
+              Your password must be at least 8 characters and should include a
+              combination of numbers, letters, uppercase letter and special
+              characters (!$@%).
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="password-form">

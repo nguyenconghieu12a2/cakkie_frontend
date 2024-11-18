@@ -22,7 +22,7 @@ const apiAddDiscreteDiscount = "/api/admin/add-discrete-discount";
 const apiRemoveCurrentDiscount = "/api/admin/remove-current-discount";
 const apiReplaceCurrentDiscount = "/api/admin/replace-current-discount";
 
-const DetailCateDiscount = ({ onLogout }) => {
+const DetailCateDiscount = () => {
   const { discountCategoryId } = useParams();
   const location = useLocation();
   const cateName = location.state?.cateName || "Unknown Category";
@@ -50,8 +50,9 @@ const DetailCateDiscount = ({ onLogout }) => {
   }, [navigate]);
 
   const handleLogoutClick = () => {
+    console.log("Logging out...");
     sessionStorage.removeItem("jwtAdmin");
-    onLogout();
+    // onLogout();
     navigate("/admin-login");
   };
 
@@ -343,7 +344,7 @@ const DetailCateDiscount = ({ onLogout }) => {
                     discountActivate.map((disAct, index) => (
                       <tr>
                         <td>{disAct.discountName}</td>
-                        <td>{disAct.discountRate}</td>
+                        <td>{disAct.discountRate}%</td>
                         <td>{disAct.startDate}</td>
                         <td>{disAct.endDate}</td>
                         <td>
@@ -429,7 +430,7 @@ const DetailCateDiscount = ({ onLogout }) => {
                             1}
                         </td>
                         <td>{disDisIct.discountName}</td>
-                        <td>{disDisIct.discountRate}</td>
+                        <td>{disDisIct.discountRate}%</td>
                         <td>{disDisIct.startDate}</td>
                         <td>{disDisIct.endDate}</td>
                         <td>
@@ -509,6 +510,7 @@ const DetailCateDiscount = ({ onLogout }) => {
                 <thead>
                   <tr>
                     <th>#</th>
+                    {/* <th>id check</th> */}
                     <th>Discount Name</th>
                     <th>Discount Rate</th>
                     <th>Start Date</th>
@@ -537,8 +539,9 @@ const DetailCateDiscount = ({ onLogout }) => {
                             index +
                             1}
                         </td>
+                        {/* <td>{disComIct.discountId}</td> */}
                         <td>{disComIct.discountName}</td>
-                        <td>{disComIct.discountRate}</td>
+                        <td>{disComIct.discountRate}%</td>
                         <td>{disComIct.startDate}</td>
                         <td>{disComIct.endDate}</td>
                         <td>
@@ -548,8 +551,10 @@ const DetailCateDiscount = ({ onLogout }) => {
                           >
                             🔼
                           </button>
-                          <Link to="#">
-                            <BsFillForwardFill className="forward-button" />
+                          <Link
+                            to={`/admin-common-discount/${disComIct.discountId}`}
+                          >
+                            <BsFillForwardFill className="forward-button-discount" />
                           </Link>
                         </td>
                       </tr>

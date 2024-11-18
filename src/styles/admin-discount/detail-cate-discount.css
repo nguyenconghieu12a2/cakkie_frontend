@@ -80,3 +80,12 @@
   border-color: #555;
   color: white;
 }
+
+.forward-button-discount{
+  margin-left: 10px;
+  color: white;
+  background-color: rgb(64, 154, 244);
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+}

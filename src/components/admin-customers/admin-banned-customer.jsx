@@ -11,7 +11,7 @@ import axios from "axios";
 const apiBannedCustomers = "/api/admin/banned-customer";
 const apiRecover = "/api/admin/recover-customer";
 
-const AdminBannedCustomer = ({ onLogout }) => {
+const AdminBannedCustomer = () => {
   const [bannedCustomer, setBannedCustomer] = useState([]);
   const [filteredBannedCustomer, setFilteredBannedCustomer] = useState([]); // New state for filtered customers
   const [showModal, setShowModal] = useState(false);
@@ -20,7 +20,7 @@ const AdminBannedCustomer = ({ onLogout }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
   const [customerIdToRecover, setCustomerIdToRecover] = useState(null);
-  // const [reasonInput, setReasonInput] = useState(""); 
+  // const [reasonInput, setReasonInput] = useState("");
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -31,8 +31,9 @@ const AdminBannedCustomer = ({ onLogout }) => {
   }, [navigate]);
 
   const handleLogoutClick = () => {
+    console.log("Logging out...");
     sessionStorage.removeItem("jwtAdmin");
-    onLogout();
+    // onLogout();
     navigate("/admin-login");
   };
 
@@ -50,12 +51,12 @@ const AdminBannedCustomer = ({ onLogout }) => {
     fetchBannedCustomer();
   }, []);
 
-  useEffect(() =>{
+  useEffect(() => {
     const result = bannedCustomer.filter((cbm) => {
       const fullName = `${cbm.firstname} ${cbm.lastname}`.toLowerCase();
       return (
-          cbm.username.toLowerCase().includes(search.toLowerCase()) ||
-          fullName.includes(search.toLowerCase())
+        cbm.username.toLowerCase().includes(search.toLowerCase()) ||
+        fullName.includes(search.toLowerCase())
       );
     });
 
@@ -73,14 +74,13 @@ const AdminBannedCustomer = ({ onLogout }) => {
     }
   };
 
-
   const totalResult = filteredBannedCustomer.length;
   const totalPages = Math.ceil(totalResult / itemPerPage);
 
   const pagedResult = filteredBannedCustomer.slice(
-      (currentPage - 1) * itemPerPage,
-      currentPage * itemPerPage
-    );
+    (currentPage - 1) * itemPerPage,
+    currentPage * itemPerPage
+  );
 
   const handleUnlockClick = (customerId) => {
     setCustomerIdToRecover(customerId);
@@ -123,7 +123,7 @@ const AdminBannedCustomer = ({ onLogout }) => {
   return (
     <div className="customer-table-container">
       <div>
-        <Sidebar onLogout={handleLogoutClick}/>
+        <Sidebar onLogout={handleLogoutClick} />
       </div>
       <div className="customer-subtable-container">
         <div>
@@ -137,7 +137,10 @@ const AdminBannedCustomer = ({ onLogout }) => {
             <AvatarHeader />
           </div>
           <hr className="hrr" />
-          <SearchBannedCustomer searchBanned={search} setSearchBanned={setSearch}/>
+          <SearchBannedCustomer
+            searchBanned={search}
+            setSearchBanned={setSearch}
+          />
           <div className="items-per-page">
             <div>
               <label>Items per page: </label>
@@ -165,38 +168,44 @@ const AdminBannedCustomer = ({ onLogout }) => {
           <tbody>
             {/* Check if there are no banned customers to display */}
             {filteredBannedCustomer.length === 0 ? (
-       
-            <tr>
-              <td colSpan="7" style={{ textAlign: "center", padding: "20px" }}>
-                <div className="no-data-message">No banned customers found</div>
-              </td>
-            </tr>
-        
-            ) : (
-            pagedResult.map((bannedCustomer, index) => (
-              <tr key={index}>
-                <td>{(currentPage - 1) * itemPerPage + index + 1}</td>
-                <td>
-                  {bannedCustomer.firstname}
-                  {bannedCustomer.lastname}
-                </td>
-                <td>{bannedCustomer.username}</td>
-                <td>{bannedCustomer.birthday}</td>
-                <td>{bannedCustomer.email}</td>
-                <td>{bannedCustomer.accountCreateDate}</td>
-                <td className="actions">
-                  <BsInfoCircle
-                    className="view"
-                    onClick={() => handleViewDetailCustomer(bannedCustomer.id)}
-                  />{" "}
-                  |
-                  <BsFillLockFill
-                    className="lock"
-                    onClick={() => handleUnlockClick(bannedCustomer.id)}
-                  />
+              <tr>
+                <td
+                  colSpan="7"
+                  style={{ textAlign: "center", padding: "20px" }}
+                >
+                  <div className="no-data-message">
+                    No banned customers found
+                  </div>
                 </td>
               </tr>
-            )))}
+            ) : (
+              pagedResult.map((bannedCustomer, index) => (
+                <tr key={index}>
+                  <td>{(currentPage - 1) * itemPerPage + index + 1}</td>
+                  <td>
+                    {bannedCustomer.firstname}
+                    {bannedCustomer.lastname}
+                  </td>
+                  <td>{bannedCustomer.username}</td>
+                  <td>{bannedCustomer.birthday}</td>
+                  <td>{bannedCustomer.email}</td>
+                  <td>{bannedCustomer.accountCreateDate}</td>
+                  <td className="actions">
+                    <BsInfoCircle
+                      className="view"
+                      onClick={() =>
+                        handleViewDetailCustomer(bannedCustomer.id)
+                      }
+                    />{" "}
+                    |
+                    <BsFillLockFill
+                      className="lock"
+                      onClick={() => handleUnlockClick(bannedCustomer.id)}
+                    />
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
         {showModal && (

@@ -19,7 +19,7 @@ const apiAddNotAppliedCate = "/api/admin/add-category-to-common";
 const apiRemoveCurrentDiscount = "/api/admin/remove-current-discount";
 const apiReplaceCurrentDiscount = "/api/admin/replace-current-discount";
 
-const CommonDiscount = ({ onLogout }) => {
+const CommonDiscount = () => {
   const navigate = useNavigate();
   const { commonDiscountId } = useParams();
   const [showModal, setShowModal] = useState(false);
@@ -44,8 +44,9 @@ const CommonDiscount = ({ onLogout }) => {
   }, [navigate]);
 
   const handleLogoutClick = () => {
+    console.log("Logging out...");
     sessionStorage.removeItem("jwtAdmin");
-    onLogout();
+    // onLogout();
     navigate("/admin-login");
   };
 
@@ -270,6 +271,24 @@ const CommonDiscount = ({ onLogout }) => {
     setCurrentPage(1);
   };
 
+  const formatDateToVietnamese = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+
+    // Extract date components
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const year = date.getFullYear();
+
+    // Extract time components
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+
+    // Combine into the desired format
+    return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+  };
+
   if (loadingTimeout && !discount) {
     return <FourOhFour />; // Display FourOhFour if loading takes too long without response
   }
@@ -313,7 +332,7 @@ const CommonDiscount = ({ onLogout }) => {
             </h5>
             <p>
               <strong style={{ marginRight: "5px" }}>Discount rate: </strong>
-              {discount.discountRate}
+              {discount.discountRate}%
             </p>
             <p>
               <strong style={{ marginRight: "20px" }}>Description: </strong>
@@ -321,11 +340,15 @@ const CommonDiscount = ({ onLogout }) => {
             </p>
             <p>
               <strong style={{ marginRight: "33px" }}>Start-date: </strong>
-              {discount.startDate}
+              {discount.startDate
+                ? formatDateToVietnamese(discount.startDate)
+                : "N/A"}
             </p>
             <p>
               <strong style={{ marginRight: "38px" }}>End-date: </strong>
-              {discount.endDate}
+              {discount.endDate
+                ? formatDateToVietnamese(discount.endDate)
+                : "N/A"}
             </p>
             <button
               className="btn btn-primary float-end"

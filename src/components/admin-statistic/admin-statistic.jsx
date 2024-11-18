@@ -10,7 +10,7 @@ import AvatarHeader from "../admin-header/admin-header";
 
 const api = "/api/admin/statistics";
 
-const AdminStatistic = ({ onLogout }) => {
+const AdminStatistic = () => {
   const [statistic, setStatistic] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -23,8 +23,9 @@ const AdminStatistic = ({ onLogout }) => {
   }, [navigate]);
 
   const handleLogoutClick = () => {
+    console.log("Logging out...");
     sessionStorage.removeItem("jwtAdmin");
-    onLogout();
+    // onLogout();
     navigate("/admin-login");
   };
 

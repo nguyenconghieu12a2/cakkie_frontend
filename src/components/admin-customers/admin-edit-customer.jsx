@@ -9,7 +9,7 @@ import axios from "axios";
 const apiCustomers = "/api/admin/get-customer";
 const apiEditCustomers = "/api/admin/edit-customer";
 
-const AdminEditCustomer = ({ onLogout }) => {
+const AdminEditCustomer = () => {
   const { id } = useParams();
   const [customer, setCustomer] = useState(null);
   const [firstName, setFirstName] = useState("");
@@ -25,8 +25,9 @@ const AdminEditCustomer = ({ onLogout }) => {
   }, [navigate]);
 
   const handleLogoutClick = () => {
+    console.log("Logging out...");
     sessionStorage.removeItem("jwtAdmin");
-    onLogout();
+    // onLogout();
     navigate("/admin-login");
   };
 
@@ -71,7 +72,7 @@ const AdminEditCustomer = ({ onLogout }) => {
 
   return (
     <div className="customer-table-container">
-      <Sidebar onLogout={handleLogoutClick}/>
+      <Sidebar onLogout={handleLogoutClick} />
       <div className="customer-subtable-container">
         <header className="header">
           <h2>Customers</h2>

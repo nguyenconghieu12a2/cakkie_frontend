@@ -15,7 +15,7 @@ const api1 = "/api/admin/table-order";
 const api2 = "/api/admin/table-customer";
 const api3 = "/api/admin/cards";
 
-const Dashboard = ({ onLogout }) => {
+const Dashboard = () => {
   const navigate = useNavigate();
   const [ordersData, setOrderData] = useState([]);
   const [customerData, setCustomerData] = useState([]);
@@ -62,8 +62,9 @@ const Dashboard = ({ onLogout }) => {
   }, [navigate]);
 
   const handleLogoutClick = () => {
+    console.log("Logging out...");
     sessionStorage.removeItem("jwtAdmin");
-    onLogout();
+    // onLogout();
     navigate("/admin-login");
   };
 
@@ -167,7 +168,7 @@ const Dashboard = ({ onLogout }) => {
 
         {/* <div className="d-flex justify-content-between"> */}
         <Row>
-          <Col md={6} style={{padding:"0px 0px 0px 20px", margin: "0"}}>
+          <Col md={6} style={{ padding: "0px 0px 0px 20px", margin: "0" }}>
             <div>
               <h2 className="title-table">Orders</h2>
             </div>
@@ -199,23 +200,27 @@ const Dashboard = ({ onLogout }) => {
                 {/* Check if there are no banned customers to display */}
                 {ordersData.length === 0 ? (
                   <tr>
-                    <td colSpan="7" style={{ textAlign: "center", padding: "20px" }}>
+                    <td
+                      colSpan="7"
+                      style={{ textAlign: "center", padding: "20px" }}
+                    >
                       <div className="no-data-message">No orders found</div>
                     </td>
                   </tr>
                 ) : (
-                pagedResultOrder.map((order, index) => (
-                  <tr key={index}>
-                    <td>
-                      {(currentPageOrder - 1) * itemPerPageOrder + index + 1}
-                    </td>
-                    <td>{order.username}</td>
-                    <td style={{ textAlign: "center" }}>{order.name}</td>
-                    <td style={{ textAlign: "center" }}>{order.payment}</td>
-                    <td style={{ textAlign: "center" }}>{order.status}</td>
-                    <td>{order.orderTotal}</td>
-                  </tr>
-                )))}
+                  pagedResultOrder.map((order, index) => (
+                    <tr key={index}>
+                      <td>
+                        {(currentPageOrder - 1) * itemPerPageOrder + index + 1}
+                      </td>
+                      <td>{order.username}</td>
+                      <td style={{ textAlign: "center" }}>{order.name}</td>
+                      <td style={{ textAlign: "center" }}>{order.payment}</td>
+                      <td style={{ textAlign: "center" }}>{order.status}</td>
+                      <td>{order.orderTotal}</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
             <div className="pagging">
@@ -244,7 +249,7 @@ const Dashboard = ({ onLogout }) => {
               </Pagination>
             </div>
           </Col>
-          <Col md={6} style={{padding:"0px 0px 0px 30px", margin: "0"}}>
+          <Col md={6} style={{ padding: "0px 0px 0px 30px", margin: "0" }}>
             <div>
               <h2 className="title-table">Customers</h2>
             </div>
@@ -276,26 +281,30 @@ const Dashboard = ({ onLogout }) => {
                 {/* Check if there are no banned customers to display */}
                 {customerData.length === 0 ? (
                   <tr>
-                    <td colSpan="7" style={{ textAlign: "center", padding: "20px" }}>
+                    <td
+                      colSpan="7"
+                      style={{ textAlign: "center", padding: "20px" }}
+                    >
                       <div className="no-data-message">No customers found</div>
                     </td>
                   </tr>
                 ) : (
-                pagedResultCustomer.map((customer, index) => (
-                  <tr key={index}>
-                    <td>
-                      {(currentPageCustomer - 1) * itemPerPageCustomer +
-                        index +
-                        1}
-                    </td>
-                    <td>{customer.name}</td>
-                    <td>{customer.email}</td>
-                    <td style={{ textAlign: "center" }}>
-                      {customer.totalOrder}
-                    </td>
-                    <td>{customer.totalPayment}</td>
-                  </tr>
-                )))}
+                  pagedResultCustomer.map((customer, index) => (
+                    <tr key={index}>
+                      <td>
+                        {(currentPageCustomer - 1) * itemPerPageCustomer +
+                          index +
+                          1}
+                      </td>
+                      <td>{customer.name}</td>
+                      <td>{customer.email}</td>
+                      <td style={{ textAlign: "center" }}>
+                        {customer.totalOrder}
+                      </td>
+                      <td>{customer.totalPayment}</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
             <div className="pagging">

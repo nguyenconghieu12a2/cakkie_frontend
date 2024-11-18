@@ -19,7 +19,7 @@ const AdminLogin = () => {
     const jwtToken = sessionStorage.getItem("jwtAdmin");
     if (!jwtToken) {
       navigate("/admin-login");
-    }else{
+    } else {
       navigate("/dashboard");
     }
   }, [navigate]);
@@ -41,7 +41,7 @@ const AdminLogin = () => {
         password: formData.password,
       });
 
-      console.log("Full API response:", response.data);
+      // console.log("Full API response:", response.data);
 
       const { image, jwtAdmin, id } = response.data;
 
@@ -50,9 +50,9 @@ const AdminLogin = () => {
       sessionStorage.setItem("id", id);
 
       setMessage("Login successful!");
-      console.log("JWT Token: ", jwtAdmin);
-      // console.log("IMG: ", image);
-      console.log("ADMIN: ", id);
+      // console.log("JWT Token: ", jwtAdmin);
+      // // console.log("IMG: ", image);
+      // console.log("ADMIN: ", id);
 
       // onLoginSuccess();
 
@@ -68,7 +68,10 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="login-container" style={{maxWidth: "100%", padding: "0px"}}>
+    <div
+      className="login-container"
+      style={{ maxWidth: "100%", padding: "0px" }}
+    >
       <div className="login-left">
         <h1 className="title">Sign in</h1>
         <form className="formGroup" onSubmit={handleSubmit}>
@@ -107,7 +110,11 @@ const AdminLogin = () => {
             <a href="/admin-reset-email">Forgot password?</a>
           </div>
           <div className="btn-login-div">
-            <button type="submit" className="login-btn" style={{width:"20%"}}>
+            <button
+              type="submit"
+              className="login-btn"
+              style={{ width: "20%" }}
+            >
               LOGIN
             </button>
           </div>

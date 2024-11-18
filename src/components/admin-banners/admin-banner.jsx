@@ -12,7 +12,7 @@ import { FaEdit, FaTrashAlt, FaPlusCircle } from "react-icons/fa";
 const api = "/api/admin/banners";
 const deleteApi = "/api/admin/delete-banners";
 
-const AdminBanners = ({ onLogout }) => {
+const AdminBanners = () => {
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
   const [isAddPopupOpen, setIsAddPopupOpen] = useState(false);
   const [selectedBanner, setSelectedBanner] = useState(null);
@@ -28,8 +28,9 @@ const AdminBanners = ({ onLogout }) => {
   }, [navigate]);
 
   const handleLogoutClick = () => {
+    console.log("Logging out...");
     sessionStorage.removeItem("jwtAdmin");
-    onLogout();
+    // onLogout();
     navigate("/admin-login");
   };
 
@@ -41,7 +42,7 @@ const AdminBanners = ({ onLogout }) => {
     try {
       const { data } = await axios.get(`${api}`);
       setBanners(data);
-      console.log("all banners: ", data);
+      // console.log("all banners: ", data);
     } catch (error) {
       console.log("catch error: ", error);
     }

@@ -7,7 +7,7 @@ import { BsArrowLeftSquareFill, BsFillForwardFill } from "react-icons/bs";
 import { CiViewList } from "react-icons/ci";
 // import customers from "./data-customer";
 import axios from "axios";
-import FourOhFour from '../not-found/not-found';
+import FourOhFour from "../not-found/not-found";
 import ProcessingTable from "./order-status-table/processing-table";
 import CompleteTable from "./order-status-table/complete-table";
 import CancelTable from "./order-status-table/cancel-table";
@@ -15,7 +15,7 @@ import CancelTable from "./order-status-table/cancel-table";
 const apiCustomers = "/api/admin/get-banned-customer";
 const apiStatisticOrderCustomers = "/api/admin/customer-statistic-order";
 
-const AdminDetailBannedCustomer = ({ onLogout }) => {
+const AdminDetailBannedCustomer = () => {
   const { id } = useParams();
   const [bannedCustomer, setBannedCustomer] = useState(null);
   const [loadingTimeout, setLoadingTimeout] = useState(false);
@@ -33,8 +33,9 @@ const AdminDetailBannedCustomer = ({ onLogout }) => {
   }, [navigate]);
 
   const handleLogoutClick = () => {
+    console.log("Logging out...");
     sessionStorage.removeItem("jwtAdmin");
-    onLogout();
+    // onLogout();
     navigate("/admin-login");
   };
 
@@ -48,14 +49,14 @@ const AdminDetailBannedCustomer = ({ onLogout }) => {
     }
   };
 
-  const fetchStatisticOrderCustomer = async (id) =>{
-    try{
+  const fetchStatisticOrderCustomer = async (id) => {
+    try {
       const response = await axios.get(`${apiStatisticOrderCustomers}/${id}`);
       setStatisticData(response.data);
-    }catch(error){
+    } catch (error) {
       console.log("catch error: ", error);
     }
-  }
+  };
 
   useEffect(() => {
     // Start a timeout for 7 seconds
@@ -70,7 +71,6 @@ const AdminDetailBannedCustomer = ({ onLogout }) => {
     return () => clearTimeout(timeoutId);
   }, [id]);
 
-
   if (loadingTimeout && !bannedCustomer) {
     return <FourOhFour />; // Display FourOhFour if loading takes too long without response
   }
@@ -82,7 +82,7 @@ const AdminDetailBannedCustomer = ({ onLogout }) => {
   return (
     <div className="customer-table-container">
       <div>
-        <Sidebar onLogout={handleLogoutClick}/>
+        <Sidebar onLogout={handleLogoutClick} />
       </div>
       <div className="customer-subtable-container">
         <div>
@@ -238,59 +238,58 @@ const AdminDetailBannedCustomer = ({ onLogout }) => {
               </div>
 
               <div className="statistic-order">
-              <label>Customer Order:</label>
+                <label>Customer Order:</label>
                 <table className="table table-bordered mt-2">
-                <thead>
-                  <tr>
-                    <th>Status</th>
-                    <th>Numbers of Orders</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                {statisticData.map((stato, i) =>(
-                    <tr key={i}>
-                      <td className="col-id">{stato.status}</td>
-                      <td>{stato.value}</td>
-                      <td>
-                      {/* FORWARD TO ORDER MANAGE PROCESSING PAGE */}
-                      {stato.status === 'Processing Order' &&(
-                        <button
-                          className="view-detail-button"
-                          onClick={() => setIsModalProcessingOpen(true)}
-                        >
-                        <CiViewList className="view-detail-order"/>
-                        </button>
-                      )}
-
-                      {/* FORWARD TO ORDER MANAGE COMPLETE PAGE */}
-                      {stato.status === 'Completed Order' &&(
-                        <button
-                          className="view-detail-button"
-                          onClick={() => setIsModalCompleteOpen(true)}
-                        >
-                        <CiViewList className="view-detail-order"/>
-                        </button>
-                      )}
-
-                      {/* FORWARD TO ORDER MANAGE CANCEL PAGE */}
-                      {stato.status === 'Cancel Order' &&(
-                        <button
-                          className="view-detail-button"
-                          onClick={() => setIsModalCancelOpen(true)}
-                        >
-                        <CiViewList className="view-detail-order"/>
-                        </button>
-                      )}
-                      
-                      </td>
+                  <thead>
+                    <tr>
+                      <th>Status</th>
+                      <th>Numbers of Orders</th>
+                      <th>Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {statisticData.map((stato, i) => (
+                      <tr key={i}>
+                        <td className="col-id">{stato.status}</td>
+                        <td>{stato.value}</td>
+                        <td>
+                          {/* FORWARD TO ORDER MANAGE PROCESSING PAGE */}
+                          {stato.status === "Processing Order" && (
+                            <button
+                              className="view-detail-button"
+                              onClick={() => setIsModalProcessingOpen(true)}
+                            >
+                              <CiViewList className="view-detail-order" />
+                            </button>
+                          )}
+
+                          {/* FORWARD TO ORDER MANAGE COMPLETE PAGE */}
+                          {stato.status === "Completed Order" && (
+                            <button
+                              className="view-detail-button"
+                              onClick={() => setIsModalCompleteOpen(true)}
+                            >
+                              <CiViewList className="view-detail-order" />
+                            </button>
+                          )}
+
+                          {/* FORWARD TO ORDER MANAGE CANCEL PAGE */}
+                          {stato.status === "Cancel Order" && (
+                            <button
+                              className="view-detail-button"
+                              onClick={() => setIsModalCancelOpen(true)}
+                            >
+                              <CiViewList className="view-detail-order" />
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
               <div className="statistic-order">
-              <label>Banned Reason:</label>
+                <label>Banned Reason:</label>
                 <div className="banned-reason">
                   <p>{bannedCustomer.bannedReason}</p>
                 </div>
@@ -299,9 +298,21 @@ const AdminDetailBannedCustomer = ({ onLogout }) => {
           </div>
         </div>
       </div>
-      {isModalProcessingOpen && <ProcessingTable onClose={() => setIsModalProcessingOpen(false)} cusId={id} />}
-      {isModalCompleteOpen && <CompleteTable onClose={() => setIsModalCompleteOpen(false)} cusId={id} />}
-      {isModalCancelOpen && <CancelTable onClose={() => setIsModalCancelOpen(false)} cusId={id} />}
+      {isModalProcessingOpen && (
+        <ProcessingTable
+          onClose={() => setIsModalProcessingOpen(false)}
+          cusId={id}
+        />
+      )}
+      {isModalCompleteOpen && (
+        <CompleteTable
+          onClose={() => setIsModalCompleteOpen(false)}
+          cusId={id}
+        />
+      )}
+      {isModalCancelOpen && (
+        <CancelTable onClose={() => setIsModalCancelOpen(false)} cusId={id} />
+      )}
     </div>
   );
 };

@@ -15,7 +15,7 @@ import CancelTable from "./order-status-table/cancel-table";
 const apiCustomers = "/api/admin/get-customer";
 const apiStatisticOrderCustomers = "/api/admin/customer-statistic-order";
 
-const AdminDetailCustomer = ({ onLogout }) => {
+const AdminDetailCustomer = () => {
   const { id } = useParams();
   const [customer, setCustomer] = useState(null);
   const [statisticData, setStatisticData] = useState([]);
@@ -33,8 +33,9 @@ const AdminDetailCustomer = ({ onLogout }) => {
   }, [navigate]);
 
   const handleLogoutClick = () => {
+    console.log("Logging out...");
     sessionStorage.removeItem("jwtAdmin");
-    onLogout();
+    // onLogout();
     navigate("/admin-login");
   };
 
@@ -48,14 +49,14 @@ const AdminDetailCustomer = ({ onLogout }) => {
     }
   };
 
-  const fetchStatisticOrderCustomer = async (id) =>{
-    try{
+  const fetchStatisticOrderCustomer = async (id) => {
+    try {
       const response = await axios.get(`${apiStatisticOrderCustomers}/${id}`);
       setStatisticData(response.data);
-    }catch(error){
+    } catch (error) {
       console.log("catch error: ", error);
     }
-  }
+  };
 
   useEffect(() => {
     // Start a timeout for 7 seconds
@@ -70,7 +71,6 @@ const AdminDetailCustomer = ({ onLogout }) => {
     return () => clearTimeout(timeoutId);
   }, [id]);
 
-
   if (loadingTimeout && !customer) {
     return <FourOhFour />; // Display FourOhFour if loading takes too long without response
   }
@@ -79,11 +79,10 @@ const AdminDetailCustomer = ({ onLogout }) => {
     return <p>Loading...</p>; // Display a loading message while waiting for data
   }
 
-
   return (
     <div className="customer-table-container">
       <div>
-        <Sidebar onLogout={handleLogoutClick}/>
+        <Sidebar onLogout={handleLogoutClick} />
       </div>
       <div className="customer-subtable-container">
         <div>
@@ -239,84 +238,95 @@ const AdminDetailCustomer = ({ onLogout }) => {
               </div>
 
               <div className="statistic-order">
-              <label>Customer Order:</label>
+                <label>Customer Order:</label>
                 <table className="table table-bordered mt-2">
-                <thead>
-                  <tr>
-                    <th>Status</th>
-                    <th>Numbers of Orders</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                {statisticData.map((stato, i) =>(
-                    <tr key={i}>
-                      <td className="col-id">{stato.status}</td>
-                      <td>{stato.value}</td>
-                      <td>
-                      {/* FORWARD TO ORDER MANAGE PROCESSING PAGE */}
-                      {stato.status === 'Processing Order' &&(
-                        <div>
-                          <button
-                            className="view-detail-button"
-                            onClick={() => setIsModalProcessingOpen(true)}
-                          >
-                          <CiViewList className="view-detail-order"/>
-                          </button>
-                          {/* Link to order management of particular customer */}
-                          <Link to="/admin-customers">
-                            <BsFillForwardFill className="forward-oMana" />
-                          </Link>
-                        </div>
-                      )}
-
-                      {/* FORWARD TO ORDER MANAGE COMPLETE PAGE */}
-                      {stato.status === 'Completed Order' &&(
-                        <div>
-                          <button
-                            className="view-detail-button"
-                            onClick={() => setIsModalCompleteOpen(true)}
-                          >
-                          <CiViewList className="view-detail-order"/>
-                          </button>
-                          {/* Link to completed order of particular customer */}
-                          <Link to="/admin-customers">
-                            <BsFillForwardFill className="forward-oMana" />
-                          </Link>
-                        </div>
-                      )}
-
-                      {/* FORWARD TO ORDER MANAGE CANCEL PAGE */}
-                      {stato.status === 'Cancel Order' &&(
-                        <div>
-                          <button
-                            className="view-detail-button"
-                            onClick={() => setIsModalCancelOpen(true)}
-                          >
-                          <CiViewList className="view-detail-order"/>
-                          </button>
-                          {/* Link to cancel order of particular customer for ban action */}
-                          <Link to="/admin-customers">
-                            <BsFillForwardFill className="forward-oMana" />
-                          </Link>
-                        </div>
-                      )}
-
-                      {/* <BsFillForwardFill className="forward-oMana" /> */}
-                      
-                      </td>
+                  <thead>
+                    <tr>
+                      <th>Status</th>
+                      <th>Numbers of Orders</th>
+                      <th>Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {statisticData.map((stato, i) => (
+                      <tr key={i}>
+                        <td className="col-id">{stato.status}</td>
+                        <td>{stato.value}</td>
+                        <td>
+                          {/* FORWARD TO ORDER MANAGE PROCESSING PAGE */}
+                          {stato.status === "Processing Order" && (
+                            <div>
+                              <button
+                                className="view-detail-button"
+                                onClick={() => setIsModalProcessingOpen(true)}
+                              >
+                                <CiViewList className="view-detail-order" />
+                              </button>
+                              {/* Link to order management of particular customer */}
+                              <Link to="/admin-customers">
+                                <BsFillForwardFill className="forward-oMana" />
+                              </Link>
+                            </div>
+                          )}
+
+                          {/* FORWARD TO ORDER MANAGE COMPLETE PAGE */}
+                          {stato.status === "Completed Order" && (
+                            <div>
+                              <button
+                                className="view-detail-button"
+                                onClick={() => setIsModalCompleteOpen(true)}
+                              >
+                                <CiViewList className="view-detail-order" />
+                              </button>
+                              {/* Link to completed order of particular customer */}
+                              <Link to="/admin-customers">
+                                <BsFillForwardFill className="forward-oMana" />
+                              </Link>
+                            </div>
+                          )}
+
+                          {/* FORWARD TO ORDER MANAGE CANCEL PAGE */}
+                          {stato.status === "Cancel Order" && (
+                            <div>
+                              <button
+                                className="view-detail-button"
+                                onClick={() => setIsModalCancelOpen(true)}
+                              >
+                                <CiViewList className="view-detail-order" />
+                              </button>
+                              {/* Link to cancel order of particular customer for ban action */}
+                              <Link to="/admin-customers">
+                                <BsFillForwardFill className="forward-oMana" />
+                              </Link>
+                            </div>
+                          )}
+
+                          {/* <BsFillForwardFill className="forward-oMana" /> */}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
         </div>
       </div>
-      {isModalProcessingOpen && <ProcessingTable onClose={() => setIsModalProcessingOpen(false)} cusId={id} />}
-      {isModalCompleteOpen && <CompleteTable onClose={() => setIsModalCompleteOpen(false)} cusId={id} />}
-      {isModalCancelOpen && <CancelTable onClose={() => setIsModalCancelOpen(false)} cusId={id} />}
+      {isModalProcessingOpen && (
+        <ProcessingTable
+          onClose={() => setIsModalProcessingOpen(false)}
+          cusId={id}
+        />
+      )}
+      {isModalCompleteOpen && (
+        <CompleteTable
+          onClose={() => setIsModalCompleteOpen(false)}
+          cusId={id}
+        />
+      )}
+      {isModalCancelOpen && (
+        <CancelTable onClose={() => setIsModalCancelOpen(false)} cusId={id} />
+      )}
     </div>
   );
 };

@@ -16,7 +16,7 @@ import ProductSales from "./products-sales";
 import ProductReview from "./product-review";
 import AvatarHeader from "../admin-header/admin-header";
 
-const AdminReports = ({ onLogout }) => {
+const AdminReports = () => {
   const [selectedReportsOptions, setSelectedReportsOptions] =
     useState("CustomerOrder");
   const [selectedReports, setSelectedReports] = useState("CustomerOrder");
@@ -32,8 +32,9 @@ const AdminReports = ({ onLogout }) => {
   }, [navigate]);
 
   const handleLogoutClick = () => {
+    console.log("Logging out...");
     sessionStorage.removeItem("jwtAdmin");
-    onLogout();
+    // onLogout();
     navigate("/admin-login");
   };
 

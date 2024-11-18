@@ -45,6 +45,16 @@ function Sidebar({ onLogout }) {
     setSelected(selection); // Set the selected item
   };
 
+  const handleSignOut = (e) => {
+    e.preventDefault();
+    // console.log(onLogout); // Log onLogout to check if it's a function
+    if (typeof onLogout === "function") {
+      onLogout(); // Call the function if it's defined
+    } else {
+      console.error("onLogout is not a function.");
+    }
+  };
+
   return (
     <div className="sidebar__wrap">
       <div className="sidebar">
@@ -215,6 +225,15 @@ function Sidebar({ onLogout }) {
                   >
                     <h4 className="item__cate">Coupons</h4>
                   </Link>
+                  <Link
+                    className={`sidebar__link ${
+                      selected === "coupons" ? "active" : ""
+                    }`}
+                    onClick={() => handleSelected("coupons")}
+                    to="/admin-reviews"
+                  >
+                    <h4 className="item__cate">Manage Reviews</h4>
+                  </Link>
                 </div>
               )}
             </a>
@@ -277,7 +296,7 @@ function Sidebar({ onLogout }) {
           </div>
         </div>
         <div className="sidebar__footer">
-          <Link to="#" onClick={onLogout}>
+          <Link to="#" onClick={handleSignOut}>
             <div className="footer__list">
               <VscSignOut className="footer__icon" />
               <h3 className="footer__title">Sign Out</h3>

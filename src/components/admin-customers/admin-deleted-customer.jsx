@@ -10,7 +10,7 @@ import axios from "axios";
 const apiDeletedCustomers = "/api/admin/deleted-customer";
 const apiRecover = "/api/admin/recover-customer";
 
-const AdminDeletedCustomer = ({ onLogout }) => {
+const AdminDeletedCustomer = () => {
   const [deletedCustomer, setDeletedCustomer] = useState([]);
   const [filteredDeletedCustomer, setFilteredDeletedCustomer] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -29,8 +29,9 @@ const AdminDeletedCustomer = ({ onLogout }) => {
   }, [navigate]);
 
   const handleLogoutClick = () => {
+    console.log("Logging out...");
     sessionStorage.removeItem("jwtAdmin");
-    onLogout();
+    // onLogout();
     navigate("/admin-login");
   };
 
@@ -48,11 +49,12 @@ const AdminDeletedCustomer = ({ onLogout }) => {
     fetchDeletedCustomer();
   }, []);
 
-  useEffect(() =>{
-    const result = deletedCustomer.filter((cdm) =>
-      cdm.username.toLowerCase().includes(search.toLowerCase()) ||
-      cdm.firstname.toLowerCase().includes(search.toLowerCase()) ||
-      cdm.lastname.toLowerCase().includes(search.toLowerCase())
+  useEffect(() => {
+    const result = deletedCustomer.filter(
+      (cdm) =>
+        cdm.username.toLowerCase().includes(search.toLowerCase()) ||
+        cdm.firstname.toLowerCase().includes(search.toLowerCase()) ||
+        cdm.lastname.toLowerCase().includes(search.toLowerCase())
     );
     setFilteredDeletedCustomer(result);
     setCurrentPage(1);
@@ -68,15 +70,13 @@ const AdminDeletedCustomer = ({ onLogout }) => {
     }
   };
 
-
   const totalResult = filteredDeletedCustomer.length;
   const totalPages = Math.ceil(totalResult / itemPerPage);
-  
-  const pagedResult = filteredDeletedCustomer.slice(
-      (currentPage - 1) * itemPerPage,
-      currentPage * itemPerPage
-    );
 
+  const pagedResult = filteredDeletedCustomer.slice(
+    (currentPage - 1) * itemPerPage,
+    currentPage * itemPerPage
+  );
 
   const handleRecoveryClick = (customerId) => {
     setCustomerIdToRecover(customerId);
@@ -114,7 +114,7 @@ const AdminDeletedCustomer = ({ onLogout }) => {
   return (
     <div className="customer-table-container">
       <div>
-        <Sidebar onLogout={handleLogoutClick}/>
+        <Sidebar onLogout={handleLogoutClick} />
       </div>
       <div className="customer-subtable-container">
         <div>
@@ -128,8 +128,8 @@ const AdminDeletedCustomer = ({ onLogout }) => {
             <AvatarHeader />
           </div>
           <hr className="hrr" />
-          <SearchDeletedCustomer 
-            searchDeleted={search} 
+          <SearchDeletedCustomer
+            searchDeleted={search}
             setSearchDeleted={setSearch}
           />
           <div className="items-per-page">
@@ -160,32 +160,38 @@ const AdminDeletedCustomer = ({ onLogout }) => {
             {/* Check if there are no banned customers to display */}
             {filteredDeletedCustomer.length === 0 ? (
               <tr>
-                <td colSpan="7" style={{ textAlign: "center", padding: "20px" }}>
-                  <div className="no-data-message">No deleted customers found</div>
+                <td
+                  colSpan="7"
+                  style={{ textAlign: "center", padding: "20px" }}
+                >
+                  <div className="no-data-message">
+                    No deleted customers found
+                  </div>
                 </td>
               </tr>
             ) : (
-            pagedResult.map((customer, index) => (
-              <tr key={index}>
-                <td>{(currentPage - 1) * itemPerPage + index + 1}</td>
-                <td>
-                  {customer.firstname}
-                  {customer.lastname}
-                </td>
-                <td>{customer.username}</td>
-                <td>{customer.birthday}</td>
-                <td>{customer.email}</td>
-                <td>{customer.accountCreateDate}</td>
-                <td>
-                  <button
-                    className="recovery"
-                    onClick={() => handleRecoveryClick(customer.id)}
-                  >
-                    Recovery
-                  </button>
-                </td>
-              </tr>
-            )))}
+              pagedResult.map((customer, index) => (
+                <tr key={index}>
+                  <td>{(currentPage - 1) * itemPerPage + index + 1}</td>
+                  <td>
+                    {customer.firstname}
+                    {customer.lastname}
+                  </td>
+                  <td>{customer.username}</td>
+                  <td>{customer.birthday}</td>
+                  <td>{customer.email}</td>
+                  <td>{customer.accountCreateDate}</td>
+                  <td>
+                    <button
+                      className="recovery"
+                      onClick={() => handleRecoveryClick(customer.id)}
+                    >
+                      Recovery
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
 
