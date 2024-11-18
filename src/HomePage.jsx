@@ -3,6 +3,7 @@ import ProductList from "./components/ProductList";
 import Coupon from "./components/Coupon";
 import Banner from "./components/Banner";
 import Home from "./Home/Home";
+import BestSeller from "./components/best-seller";
 
 const HomePage = () => {
   const [coupons, setCoupons] = useState([]);
@@ -32,6 +33,11 @@ const HomePage = () => {
       <section className="coupons">
         <h2>Exclusive Coupons</h2>
         <Coupon coupons={coupons} />
+      </section>
+
+      <section className="top-products">
+        <h2>Top Trend Products</h2>
+        <BestSeller />
       </section>
 
       <section className="products">

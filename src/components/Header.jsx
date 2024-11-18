@@ -45,7 +45,7 @@ const Header = ({ isLoggedIn, Title }) => {
           </Link>
         </div>
         <ul className="nav-links">
-          {isLoggedIn && ( // Only show cart and order if logged in
+          {isLoggedIn && ( 
             <>
               <li>
                 <Link to="/cart">

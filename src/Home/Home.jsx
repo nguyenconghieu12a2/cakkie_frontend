@@ -8,6 +8,8 @@ function Home() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
   const [selectedSubSubCategory, setSelectedSubSubCategory] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredSearchResults, setFilteredSearchResults] = useState([]);
   const itemsPerPage = 20;
 
   const fetchProduct = async () => {
@@ -89,8 +91,71 @@ function Home() {
     setCurrentPage(1);
   };
 
+  const handleSearchChange = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+
+    if (query.trim() === "") {
+      setFilteredSearchResults([]);
+      return;
+    }
+
+    const results = uniqueProducts.filter((product) =>
+      product.name.toLowerCase().includes(query)
+    );
+    setFilteredSearchResults(results);
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
+    setFilteredSearchResults([]);
+  };
   return (
     <div className="bg-gray-50 min-h-screen font-sans">
+      <div className="bg-white px-8 py-4 flex justify-center relative border-b">
+        <div className="relative w-1/2">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            placeholder="Search for cakes, flavors..."
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          {searchQuery && (
+            <button
+              onClick={clearSearch}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+            >
+              ✕
+            </button>
+          )}
+          {filteredSearchResults.length > 0 && (
+            <ul className="absolute top-full mt-2 w-full bg-white shadow-lg rounded-lg z-10 max-h-60 overflow-y-auto">
+              {filteredSearchResults.map((product) => (
+                <li
+                  key={product.productID}
+                  onClick={() =>
+                    (window.location.href = `/product/${product.productID}`)
+                  }
+                  className="p-2 hover:bg-gray-100 cursor-pointer flex items-center space-x-4"
+                >
+                  <img
+                    src={`./${product.productImage}.jpg`}
+                    alt={product.name}
+                    className="w-12 h-12 object-cover rounded-md"
+                  />
+                  <div>
+                    <p className="font-semibold">{product.name}</p>
+                    <p className="text-gray-500 text-sm">
+                      {product.price.toLocaleString("vi-VN")} VND
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
       <div className="bg-white px-8 py-4 flex justify-center space-x-2 border-b">
         <button
           onClick={() => handleCategoryChange("All")}

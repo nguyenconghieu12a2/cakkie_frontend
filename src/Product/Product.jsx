@@ -101,25 +101,25 @@ const Product = () => {
       console.error("Selected product not found!");
       return null;
     }
+
     const data = {
       userId: userId,
       cartId: userId,
-      productItemId: productList.find(
-        (product) => product.productItemId === productItemId
-      ).productItemId,
+      productItemId: selectedProduct.productItemId,
       quantity: quantity,
       note: note,
     };
+
     try {
       const response = await axios.post(`/addToCart`, data);
 
       if (response.status === 200) {
         setShowSuccessPopup(true);
         setTimeout(() => {
-          setShowSuccessPopup(false);
-          navigate("/");
+          setShowSuccessPopup(false); // Remove navigation from here
         }, 1500);
       }
+
       setProductList((prevProducts) =>
         prevProducts.filter(
           (product) => product.productItemId !== productItemId
@@ -273,7 +273,9 @@ const Product = () => {
               {"★".repeat(Math.round(selectedProduct.averageRating))}
               {"☆".repeat(5 - Math.round(selectedProduct.averageRating))}
             </p>
-            <span>({selectedProduct.averageRating.toFixed(1)} out of 5)</span>
+            <span>
+              ({selectedProduct.averageRating.toFixed(1) || 0} out of 5)
+            </span>
           </div>
 
           <div className="product-sizes">
@@ -289,10 +291,11 @@ const Product = () => {
                 return (
                   <button
                     key={product}
-                    className={`size-button ${selectedSize === product.size && !isDisabled
-                      ? "selected"
-                      : ""
-                      }
+                    className={`size-button ${
+                      selectedSize === product.size && !isDisabled
+                        ? "selected"
+                        : ""
+                    }
                     ${isDisabled ? "disabled" : ""}`}
                     onClick={() => chooseSize(product.size)}
                     disabled={isDisabled}
@@ -333,21 +336,9 @@ const Product = () => {
               className={` ${disabled ? "disabled" : ""} buy-now`}
               onClick={() => {
                 if (!checkLogin()) {
-                  addProductToCart(selectedProduct.productItemId);
-                  navigate("/cart");
-                  // navigate("/checkout", {
-                  //   state: {
-                  //     product: {
-                  //       productId: selectedProduct.productItemId,
-                  //       name: selectedProduct.name,
-                  //       price: selectedProduct.price,
-                  //       size: selectedSize,
-                  //       quantity: quantity,
-                  //       productImage: selectedProduct.productImage,
-                  //       discount: selectedProduct.discount,
-                  //     },
-                  //   },
-                  // });
+                  addProductToCart(selectedProduct.productItemId).then(() => {
+                    navigate("/cart");
+                  });
                 } else {
                   navigate("/login");
                 }
@@ -377,9 +368,7 @@ const Product = () => {
           <button onClick={selectedReviews}>Reviews</button>
         </div>
         <div className="tab-content">
-          {toogle === "description" && (
-            <p>{selectedProduct.description}</p>
-          )}
+          {toogle === "description" && <p>{selectedProduct.description}</p>}
 
           {toogle === "specification" && (
             <div className="flex justify-center mt-8">
@@ -438,11 +427,14 @@ const Product = () => {
                         {/* Date */}
                         <p className="text-xs text-gray-500">
                           {review.commentDate
-                            ? new Date(review.commentDate).toLocaleDateString("en-US", {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            })
+                            ? new Date(review.commentDate).toLocaleDateString(
+                                "en-US",
+                                {
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                }
+                              )
                             : "No Date Provided"}
                         </p>
                       </div>

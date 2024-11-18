@@ -9,8 +9,8 @@ import ResetPassword from "./ResetPassword";
 import Profile from "./Profile";
 import EditProfile from "./components/EditProfile";
 import ChangePassword from "./components/ChangePassword";
-import UserHeader from "./components/Header"; // Renamed to UserHeader
-import UserFooter from "./components/Footer"; // Renamed to UserFooter
+import UserHeader from "./components/Header";
+import UserFooter from "./components/Footer";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Product from "./Product/Product";
 import Cart from "./Cart/Cart";
