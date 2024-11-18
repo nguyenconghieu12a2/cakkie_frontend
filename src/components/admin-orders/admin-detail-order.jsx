@@ -9,7 +9,7 @@ import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
 //API
-const api = "/api/admin/detail-order"
+const api = "/api/admin/detail-order";
 
 function DetailOrder() {
   const { id } = useParams();
@@ -50,6 +50,17 @@ function DetailOrder() {
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
+  };
+
+  const formatCurrency = (value) => {
+    if (!value) return "0 VND";
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      minimumFractionDigits: 0,
+    })
+      .format(value)
+      .replace("₫", "VND");
   };
 
   return (
@@ -154,14 +165,22 @@ function DetailOrder() {
                     </tr>
                   </thead>
                   <tbody>
-                    {displayProducts.map((product, index) => (
-                      <tr key={index}>
-                        <td className="td">{details.id}</td>
-                        <td className="td">{product}</td>
-                        <td className="td">{details.qty[index]}</td>
-                        <td className="td">{details.price[index]} VND</td>
+                    {displayProducts.length > 0 ? (
+                      displayProducts.map((product, index) => (
+                        <tr key={index}>
+                          <td className="td">{details.id}</td>
+                          <td className="td">{product}</td>
+                          <td className="td">{details.qty[index]}</td>
+                          <td className="td">{formatCurrency(details.price[index])}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="4" className="text-center">
+                          No data available.
+                        </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </Table>
 

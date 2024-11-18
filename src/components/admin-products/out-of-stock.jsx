@@ -211,8 +211,8 @@ function OutOfStock() {
                         </tr>
                       ))
                     ) : (
-                      <tr style={{border: "1px solid #000"}}>
-                        <td colSpan="7" className="text-center">
+                      <tr>
+                        <td colSpan="7" className="text-center" style={{border: "1px"}}>
                           No data available.
                         </td>
                       </tr>

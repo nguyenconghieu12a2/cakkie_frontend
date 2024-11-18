@@ -236,13 +236,29 @@ function SubSubCategory() {
 
   //Delete SubSubCate
   const [deleteSubId, setDeleteSubId] = useState(null);
+  const [deleteError, setDeleteError] = useState("");
+  const [deleteSuccess, setDeleteSuccess] = useState("");
+
   const handleDelete = async () => {
     try {
-      await axios.delete(`${deleteSubSub}/${deleteSubId}`);
+      const response = await axios.delete(`${deleteSubSub}/${deleteSubId}`);
+      if (response.status === 204) {
+        setDeleteSuccess("Sub-subcategory deleted successfully!");
+        setTimeout(() => setDeleteSuccess(""), 3000);
+      }
       loadSubSub();
       handleClose2();
     } catch (error) {
-      console.error("Error deleting coupon:", error);
+      if (error.response && error.response.status === 409) {
+        setDeleteError(
+          "Cannot delete sub-subcategory because some product still have stock."
+        );
+      } else {
+        setDeleteError(
+          "An error occurred while deleting the sub-subcategory. Please try again."
+        );
+      }
+      setTimeout(() => setDeleteError(""), 5000);
     }
   };
 
@@ -294,7 +310,7 @@ function SubSubCategory() {
                 <Col>
                   <Form.Control
                     type="text"
-                    placeholder="Search orders..."
+                    placeholder="Search..."
                     value={searchTerm}
                     onChange={handleSearchChange}
                     className="search__input"
@@ -370,104 +386,127 @@ function SubSubCategory() {
                     </tr>
                   </thead>
                   <tbody>
-                    {displayData.map((item, index) => (
-                      <tr key={item.id}>
-                        <td className="td">
-                          {index + 1 + currentPage * pageCount}
-                        </td>
-                        <td className="td">{item.cateName}</td>
-                        <td className="th handle__icon">
-                          <a className="link__icon">
-                            <FaPenToSquare
-                              className="sub__subcategory__icon sub__subcategory__icon--edit"
-                              onClick={() => {
-                                setCateIdSubEdit(item.id);
-                                setEditSubCate(item);
-                                handleShowEdit();
-                              }}
-                            />
-                            <Modal show={showEdit} onHide={handleCloseEdit}>
-                              <Modal.Header closeButton>
-                                <Modal.Title>Edit Sub-SubCategory</Modal.Title>
-                              </Modal.Header>
-                              <Modal.Body>
-                                <Form
-                                  id="editSubCateForm"
-                                  onSubmit={editSubSubmit}
-                                >
-                                  <Form.Group className="mb-3">
-                                    <Form.Label>Sub-Category Name</Form.Label>
-                                    <Form.Control
-                                      type="text"
-                                      name="cateName"
-                                      value={editSubCate.cateName || ""}
-                                      onChange={handleEditInputChange}
-                                      placeholder="Enter category name"
-                                      autoFocus
-                                    />
-                                  </Form.Group>
-                                  {editSuccess && (
-                                    <Alert variant="success">
-                                      {editSuccess}
-                                    </Alert>
-                                  )}
-                                  {editError && (
-                                    <Alert variant="danger">{editError}</Alert>
-                                  )}
-                                </Form>
-                              </Modal.Body>
-                              <Modal.Footer>
-                                <Button
-                                  variant="secondary"
-                                  onClick={handleCloseEdit}
-                                >
-                                  Close
-                                </Button>
-                                <Button
-                                  variant="warning"
-                                  type="submit"
-                                  form="editSubCateForm"
-                                >
-                                  Update
-                                </Button>
-                              </Modal.Footer>
-                            </Modal>
-                          </a>
+                    {displayData.length > 0 ? (
+                      displayData.map((item, index) => (
+                        <tr key={item.id}>
+                          <td className="td">
+                            {index + 1 + currentPage * pageCount}
+                          </td>
+                          <td className="td">{item.cateName}</td>
+                          <td className="th handle__icon">
+                            <a className="link__icon">
+                              <FaPenToSquare
+                                className="sub__subcategory__icon sub__subcategory__icon--edit"
+                                onClick={() => {
+                                  setCateIdSubEdit(item.id);
+                                  setEditSubCate(item);
+                                  handleShowEdit();
+                                }}
+                              />
+                              <Modal show={showEdit} onHide={handleCloseEdit}>
+                                <Modal.Header closeButton>
+                                  <Modal.Title>
+                                    Edit Sub-SubCategory
+                                  </Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                  <Form
+                                    id="editSubCateForm"
+                                    onSubmit={editSubSubmit}
+                                  >
+                                    <Form.Group className="mb-3">
+                                      <Form.Label>Sub-Category Name</Form.Label>
+                                      <Form.Control
+                                        type="text"
+                                        name="cateName"
+                                        value={editSubCate.cateName || ""}
+                                        onChange={handleEditInputChange}
+                                        placeholder="Enter category name"
+                                        autoFocus
+                                      />
+                                    </Form.Group>
+                                    {editSuccess && (
+                                      <Alert variant="success">
+                                        {editSuccess}
+                                      </Alert>
+                                    )}
+                                    {editError && (
+                                      <Alert variant="danger">
+                                        {editError}
+                                      </Alert>
+                                    )}
+                                  </Form>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                  <Button
+                                    variant="secondary"
+                                    onClick={handleCloseEdit}
+                                  >
+                                    Close
+                                  </Button>
+                                  <Button
+                                    variant="warning"
+                                    type="submit"
+                                    form="editSubCateForm"
+                                  >
+                                    Update
+                                  </Button>
+                                </Modal.Footer>
+                              </Modal>
+                            </a>
 
-                          <a className="link__icon">
-                            <FaTrash
-                              className="sub__subcategory__icon sub__subcategory__icon--delete"
-                              onClick={() => handleShow2(item.id)}
-                            />
-                            <Modal
-                              show={show2}
-                              onHide={handleClose2}
-                              backdrop="static"
-                              keyboard={false}
-                            >
-                              <Modal.Header closeButton>
-                                <Modal.Title>Delete Category</Modal.Title>
-                              </Modal.Header>
-                              <Modal.Body>
-                                Are you sure to delete this category because
-                                many products will be effected?
-                              </Modal.Body>
-                              <Modal.Footer>
-                                <Button
-                                  variant="secondary"
-                                  onClick={handleClose2}
-                                >
-                                  Close
-                                </Button>
-                                <Button variant="danger" onClick={handleDelete}>
-                                  Delete
-                                </Button>
-                              </Modal.Footer>
-                            </Modal>
-                          </a>
+                            <a className="link__icon">
+                              <FaTrash
+                                className="sub__subcategory__icon sub__subcategory__icon--delete"
+                                onClick={() => handleShow2(item.id)}
+                              />
+                              <Modal
+                                show={show2}
+                                onHide={handleClose2}
+                                backdrop="static"
+                                keyboard={false}
+                              >
+                                <Modal.Header closeButton>
+                                  <Modal.Title>Delete Category</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                  Are you sure to delete this category because
+                                  many products will be effected?
+                                </Modal.Body>
+                                <Modal.Footer>
+                                  <Button
+                                    variant="secondary"
+                                    onClick={handleClose2}
+                                  >
+                                    Close
+                                  </Button>
+                                  <Button
+                                    variant="danger"
+                                    onClick={handleDelete}
+                                  >
+                                    Delete
+                                  </Button>
+                                </Modal.Footer>
+                                {deleteError && (
+                                  <Alert variant="danger">{deleteError}</Alert>
+                                )}
+                                {deleteSuccess && (
+                                  <Alert variant="danger">
+                                    {deleteSuccess}
+                                  </Alert>
+                                )}
+                              </Modal>
+                            </a>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="3" className="text-center">
+                          No data available.
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </Table>
 

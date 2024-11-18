@@ -246,17 +246,17 @@ function Product() {
     }
 
     // Validation: Check if price is a positive number
-    if (isNaN(newProduct.price) || Number(newProduct.price) <= 0) {
-      setCreateError("Price must be a positive number.");
+    if (isNaN(newProduct.price) || Number(newProduct.price) <= 1000) {
+      setCreateError(
+        "Price must be a positive number and greater than 1.000 VND."
+      );
       setTimeout(() => setCreateError(""), 3000);
       return;
     }
 
     // Validation: Check if quantity in stock is a positive integer
-    if (isNaN(newProduct.qtyInStock) || Number(newProduct.qtyInStock) < 1000) {
-      setCreateError(
-        "Quantity in stock must be a positive number and greater than 1.000 VND."
-      );
+    if (isNaN(newProduct.qtyInStock) || Number(newProduct.qtyInStock) < 0) {
+      setCreateError("Quantity in stock must be a positive number.");
       setTimeout(() => setCreateError(""), 3000);
       return;
     }
@@ -764,7 +764,7 @@ function Product() {
                 <Col>
                   <Form.Control
                     type="text"
-                    placeholder="Search orders..."
+                    placeholder="Search..."
                     value={searchTerm}
                     onChange={handleSearchChange}
                     className="search__input"
@@ -1069,398 +1069,418 @@ function Product() {
                     </tr>
                   </thead>
                   <tbody>
-                    {displayData.map((item, index) => {
-                      const currentSize =
-                        selectedSize[item.productName] || item.productItem[0];
-                      return (
-                        <tr key={item.productId}>
-                          <td className="td">
-                            {index + 1 + currentPage * itemsPerPage}
-                          </td>
-                          <td className="td">{item.categoryName}</td>
-                          <td className="td">{item.productName}</td>
-                          <td className="td">{item.description}</td>
-                          <td className="td">
-                            <img
-                              src={`../images/${item.productImage}`}
-                              alt={item.productName}
-                              className="product__image"
-                            />
-                          </td>
-                          <td className="td">
-                            <Form.Select
-                              value={currentSize.size}
-                              onChange={(e) =>
-                                handleSizeChange(
-                                  item.productName,
-                                  e.target.value
-                                )
-                              }
-                            >
-                              {item.productItem.map((sizeOption, i) => (
-                                <option key={i} value={sizeOption.size}>
-                                  {sizeOption.size}
-                                </option>
-                              ))}
-                            </Form.Select>
-                          </td>
-                          <td className="td">{currentSize.quantity}</td>
-                          <td className="td">
-                            {formatCurrency(currentSize.price)}
-                          </td>
-                          <td className="td">
-                            <div className="icon-container">
-                              <div className="icon-container1">
-                                {/* Create description information */}
-                                <FaRegSquarePlus
-                                  className="product__icon1 product__icon--menu"
-                                  onClick={() => {
-                                    setCurrentProductId(item.productId);
-                                    handleShow2();
-                                  }}
-                                />
-                                <Modal show={show2} onHide={handleClose2}>
-                                  <Modal.Header closeButton>
-                                    <Modal.Title>
-                                      Add Product Description
-                                    </Modal.Title>
-                                  </Modal.Header>
-                                  <Modal.Body>
-                                    <Form>
-                                      <Form.Group
-                                        className="mb-3"
-                                        controlId="desTitleID"
-                                      >
-                                        <Form.Label>
-                                          Description Title
-                                        </Form.Label>
-                                        <Form.Select
-                                          name="desTitleID"
-                                          value={newDesInfo.desTitleID}
-                                          onChange={handleDesInfoChange}
+                    {displayData.length > 0 ? (
+                      displayData.map((item, index) => {
+                        const currentSize =
+                          selectedSize[item.productName] || item.productItem[0];
+                        return (
+                          <tr key={item.productId}>
+                            <td className="td">
+                              {index + 1 + currentPage * itemsPerPage}
+                            </td>
+                            <td className="td">{item.categoryName}</td>
+                            <td className="td">{item.productName}</td>
+                            <td className="td">{item.description}</td>
+                            <td className="td">
+                              <img
+                                src={`../images/${item.productImage}`}
+                                alt={item.productName}
+                                className="product__image"
+                              />
+                            </td>
+                            <td className="td">
+                              <Form.Select
+                                value={currentSize.size}
+                                onChange={(e) =>
+                                  handleSizeChange(
+                                    item.productName,
+                                    e.target.value
+                                  )
+                                }
+                              >
+                                {item.productItem.map((sizeOption, i) => (
+                                  <option key={i} value={sizeOption.size}>
+                                    {sizeOption.size}
+                                  </option>
+                                ))}
+                              </Form.Select>
+                            </td>
+                            <td className="td">{currentSize.quantity}</td>
+                            <td className="td">
+                              {formatCurrency(currentSize.price)}
+                            </td>
+                            <td className="td">
+                              <div className="icon-container">
+                                <div className="icon-container1">
+                                  {/* Create description information */}
+                                  <FaRegSquarePlus
+                                    className="product__icon1 product__icon--menu"
+                                    onClick={() => {
+                                      setCurrentProductId(item.productId);
+                                      handleShow2();
+                                    }}
+                                  />
+                                  <Modal show={show2} onHide={handleClose2}>
+                                    <Modal.Header closeButton>
+                                      <Modal.Title>
+                                        Add Product Description
+                                      </Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                      <Form>
+                                        <Form.Group
+                                          className="mb-3"
+                                          controlId="desTitleID"
                                         >
-                                          <option value="">
-                                            Select Description Title
-                                          </option>
-                                          {desTitles.map((title, index) => (
-                                            <option
-                                              key={index}
-                                              value={index + 1}
-                                            >
-                                              {title}
+                                          <Form.Label>
+                                            Description Title
+                                          </Form.Label>
+                                          <Form.Select
+                                            name="desTitleID"
+                                            value={newDesInfo.desTitleID}
+                                            onChange={handleDesInfoChange}
+                                          >
+                                            <option value="">
+                                              Select Description Title
                                             </option>
-                                          ))}
-                                        </Form.Select>
-                                      </Form.Group>
-                                      <Form.Group
-                                        className="mb-3"
-                                        controlId="desInfo"
-                                      >
-                                        <Form.Label>
-                                          Description Information
-                                        </Form.Label>
-                                        <Form.Control
-                                          type="text"
-                                          name="desInfo"
-                                          value={newDesInfo.desInfo}
-                                          onChange={handleDesInfoChange}
-                                        />
-                                      </Form.Group>
-                                    </Form>
-                                  </Modal.Body>
-                                  <Modal.Footer>
-                                    <Button
-                                      variant="secondary"
-                                      onClick={handleClose2}
-                                    >
-                                      Close
-                                    </Button>
-                                    <Button
-                                      variant="success"
-                                      onClick={handleAddDesInfo}
-                                    >
-                                      Create
-                                    </Button>
-                                  </Modal.Footer>
-                                  {desError && (
-                                    <Alert variant="danger">{desError}</Alert>
-                                  )}
-                                  {desSuccess && (
-                                    <Alert variant="success">
-                                      {desSuccess}
-                                    </Alert>
-                                  )}
-                                </Modal>
-
-                                <Link
-                                  to={`/product/detail/${item.productId}`}
-                                  className="link__icon"
-                                >
-                                  <FaBars className="product__icon1 product__icon--menu" />
-                                </Link>
-                              </div>
-
-                              <div className="icon-container2">
-                                {/* Update Product */}
-                                <FaPenToSquare
-                                  className="product__icon1 product__icon--edit"
-                                  onClick={() => openEditModal(item)}
-                                />
-                                <Modal
-                                  size="lg"
-                                  show={lgShow1}
-                                  onHide={handleClose1}
-                                >
-                                  <Modal.Header closeButton>
-                                    <Modal.Title>Update Product</Modal.Title>
-                                  </Modal.Header>
-                                  <Modal.Body>
-                                    <Form onSubmit={handleUpdateSubmit}>
-                                      <Container>
-                                        <Row>
-                                          <Col>
-                                            <Form.Group
-                                              className="mb-3"
-                                              controlId="productName"
-                                            >
-                                              <Form.Label>
-                                                Product Name
-                                              </Form.Label>
-                                              <Form.Control
-                                                type="text"
-                                                name="name"
-                                                value={editProduct.name}
-                                                onChange={(e) =>
-                                                  setEditProduct({
-                                                    ...editProduct,
-                                                    name: e.target.value,
-                                                  })
-                                                }
-                                                required
-                                              />
-                                            </Form.Group>
-                                          </Col>
-                                          <Col>
-                                            <Form.Group
-                                              className="mb-3"
-                                              controlId="categoryId"
-                                            >
-                                              <Form.Label>
-                                                Category Name
-                                              </Form.Label>
-                                              <Form.Select
-                                                name="categoryId"
-                                                value={editProduct.categoryId}
-                                                onChange={(e) =>
-                                                  setEditProduct({
-                                                    ...editProduct,
-                                                    categoryId: e.target.value,
-                                                  })
-                                                }
-                                                required
+                                            {desTitles.map((title, index) => (
+                                              <option
+                                                key={index}
+                                                value={index + 1}
                                               >
-                                                <option value="">
-                                                  Select Category
-                                                </option>
-                                                {categories.map((category) => (
-                                                  <option
-                                                    key={category.id}
-                                                    value={category.id}
-                                                  >
-                                                    {category.cateName}
+                                                {title}
+                                              </option>
+                                            ))}
+                                          </Form.Select>
+                                        </Form.Group>
+                                        <Form.Group
+                                          className="mb-3"
+                                          controlId="desInfo"
+                                        >
+                                          <Form.Label>
+                                            Description Information
+                                          </Form.Label>
+                                          <Form.Control
+                                            type="text"
+                                            name="desInfo"
+                                            value={newDesInfo.desInfo}
+                                            onChange={handleDesInfoChange}
+                                          />
+                                        </Form.Group>
+                                      </Form>
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                      <Button
+                                        variant="secondary"
+                                        onClick={handleClose2}
+                                      >
+                                        Close
+                                      </Button>
+                                      <Button
+                                        variant="success"
+                                        onClick={handleAddDesInfo}
+                                      >
+                                        Create
+                                      </Button>
+                                    </Modal.Footer>
+                                    {desError && (
+                                      <Alert variant="danger">{desError}</Alert>
+                                    )}
+                                    {desSuccess && (
+                                      <Alert variant="success">
+                                        {desSuccess}
+                                      </Alert>
+                                    )}
+                                  </Modal>
+
+                                  <Link
+                                    to={`/product/detail/${item.productId}`}
+                                    className="link__icon"
+                                  >
+                                    <FaBars className="product__icon1 product__icon--menu" />
+                                  </Link>
+                                </div>
+
+                                <div className="icon-container2">
+                                  {/* Update Product */}
+                                  <FaPenToSquare
+                                    className="product__icon1 product__icon--edit"
+                                    onClick={() => openEditModal(item)}
+                                  />
+                                  <Modal
+                                    size="lg"
+                                    show={lgShow1}
+                                    onHide={handleClose1}
+                                  >
+                                    <Modal.Header closeButton>
+                                      <Modal.Title>Update Product</Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                      <Form onSubmit={handleUpdateSubmit}>
+                                        <Container>
+                                          <Row>
+                                            <Col>
+                                              <Form.Group
+                                                className="mb-3"
+                                                controlId="productName"
+                                              >
+                                                <Form.Label>
+                                                  Product Name
+                                                </Form.Label>
+                                                <Form.Control
+                                                  type="text"
+                                                  name="name"
+                                                  value={editProduct.name}
+                                                  onChange={(e) =>
+                                                    setEditProduct({
+                                                      ...editProduct,
+                                                      name: e.target.value,
+                                                    })
+                                                  }
+                                                  required
+                                                />
+                                              </Form.Group>
+                                            </Col>
+                                            <Col>
+                                              <Form.Group
+                                                className="mb-3"
+                                                controlId="categoryId"
+                                              >
+                                                <Form.Label>
+                                                  Category Name
+                                                </Form.Label>
+                                                <Form.Select
+                                                  name="categoryId"
+                                                  value={editProduct.categoryId}
+                                                  onChange={(e) =>
+                                                    setEditProduct({
+                                                      ...editProduct,
+                                                      categoryId:
+                                                        e.target.value,
+                                                    })
+                                                  }
+                                                  required
+                                                >
+                                                  <option value="">
+                                                    Select Category
                                                   </option>
-                                                ))}
-                                              </Form.Select>
-                                            </Form.Group>
-                                          </Col>
-                                        </Row>
-                                        <Row>
-                                          <Col>
-                                            <Form.Group
-                                              className="mb-3"
-                                              controlId="description"
-                                            >
-                                              <Form.Label>
-                                                Description
-                                              </Form.Label>
-                                              <Form.Control
-                                                as="textarea"
-                                                name="description"
-                                                value={editProduct.description}
-                                                onChange={(e) =>
-                                                  setEditProduct({
-                                                    ...editProduct,
-                                                    description: e.target.value,
-                                                  })
-                                                }
-                                                rows={2}
-                                                required
-                                              />
-                                            </Form.Group>
-                                          </Col>
-                                        </Row>
-                                        <Row>
-                                          <Col>
-                                            <Form.Group
-                                              className="mb-3"
-                                              controlId="productImage"
-                                            >
-                                              <Form.Label>
-                                                Product Image
-                                              </Form.Label>
-                                              <Form.Control
-                                                type="file"
-                                                name="productImage"
-                                                onChange={(e) =>
-                                                  setEditProductImage(
-                                                    e.target.files[0]
-                                                  )
-                                                }
-                                              />
-                                            </Form.Group>
-                                          </Col>
-                                        </Row>
-                                        {editProduct.sizes.map(
-                                          (sizeData, index) => (
-                                            <Row key={index}>
-                                              <Col>
-                                                <Form.Group
-                                                  className="mb-3"
-                                                  controlId={`size-${index}`}
-                                                >
-                                                  <Form.Label>Size</Form.Label>
-                                                  <Form.Control
-                                                    type="text"
-                                                    name="size"
-                                                    value={sizeData.size}
-                                                    onChange={(e) =>
-                                                      handleSizeChangeUpdate(
-                                                        index,
-                                                        "size",
-                                                        e.target.value
-                                                      )
-                                                    }
-                                                  />
-                                                </Form.Group>
-                                              </Col>
-                                              <Col>
-                                                <Form.Group
-                                                  className="mb-3"
-                                                  controlId={`qtyInStock-${index}`}
-                                                >
-                                                  <Form.Label>
-                                                    Quantity in Stock
-                                                  </Form.Label>
-                                                  <Form.Control
-                                                    type="number"
-                                                    name="qtyInStock"
-                                                    value={sizeData.qtyInStock}
-                                                    onChange={(e) =>
-                                                      handleSizeChangeUpdate(
-                                                        index,
-                                                        "qtyInStock",
-                                                        e.target.value
-                                                      )
-                                                    }
-                                                    required
-                                                  />
-                                                </Form.Group>
-                                              </Col>
-                                              <Col>
-                                                <Form.Group
-                                                  className="mb-3"
-                                                  controlId={`price-${index}`}
-                                                >
-                                                  <Form.Label>Price</Form.Label>
-                                                  <Form.Control
-                                                    type="number"
-                                                    name="price"
-                                                    value={sizeData.price}
-                                                    onChange={(e) =>
-                                                      handleSizeChangeUpdate(
-                                                        index,
-                                                        "price",
-                                                        e.target.value
-                                                      )
-                                                    }
-                                                    required
-                                                  />
-                                                </Form.Group>
-                                              </Col>
-                                            </Row>
-                                          )
-                                        )}
+                                                  {categories.map(
+                                                    (category) => (
+                                                      <option
+                                                        key={category.id}
+                                                        value={category.id}
+                                                      >
+                                                        {category.cateName}
+                                                      </option>
+                                                    )
+                                                  )}
+                                                </Form.Select>
+                                              </Form.Group>
+                                            </Col>
+                                          </Row>
+                                          <Row>
+                                            <Col>
+                                              <Form.Group
+                                                className="mb-3"
+                                                controlId="description"
+                                              >
+                                                <Form.Label>
+                                                  Description
+                                                </Form.Label>
+                                                <Form.Control
+                                                  as="textarea"
+                                                  name="description"
+                                                  value={
+                                                    editProduct.description
+                                                  }
+                                                  onChange={(e) =>
+                                                    setEditProduct({
+                                                      ...editProduct,
+                                                      description:
+                                                        e.target.value,
+                                                    })
+                                                  }
+                                                  rows={2}
+                                                  required
+                                                />
+                                              </Form.Group>
+                                            </Col>
+                                          </Row>
+                                          <Row>
+                                            <Col>
+                                              <Form.Group
+                                                className="mb-3"
+                                                controlId="productImage"
+                                              >
+                                                <Form.Label>
+                                                  Product Image
+                                                </Form.Label>
+                                                <Form.Control
+                                                  type="file"
+                                                  name="productImage"
+                                                  onChange={(e) =>
+                                                    setEditProductImage(
+                                                      e.target.files[0]
+                                                    )
+                                                  }
+                                                />
+                                              </Form.Group>
+                                            </Col>
+                                          </Row>
+                                          {editProduct.sizes.map(
+                                            (sizeData, index) => (
+                                              <Row key={index}>
+                                                <Col>
+                                                  <Form.Group
+                                                    className="mb-3"
+                                                    controlId={`size-${index}`}
+                                                  >
+                                                    <Form.Label>
+                                                      Size
+                                                    </Form.Label>
+                                                    <Form.Control
+                                                      type="text"
+                                                      name="size"
+                                                      value={sizeData.size}
+                                                      onChange={(e) =>
+                                                        handleSizeChangeUpdate(
+                                                          index,
+                                                          "size",
+                                                          e.target.value
+                                                        )
+                                                      }
+                                                    />
+                                                  </Form.Group>
+                                                </Col>
+                                                <Col>
+                                                  <Form.Group
+                                                    className="mb-3"
+                                                    controlId={`qtyInStock-${index}`}
+                                                  >
+                                                    <Form.Label>
+                                                      Quantity in Stock
+                                                    </Form.Label>
+                                                    <Form.Control
+                                                      type="number"
+                                                      name="qtyInStock"
+                                                      value={
+                                                        sizeData.qtyInStock
+                                                      }
+                                                      onChange={(e) =>
+                                                        handleSizeChangeUpdate(
+                                                          index,
+                                                          "qtyInStock",
+                                                          e.target.value
+                                                        )
+                                                      }
+                                                      required
+                                                    />
+                                                  </Form.Group>
+                                                </Col>
+                                                <Col>
+                                                  <Form.Group
+                                                    className="mb-3"
+                                                    controlId={`price-${index}`}
+                                                  >
+                                                    <Form.Label>
+                                                      Price
+                                                    </Form.Label>
+                                                    <Form.Control
+                                                      type="number"
+                                                      name="price"
+                                                      value={sizeData.price}
+                                                      onChange={(e) =>
+                                                        handleSizeChangeUpdate(
+                                                          index,
+                                                          "price",
+                                                          e.target.value
+                                                        )
+                                                      }
+                                                      required
+                                                    />
+                                                  </Form.Group>
+                                                </Col>
+                                              </Row>
+                                            )
+                                          )}
 
-                                        <Modal.Footer>
-                                          <Button
-                                            variant="secondary"
-                                            onClick={handleClose1}
-                                          >
-                                            Close
-                                          </Button>
-                                          <Button
-                                            variant="warning"
-                                            type="submit"
-                                          >
-                                            Update
-                                          </Button>
-                                        </Modal.Footer>
-                                        {updateError && (
-                                          <Alert variant="danger">
-                                            {updateError}
-                                          </Alert>
-                                        )}
-                                        {updateSuccess && (
-                                          <Alert variant="success">
-                                            {updateSuccess}
-                                          </Alert>
-                                        )}
-                                      </Container>
-                                    </Form>
-                                  </Modal.Body>
-                                </Modal>
+                                          <Modal.Footer>
+                                            <Button
+                                              variant="secondary"
+                                              onClick={handleClose1}
+                                            >
+                                              Close
+                                            </Button>
+                                            <Button
+                                              variant="warning"
+                                              type="submit"
+                                            >
+                                              Update
+                                            </Button>
+                                          </Modal.Footer>
+                                          {updateError && (
+                                            <Alert variant="danger">
+                                              {updateError}
+                                            </Alert>
+                                          )}
+                                          {updateSuccess && (
+                                            <Alert variant="success">
+                                              {updateSuccess}
+                                            </Alert>
+                                          )}
+                                        </Container>
+                                      </Form>
+                                    </Modal.Body>
+                                  </Modal>
 
-                                <FaTrash
-                                  className="product__icon1 product__icon--delete"
-                                  onClick={() =>
-                                    handleShowDelete(item.productId)
-                                  }
-                                />
-                                <Modal
-                                  show={showDelete}
-                                  onHide={handleCloseDelete}
-                                >
-                                  <Modal.Header closeButton>
-                                    <Modal.Title>Delete Product</Modal.Title>
-                                  </Modal.Header>
-                                  <Modal.Body>
-                                    Are you sure you want to delete this
-                                    product?
-                                  </Modal.Body>
-                                  <Modal.Footer>
-                                    <Button
-                                      variant="secondary"
-                                      onClick={handleCloseDelete}
-                                    >
-                                      Cancel
-                                    </Button>
-                                    <Button
-                                      variant="danger"
-                                      onClick={deleteProduct}
-                                    >
-                                      Delete
-                                    </Button>
-                                  </Modal.Footer>
-                                  {error && (
-                                    <Alert variant="danger">{error}</Alert>
-                                  )}
-                                </Modal>
+                                  <FaTrash
+                                    className="product__icon1 product__icon--delete"
+                                    onClick={() =>
+                                      handleShowDelete(item.productId)
+                                    }
+                                  />
+                                  <Modal
+                                    show={showDelete}
+                                    onHide={handleCloseDelete}
+                                  >
+                                    <Modal.Header closeButton>
+                                      <Modal.Title>Delete Product</Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                      Are you sure you want to delete this
+                                      product?
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                      <Button
+                                        variant="secondary"
+                                        onClick={handleCloseDelete}
+                                      >
+                                        Cancel
+                                      </Button>
+                                      <Button
+                                        variant="danger"
+                                        onClick={deleteProduct}
+                                      >
+                                        Delete
+                                      </Button>
+                                    </Modal.Footer>
+                                    {error && (
+                                      <Alert variant="danger">{error}</Alert>
+                                    )}
+                                  </Modal>
+                                </div>
                               </div>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
+                            </td>
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td colSpan="9" className="text-center">
+                          No data available.
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </Table>
                 <ReactPaginate

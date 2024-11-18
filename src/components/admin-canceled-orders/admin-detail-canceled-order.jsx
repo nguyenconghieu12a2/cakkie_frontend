@@ -43,7 +43,6 @@ function DetailCanceledOrder() {
     setCurrentPage(event.selected);
   };
 
-
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
   const pageCount = Math.ceil(productCancel.length / itemsPerPage);
@@ -106,19 +105,29 @@ function DetailCanceledOrder() {
                     </tr>
                   </thead>
                   <tbody>
-                    {displayData.map((order) =>
-                      order.product.map((product) =>
-                        product.productItem.map((item, index) => (
-                          <tr key={index}>
-                            <td className="td">{order.id}</td>
-                            <td className="td">{order.fullName}</td>
-                            <td className="td">{product.productName}</td>
-                            <td className="td">{item.quantity}</td>
-                            <td className="td">{formatCurrency(item.price)}</td>
-                            <td className="td">{item.size}</td>
-                          </tr>
-                        ))
+                    {displayData.length > 0 ? (
+                      displayData.map((order) =>
+                        order.product.map((product) =>
+                          product.productItem.map((item, index) => (
+                            <tr key={index}>
+                              <td className="td">{order.id}</td>
+                              <td className="td">{order.fullName}</td>
+                              <td className="td">{product.productName}</td>
+                              <td className="td">{item.quantity}</td>
+                              <td className="td">
+                                {formatCurrency(item.price)}
+                              </td>
+                              <td className="td">{item.size}</td>
+                            </tr>
+                          ))
+                        )
                       )
+                    ) : (
+                      <tr>
+                        <td colSpan="6" className="text-center">
+                          No data available.
+                        </td>
+                      </tr>
                     )}
                   </tbody>
                 </Table>

@@ -172,109 +172,120 @@ function CanceledOrder() {
                     </tr>
                   </thead>
                   <tbody>
-                    {displayData.map((item, index) => (
-                      <tr key={item.id}>
-                        <td className="td">
-                          {index + 1 + currentPage * itemsPerPage}
-                        </td>
-                        <td className="td">{item.fullName}</td>
-                        <td className="td">{item.totalCancel}</td>
-                        <td className="th handle__icon">
-                          <Link
-                            to={`/list-canceled/${item.id}`}
-                            className="link__icon"
-                          >
-                            <FaBars className="canceled__icon canceled__icon--menu" />
-                          </Link>
+                    {displayData.length > 0 ? (
+                      displayData.map((item, index) => (
+                        <tr key={item.id}>
+                          <td className="td">
+                            {index + 1 + currentPage * itemsPerPage}
+                          </td>
+                          <td className="td">{item.fullName}</td>
+                          <td className="td">{item.totalCancel}</td>
+                          <td className="th handle__icon">
+                            <Link
+                              to={`/list-canceled/${item.id}`}
+                              className="link__icon"
+                            >
+                              <FaBars className="canceled__icon canceled__icon--menu" />
+                            </Link>
 
-                          <div className="link__icon">
-                            <FaLock
-                              className={`canceled__icon canceled__icon--delete ${
-                                bannedUsers.has(item.id) ||
-                                item.totalCancel <= 5
-                                  ? "disabled"
-                                  : ""
-                              }`}
-                              title={
-                                bannedUsers.has(item.id)
-                                  ? "User is already banned"
-                                  : item.totalCancel > 5
-                                  ? "Ban this user"
-                                  : "Customer must have more than 5 canceled orders to be banned"
-                              }
-                              onClick={() => {
-                                if (
-                                  item.totalCancel > 5 &&
-                                  !bannedUsers.has(item.id)
-                                ) {
-                                  setSelectedUserId(item.id);
-                                  handleShow2();
-                                } else if (item.totalCancel <= 5) {
-                                  setShowNotificationModal(true);
+                            <div className="link__icon">
+                              <FaLock
+                                className={`canceled__icon canceled__icon--delete ${
+                                  bannedUsers.has(item.id) ||
+                                  item.totalCancel <= 5
+                                    ? "disabled"
+                                    : ""
+                                }`}
+                                title={
+                                  bannedUsers.has(item.id)
+                                    ? "User is already banned"
+                                    : item.totalCancel > 5
+                                    ? "Ban this user"
+                                    : "Customer must have more than 5 canceled orders to be banned"
                                 }
-                              }}
-                            />
-                          </div>
+                                onClick={() => {
+                                  if (
+                                    item.totalCancel > 5 &&
+                                    !bannedUsers.has(item.id)
+                                  ) {
+                                    setSelectedUserId(item.id);
+                                    handleShow2();
+                                  } else if (item.totalCancel <= 5) {
+                                    setShowNotificationModal(true);
+                                  }
+                                }}
+                              />
+                            </div>
 
-                          <Modal show={show2} onHide={handleClose2}>
-                            <Modal.Header closeButton>
-                              <Modal.Title>Lock Customer</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                              Are you sure you want to lock this customer?
-                              <Form>
-                                <Form.Group className="mb-3">
-                                  <Form.Label>
-                                    Reason for locking this customer
-                                  </Form.Label>
-                                  <Form.Control
-                                    type="text"
-                                    placeholder="Reason for lock..."
-                                    value={banReason}
-                                    onChange={(e) =>
-                                      setBanReason(e.target.value)
-                                    }
-                                  />
-                                </Form.Group>
-                              </Form>
-                            </Modal.Body>
-                            <Modal.Footer>
-                              <Button
-                                variant="secondary"
-                                onClick={handleClose2}
-                              >
-                                Close
-                              </Button>
-                              <Button variant="danger" onClick={handleBanUser}>
-                                Lock
-                              </Button>
-                            </Modal.Footer>
-                          </Modal>
+                            <Modal show={show2} onHide={handleClose2}>
+                              <Modal.Header closeButton>
+                                <Modal.Title>Lock Customer</Modal.Title>
+                              </Modal.Header>
+                              <Modal.Body>
+                                Are you sure you want to lock this customer?
+                                <Form>
+                                  <Form.Group className="mb-3">
+                                    <Form.Label>
+                                      Reason for locking this customer
+                                    </Form.Label>
+                                    <Form.Control
+                                      type="text"
+                                      placeholder="Reason for lock..."
+                                      value={banReason}
+                                      onChange={(e) =>
+                                        setBanReason(e.target.value)
+                                      }
+                                    />
+                                  </Form.Group>
+                                </Form>
+                              </Modal.Body>
+                              <Modal.Footer>
+                                <Button
+                                  variant="secondary"
+                                  onClick={handleClose2}
+                                >
+                                  Close
+                                </Button>
+                                <Button
+                                  variant="danger"
+                                  onClick={handleBanUser}
+                                >
+                                  Lock
+                                </Button>
+                              </Modal.Footer>
+                            </Modal>
 
-                          {/* Notification Modal for insufficient cancellations */}
-                          <Modal
-                            show={showNotificationModal}
-                            onHide={handleCloseNotificationModal}
-                          >
-                            <Modal.Header closeButton>
-                              <Modal.Title>Cannot Lock Customer</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                              This customer needs to have more than 5 canceled
-                              orders to be locked.
-                            </Modal.Body>
-                            <Modal.Footer>
-                              <Button
-                                variant="secondary"
-                                onClick={handleCloseNotificationModal}
-                              >
-                                Close
-                              </Button>
-                            </Modal.Footer>
-                          </Modal>
+                            {/* Notification Modal for insufficient cancellations */}
+                            <Modal
+                              show={showNotificationModal}
+                              onHide={handleCloseNotificationModal}
+                            >
+                              <Modal.Header closeButton>
+                                <Modal.Title>Cannot Lock Customer</Modal.Title>
+                              </Modal.Header>
+                              <Modal.Body>
+                                This customer needs to have more than 5 canceled
+                                orders to be locked.
+                              </Modal.Body>
+                              <Modal.Footer>
+                                <Button
+                                  variant="secondary"
+                                  onClick={handleCloseNotificationModal}
+                                >
+                                  Close
+                                </Button>
+                              </Modal.Footer>
+                            </Modal>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="4" className="text-center">
+                          No data available.
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </Table>
 

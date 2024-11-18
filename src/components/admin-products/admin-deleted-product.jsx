@@ -247,48 +247,56 @@ function DeletedProduct() {
                     </tr>
                   </thead>
                   <tbody>
-                    {displayData.map((item, index) => {
-                      const currentSize =
-                        selectedSize[item.productName] || item.productItem[0];
-                      return (
-                        <tr key={item.productId}>
-                          <td className="td">
-                            {index + 1 + currentPage * itemsPerPage}
-                          </td>
-                          <td className="td">{item.categoryName}</td>
-                          <td className="td">{item.productName}</td>
-                          <td className="td">{item.description}</td>
-                          <td className="td">
-                            <img
-                              src={`../images/${item.productImage}`}
-                              alt={item.productName}
-                              className="product__image"
-                            />
-                          </td>
-                          <td className="td">
-                            <Form.Select
-                              value={currentSize ? currentSize.size : ""}
-                              onChange={(e) =>
-                                handleSizeChange(
-                                  item.productName,
-                                  e.target.value
-                                )
-                              }
-                            >
-                              {item.productItem.map((sizeOption, i) => (
-                                <option key={i} value={sizeOption.size}>
-                                  {sizeOption.size}
-                                </option>
-                              ))}
-                            </Form.Select>
-                          </td>
-                          <td className="td">{currentSize.quantity}</td>
-                          <td className="td">
-                            {formatCurrency(currentSize.price)}
-                          </td>
-                        </tr>
-                      );
-                    })}
+                    {displayData.length > 0 ? (
+                      displayData.map((item, index) => {
+                        const currentSize =
+                          selectedSize[item.productName] || item.productItem[0];
+                        return (
+                          <tr key={item.productId}>
+                            <td className="td">
+                              {index + 1 + currentPage * itemsPerPage}
+                            </td>
+                            <td className="td">{item.categoryName}</td>
+                            <td className="td">{item.productName}</td>
+                            <td className="td">{item.description}</td>
+                            <td className="td">
+                              <img
+                                src={`../images/${item.productImage}`}
+                                alt={item.productName}
+                                className="product__image"
+                              />
+                            </td>
+                            <td className="td">
+                              <Form.Select
+                                value={currentSize ? currentSize.size : ""}
+                                onChange={(e) =>
+                                  handleSizeChange(
+                                    item.productName,
+                                    e.target.value
+                                  )
+                                }
+                              >
+                                {item.productItem.map((sizeOption, i) => (
+                                  <option key={i} value={sizeOption.size}>
+                                    {sizeOption.size}
+                                  </option>
+                                ))}
+                              </Form.Select>
+                            </td>
+                            <td className="td">{currentSize.quantity}</td>
+                            <td className="td">
+                              {formatCurrency(currentSize.price)}
+                            </td>
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td colSpan="8" className="text-center">
+                          No data available.
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </Table>
 
@@ -355,83 +363,92 @@ function DeletedProduct() {
                     </tr>
                   </thead>
                   <tbody>
-                    {displayData1.map((item, index) => {
-                      const currentSize1 =
-                        selectedSize1[item.productName] || item.productItem[0];
-                      return (
-                        <tr key={item.productId}>
-                          <td className="td">
-                            {index + 1 + currentPage1 * itemsPerPage1}
-                          </td>
-                          <td className="td">{item.categoryName}</td>
-                          <td className="td">{item.productName}</td>
-                          <td className="td">{item.description}</td>
-                          <td className="td">
-                            <img
-                              src={`../images/${item.productImage}`}
-                              alt={item.productName}
-                              className="product__image"
-                            />
-                          </td>
-                          <td className="td">
-                            <Form.Select
-                              value={currentSize1 ? currentSize1.size : ""}
-                              onChange={(e) =>
-                                handleSizeChange1(
-                                  item.productName,
-                                  e.target.value
-                                )
-                              }
-                            >
-                              {item.productItem.map((sizeOption, i) => (
-                                <option key={i} value={sizeOption.size}>
-                                  {sizeOption.size}
-                                </option>
-                              ))}
-                            </Form.Select>
-                          </td>
-                          <td className="td">{currentSize1.quantity}</td>
-                          <td className="td">
-                            {formatCurrency(currentSize1.price)}
-                          </td>
-                          <td className="td">
-                            <Link className="link__icon" to="#">
-                              <FaArrowsRotate
-                                className="deleted__icon deleted__icon--recovery"
-                                onClick={() => handleShow1(item.productId)}
+                    {displayData1.length > 0 ? (
+                      displayData1.map((item, index) => {
+                        const currentSize1 =
+                          selectedSize1[item.productName] ||
+                          item.productItem[0];
+                        return (
+                          <tr key={item.productId}>
+                            <td className="td">
+                              {index + 1 + currentPage1 * itemsPerPage1}
+                            </td>
+                            <td className="td">{item.categoryName}</td>
+                            <td className="td">{item.productName}</td>
+                            <td className="td">{item.description}</td>
+                            <td className="td">
+                              <img
+                                src={`../images/${item.productImage}`}
+                                alt={item.productName}
+                                className="product__image"
                               />
-                              <Modal
-                                show={show1}
-                                onHide={handleClose1}
-                                backdrop="static"
-                                keyboard={false}
+                            </td>
+                            <td className="td">
+                              <Form.Select
+                                value={currentSize1 ? currentSize1.size : ""}
+                                onChange={(e) =>
+                                  handleSizeChange1(
+                                    item.productName,
+                                    e.target.value
+                                  )
+                                }
                               >
-                                <Modal.Header closeButton>
-                                  <Modal.Title>Recovery Product</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                  Are you sure to recover this product?
-                                </Modal.Body>
-                                <Modal.Footer>
-                                  <Button
-                                    variant="secondary"
-                                    onClick={handleClose1}
-                                  >
-                                    Close
-                                  </Button>
-                                  <Button
-                                    variant="success"
-                                    onClick={recoveryProduct}
-                                  >
-                                    Recover
-                                  </Button>
-                                </Modal.Footer>
-                              </Modal>
-                            </Link>
-                          </td>
-                        </tr>
-                      );
-                    })}
+                                {item.productItem.map((sizeOption, i) => (
+                                  <option key={i} value={sizeOption.size}>
+                                    {sizeOption.size}
+                                  </option>
+                                ))}
+                              </Form.Select>
+                            </td>
+                            <td className="td">{currentSize1.quantity}</td>
+                            <td className="td">
+                              {formatCurrency(currentSize1.price)}
+                            </td>
+                            <td className="td">
+                              <Link className="link__icon" to="#">
+                                <FaArrowsRotate
+                                  className="deleted__icon deleted__icon--recovery"
+                                  onClick={() => handleShow1(item.productId)}
+                                />
+                                <Modal
+                                  show={show1}
+                                  onHide={handleClose1}
+                                  backdrop="static"
+                                  keyboard={false}
+                                >
+                                  <Modal.Header closeButton>
+                                    <Modal.Title>Recovery Product</Modal.Title>
+                                  </Modal.Header>
+                                  <Modal.Body>
+                                    Are you sure to recover this product?
+                                  </Modal.Body>
+                                  <Modal.Footer>
+                                    <Button
+                                      variant="secondary"
+                                      onClick={handleClose1}
+                                    >
+                                      Close
+                                    </Button>
+                                    <Button
+                                      variant="success"
+                                      onClick={recoveryProduct}
+                                    >
+                                      Recover
+                                    </Button>
+                                  </Modal.Footer>
+                                </Modal>
+                              </Link>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td colSpan="9" className="text-center">
+                          No data available.
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </Table>
 

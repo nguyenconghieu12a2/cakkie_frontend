@@ -97,28 +97,38 @@ function ListCanceledOrder() {
                     </tr>
                   </thead>
                   <tbody>
-                    {detail.map((item, index) => (
+                    {detail.length > 0 ? (
+                      detail.map((item, index) => (
+                        <tr>
+                          <td className="td">{index + 1}</td>
+                          <td className="td">{item.fullName}</td>
+                          <td className="td">{item.totalProduct}</td>
+                          <td className="td">
+                            {formatCurrency(item.orderTotal)}
+                          </td>
+                          <td className="td">{item.cancelDate}</td>
+                          <td className="td">{item.cancelReason}</td>
+                          <td className="th handle__icon">
+                            <Link
+                              to={`/detail-canceled/${item.id}`}
+                              className="link__icon"
+                              href=""
+                            >
+                              <FaBars
+                                className="list__canceled--icon list__canceled--icon--menu"
+                                onClick={() => navigate("/detail-canceled")}
+                              />
+                            </Link>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
                       <tr>
-                        <td className="td">{index + 1}</td>
-                        <td className="td">{item.fullName}</td>
-                        <td className="td">{item.totalProduct}</td>
-                        <td className="td">{formatCurrency(item.orderTotal)}</td>
-                        <td className="td">{item.cancelDate}</td>
-                        <td className="td">{item.cancelReason}</td>
-                        <td className="th handle__icon">
-                          <Link
-                            to={`/detail-canceled/${item.id}`}
-                            className="link__icon"
-                            href=""
-                          >
-                            <FaBars
-                              className="list__canceled--icon list__canceled--icon--menu"
-                              onClick={() => navigate("/detail-canceled")}
-                            />
-                          </Link>
+                        <td colSpan="7" className="text-center">
+                          No data available.
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </Table>
               </div>

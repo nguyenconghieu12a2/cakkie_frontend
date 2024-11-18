@@ -229,37 +229,45 @@ function Order() {
                     </tr>
                   </thead>
                   <tbody>
-                    {displayData.map((item, index) => (
-                      <tr key={item.shopId}>
-                        <td className="td">
-                          {index + 1 + currentPage * itemsPerPage}
-                        </td>
-                        <td className="td">{item.fullName}</td>
-                        <td className="td">{item.totalProduct}</td>
-                        <td className="td">
-                          {formatCurrency(item.totalPrice)}
-                        </td>
-                        <td className="td">
-                          {formatCurrency(item.totalDiscount)}
-                        </td>
-                        <td className="td">{item.status}</td>
-                        <td className="th handle__icon">
-                          <div className="icon__container">
-                            <Link
-                              to={`/order/detail/${item.shopId}`}
-                              className="link__icon"
-                            >
-                              <FaBars className="order__icon order__icon--menu" />
-                            </Link>
-                            <FaPenToSquare
-                              className="order__icon order__icon--edit"
-                              onClick={() => handleEditClick(item.shopId)}
-                              variant="primary"
-                            />
-                          </div>
+                    {displayData.length > 0 ? (
+                      displayData.map((item, index) => (
+                        <tr key={item.shopId}>
+                          <td className="td">
+                            {index + 1 + currentPage * itemsPerPage}
+                          </td>
+                          <td className="td">{item.fullName}</td>
+                          <td className="td">{item.totalProduct}</td>
+                          <td className="td">
+                            {formatCurrency(item.totalPrice)}
+                          </td>
+                          <td className="td">
+                            {formatCurrency(item.totalDiscount)}
+                          </td>
+                          <td className="td">{item.status}</td>
+                          <td className="th handle__icon">
+                            <div className="icon__container">
+                              <Link
+                                to={`/order/detail/${item.shopId}`}
+                                className="link__icon"
+                              >
+                                <FaBars className="order__icon order__icon--menu" />
+                              </Link>
+                              <FaPenToSquare
+                                className="order__icon order__icon--edit"
+                                onClick={() => handleEditClick(item.shopId)}
+                                variant="primary"
+                              />
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="7" className="text-center">
+                          No data available.
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </Table>
 

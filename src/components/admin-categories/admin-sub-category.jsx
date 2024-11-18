@@ -8,6 +8,7 @@ import {
   FaBars,
   FaPenToSquare,
   FaRegCircleLeft,
+  FaTrash,
 } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
@@ -27,7 +28,8 @@ const addSub = "/api/admin/category/add-sub-category";
 const updateSub = "/api/admin/update-category";
 //Get Null SubCate
 const nullSub = "/api/admin/null-sub-subCate";
-
+//Delete Sub Cate
+const deleteSub = "/api/admin/delete/sub-category";
 function SubCategory() {
   //Search Logic
   const [filteredOrders, setFilteredOrders] = useState([]); // For filtered results
@@ -235,29 +237,28 @@ function SubCategory() {
     setCurrentPage(event.selected);
   };
 
-  //Load Sub SubCate Null
-  const [nullSubSub, setNullSubSub] = useState([]);
-  const loadNull = async () => {
-    const result = await axios.get(`${nullSub}`);
-    setNullSubSub(result.data);
-  };
+  //Delete SubCate
+  const [deleteError, setDeleteError] = useState("");
+  const [deleteSuccess, setDeleteSuccess] = useState("");
 
-  useEffect(() => {
-    loadNull();
-  }, []);
-
-  //Pagination Null
-  //Pagination
-  const [currentPage1, setCurrentPage1] = useState(0);
-  const itemsPerPage1 = 10;
-  const pageCount1 = Math.ceil(nullSubSub.length / itemsPerPage);
-  const displayData1 = nullSubSub.slice(
-    currentPage1 * itemsPerPage1,
-    (currentPage1 + 1) * itemsPerPage1
-  );
-
-  const handlePageClick1 = (event) => {
-    setCurrentPage1(event.selected);
+  const deleteSubCategory = async (id) => {
+    try {
+      await axios.delete(`${deleteSub}/${id}`);
+      setDeleteSuccess("Sub-category deleted successfully!");
+      setDeleteError("");
+      loadSub();
+      handleCloseDelete();
+      setTimeout(() => setDeleteSuccess(""), 5000);
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        setDeleteError(
+          "Cannot delete sub-category because it contains sub-subcategories."
+        );
+      } else {
+        setDeleteError("Failed to delete sub-category. Please try again.");
+      }
+      setTimeout(() => setDeleteError(""), 5000);
+    }
   };
 
   return (
@@ -293,7 +294,7 @@ function SubCategory() {
                 <Col>
                   <Form.Control
                     type="text"
-                    placeholder="Search orders..."
+                    placeholder="Search..."
                     value={searchTerm}
                     onChange={handleSearchChange}
                     className="search__input"
@@ -362,104 +363,131 @@ function SubCategory() {
                     </tr>
                   </thead>
                   <tbody>
-                    {displayData.map((item, index) => (
-                      <tr key={item.id}>
-                        <td className="td">
-                          {index + 1 + currentPage * itemsPerPage}
-                        </td>
-                        <td className="td">{item.cateName}</td>
-                        <td className="th handle__icon">
-                          <div className="icon__container">
-                            <Link
-                              to={`/main-category/sub-category/category/${item.id}`}
-                              className="link__icon"
-                            >
-                              <FaBars className="subcategory__icon subcategory__icon--menu" />
-                            </Link>
-                            <FaPenToSquare
-                              className="subcategory__icon subcategory__icon--edit"
-                              onClick={() => {
-                                setCateIdSubEdit(item.id);
-                                setEditSubCate(item);
-                                handleShowEdit();
-                              }}
-                            />
-                            <Modal show={showEdit} onHide={handleCloseEdit}>
-                              <Modal.Header closeButton>
-                                <Modal.Title>Edit Sub-Category</Modal.Title>
-                              </Modal.Header>
-                              <Modal.Body>
-                                <Form
-                                  id="editSubCateForm"
-                                  onSubmit={editSubSubmit}
-                                >
-                                  <Form.Group className="mb-3">
-                                    <Form.Label>Sub-Category Name</Form.Label>
-                                    <Form.Control
-                                      type="text"
-                                      name="cateName"
-                                      value={editSubCate.cateName || ""}
-                                      onChange={handleEditInputChange}
-                                      placeholder="Enter category name"
-                                      autoFocus
-                                    />
-                                  </Form.Group>
-                                  {editSuccess && (
-                                    <Alert variant="success">
-                                      {editSuccess}
-                                    </Alert>
-                                  )}
-                                  {editError && (
-                                    <Alert variant="danger">{editError}</Alert>
-                                  )}
-                                </Form>
-                              </Modal.Body>
-                              <Modal.Footer>
-                                <Button
-                                  variant="secondary"
-                                  onClick={handleCloseEdit}
-                                >
-                                  Close
-                                </Button>
-                                <Button
-                                  variant="warning"
-                                  type="submit"
-                                  form="editSubCateForm"
-                                >
-                                  Update
-                                </Button>
-                              </Modal.Footer>
-                            </Modal>
-                            {/* <FaTrash
-                            className="subcategory__icon subcategory__icon--delete"
-                            onClick={handleShowDelete}
-                          />
-                          <Modal show={showDelete} onHide={handleCloseDelete}>
-                            <Modal.Header closeButton>
-                              <Modal.Title>Confirm Delete</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                              Are you sure you want to delete this category?
-                            </Modal.Body>
-                            <Modal.Footer>
-                              <Button
-                                variant="secondary"
-                                onClick={handleCloseDelete}
+                    {displayData.length > 0 ? (
+                      displayData.map((item, index) => (
+                        <tr key={item.id}>
+                          <td className="td">
+                            {index + 1 + currentPage * itemsPerPage}
+                          </td>
+                          <td className="td">{item.cateName}</td>
+                          <td className="th handle__icon">
+                            <div className="icon__container">
+                              <Link
+                                to={`/main-category/sub-category/category/${item.id}`}
+                                className="link__icon"
                               >
-                                Close
-                              </Button>
-                              <Button
-                                variant="danger"
-                                onClick={handleCloseDelete}
+                                <FaBars className="subcategory__icon subcategory__icon--menu" />
+                              </Link>
+                              <FaPenToSquare
+                                className="subcategory__icon subcategory__icon--edit"
+                                onClick={() => {
+                                  setCateIdSubEdit(item.id);
+                                  setEditSubCate(item);
+                                  handleShowEdit();
+                                }}
+                              />
+                              <Modal show={showEdit} onHide={handleCloseEdit}>
+                                <Modal.Header closeButton>
+                                  <Modal.Title>Edit Sub-Category</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                  <Form
+                                    id="editSubCateForm"
+                                    onSubmit={editSubSubmit}
+                                  >
+                                    <Form.Group className="mb-3">
+                                      <Form.Label>Sub-Category Name</Form.Label>
+                                      <Form.Control
+                                        type="text"
+                                        name="cateName"
+                                        value={editSubCate.cateName || ""}
+                                        onChange={handleEditInputChange}
+                                        placeholder="Enter category name"
+                                        autoFocus
+                                      />
+                                    </Form.Group>
+                                    {editSuccess && (
+                                      <Alert variant="success">
+                                        {editSuccess}
+                                      </Alert>
+                                    )}
+                                    {editError && (
+                                      <Alert variant="danger">
+                                        {editError}
+                                      </Alert>
+                                    )}
+                                  </Form>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                  <Button
+                                    variant="secondary"
+                                    onClick={handleCloseEdit}
+                                  >
+                                    Close
+                                  </Button>
+                                  <Button
+                                    variant="warning"
+                                    type="submit"
+                                    form="editSubCateForm"
+                                  >
+                                    Update
+                                  </Button>
+                                </Modal.Footer>
+                              </Modal>
+                              <FaTrash
+                                className="subcategory__icon subcategory__icon--delete"
+                                onClick={() => {
+                                  setCateIdSubEdit(item.id);
+                                  handleShowDelete();
+                                }}
+                              />
+                              <Modal
+                                show={showDelete}
+                                onHide={handleCloseDelete}
                               >
-                                Delete
-                              </Button>
-                            </Modal.Footer>
-                          </Modal> */}
-                          </div>
+                                <Modal.Header closeButton>
+                                  <Modal.Title>Delete Sub-Category</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                  Are you sure you want to delete this
+                                  sub-category?
+                                </Modal.Body>
+                                <Modal.Footer>
+                                  <Button
+                                    variant="secondary"
+                                    onClick={handleCloseDelete}
+                                  >
+                                    Close
+                                  </Button>
+                                  <Button
+                                    variant="danger"
+                                    onClick={() =>
+                                      deleteSubCategory(cateIdSubEdit)
+                                    }
+                                  >
+                                    Delete
+                                  </Button>
+                                </Modal.Footer>
+                                {deleteError && (
+                                  <Alert variant="danger">{deleteError}</Alert>
+                                )}
+                                {deleteSuccess && (
+                                  <Alert variant="success">
+                                    {deleteSuccess}
+                                  </Alert>
+                                )}
+                              </Modal>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="3" className="text-center">
+                          No data available.
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </Table>
               </div>
@@ -470,58 +498,6 @@ function SubCategory() {
                 onPageChange={handlePageClick}
                 pageRangeDisplayed={5}
                 pageCount={pageCount}
-                previousLabel="< previous"
-                pageClassName="page-item"
-                pageLinkClassName="page-link"
-                previousClassName="page-item"
-                previousLinkClassName="page-link"
-                nextClassName="page-item"
-                nextLinkClassName="page-link"
-                breakClassName="page-item"
-                breakLinkClassName="page-link"
-                containerClassName="pagination"
-                activeClassName="active"
-              />
-            </div>
-          </div>
-
-          <div className="subcategory__body__wrap">
-            <div className="subcategory__body">
-              <div className="subcategory__body--head">
-                <h4 className="subcategory__body--title">
-                  Null Sub Sub-Category
-                </h4>
-              </div>
-
-              <div className="subcategory__body--table">
-                <Table className="table">
-                  <thead className="thead">
-                    <tr>
-                      <th className="th">Sub-Category ID</th>
-                      <th className="th">Sub-Category Name</th>
-                      <th className="th">Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {displayData1.map((item, index) => (
-                      <tr key={index}>
-                        <td className="td">
-                          {index + 1 + currentPage1 * pageCount1}
-                        </td>
-                        <td className="td">{item.cateName}</td>
-                        <td className="td">Null</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </div>
-              <ReactPaginate
-                className="pagination"
-                breakLabel="..."
-                nextLabel="next >"
-                onPageChange={handlePageClick1}
-                pageRangeDisplayed={5}
-                pageCount={pageCount1}
                 previousLabel="< previous"
                 pageClassName="page-item"
                 pageLinkClassName="page-link"

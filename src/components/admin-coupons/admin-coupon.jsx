@@ -314,7 +314,7 @@ function Coupon({ onLogout }) {
                 <Col>
                   <Form.Control
                     type="text"
-                    placeholder="Search coupons..."
+                    placeholder="Search..."
                     value={searchTerm}
                     onChange={handleSearchChange}
                     className="search__input"
@@ -435,165 +435,178 @@ function Coupon({ onLogout }) {
                     </tr>
                   </thead>
                   <tbody>
-                    {displayData.map((item, index) => (
-                      <tr key={item.id}>
-                        <td className="td">
-                          {index + 1 + currentPage * itemsPerPage}
-                        </td>
-                        <td className="td">{item.code}</td>
-                        <td className="td">{item.name}</td>
-                        <td className="td">{item.quantity}</td>
-                        <td className="td">
-                          {formatCurrency(item.priceDiscount)}
-                        </td>
-                        <td className="td">
-                          {formatToDateTimeLocal(item.startDate)}
-                        </td>
-                        <td className="td">
-                          {formatToDateTimeLocal(item.endDate)}
-                        </td>
-                        <td className="td handle__icon">
-                          <a className="link__icon">
-                            <FaPenToSquare
-                              className="coupon__icon coupon__icon--edit"
-                              onClick={() => {
-                                setCouponIdEdit(item.id);
-                                setEditCoupon({
-                                  ...item,
-                                  startDate: formatToDateTimeLocal(
-                                    item.startDate
-                                  ),
-                                  endDate: formatToDateTimeLocal(item.endDate),
-                                });
-                                setShowEdit(true);
-                              }}
-                            />
-                            <Modal
-                              size="lg"
-                              show={showEdit}
-                              onHide={handleCloseEdit}
-                              aria-labelledby="example-modal-sizes-title-lg"
-                            >
-                              <Modal.Header closeButton>
-                                <Modal.Title id="example-modal-sizes-title-lg">
-                                  Edit Coupon
-                                </Modal.Title>
-                              </Modal.Header>
-                              <Modal.Body>
-                                <Form onSubmit={editCouponSubmit}>
-                                  <Form.Group className="mb-3">
-                                    <Form.Label>Code</Form.Label>
-                                    <Form.Control
-                                      type="text"
-                                      placeholder="SU24"
-                                      value={editCoupon.code}
-                                      name="code"
-                                      onChange={handleEditInputChange}
-                                    />
-                                  </Form.Group>
-                                  <Form.Group className="mb-3">
-                                    <Form.Label>Coupon Name</Form.Label>
-                                    <Form.Control
-                                      type="text"
-                                      placeholder="Summer 2024"
-                                      value={editCoupon.name}
-                                      name="name"
-                                      onChange={handleEditInputChange}
-                                    />
-                                  </Form.Group>
-                                  <Form.Group className="mb-3">
-                                    <Form.Label>Quantity</Form.Label>
-                                    <Form.Control
-                                      type="number"
-                                      placeholder="10"
-                                      value={editCoupon.quantity}
-                                      name="quantity"
-                                      onChange={handleEditInputChange}
-                                    />
-                                  </Form.Group>
-                                  <Form.Group className="mb-3">
-                                    <Form.Label>Price Discount</Form.Label>
-                                    <Form.Control
-                                      type="number"
-                                      placeholder="10000"
-                                      value={editCoupon.priceDiscount}
-                                      name="priceDiscount"
-                                      onChange={handleEditInputChange}
-                                    />
-                                  </Form.Group>
-                                  <Form.Group className="mb-3">
-                                    <Form.Label>Start Date</Form.Label>
-                                    <Form.Control
-                                      type="datetime-local"
-                                      value={editCoupon.startDate}
-                                      name="startDate"
-                                      onChange={handleEditInputChange}
-                                    />
-                                  </Form.Group>
-                                  <Form.Group className="mb-3">
-                                    <Form.Label>End Date</Form.Label>
-                                    <Form.Control
-                                      type="datetime-local"
-                                      value={editCoupon.endDate}
-                                      name="endDate"
-                                      onChange={handleEditInputChange}
-                                    />
-                                  </Form.Group>
-                                  <Modal.Footer>
-                                    <Button
-                                      variant="secondary"
-                                      onClick={handleCloseEdit}
-                                    >
-                                      Close
-                                    </Button>
-                                    <Button variant="warning" type="submit">
-                                      Update
-                                    </Button>
-                                  </Modal.Footer>
-                                </Form>
-                              </Modal.Body>
-                              {errorEdit && (
-                                <Alert variant="danger">{errorEdit}</Alert>
-                              )}
-                              {editSuccess && (
-                                <Alert variant="success">{editSuccess}</Alert>
-                              )}
-                            </Modal>
-                          </a>
+                    {displayData.length > 0 ? (
+                      displayData.map((item, index) => (
+                        <tr key={item.id}>
+                          <td className="td">
+                            {index + 1 + currentPage * itemsPerPage}
+                          </td>
+                          <td className="td">{item.code}</td>
+                          <td className="td">{item.name}</td>
+                          <td className="td">{item.quantity}</td>
+                          <td className="td">
+                            {formatCurrency(item.priceDiscount)}
+                          </td>
+                          <td className="td">
+                            {formatToDateTimeLocal(item.startDate)}
+                          </td>
+                          <td className="td">
+                            {formatToDateTimeLocal(item.endDate)}
+                          </td>
+                          <td className="td handle__icon">
+                            <a className="link__icon">
+                              <FaPenToSquare
+                                className="coupon__icon coupon__icon--edit"
+                                onClick={() => {
+                                  setCouponIdEdit(item.id);
+                                  setEditCoupon({
+                                    ...item,
+                                    startDate: formatToDateTimeLocal(
+                                      item.startDate
+                                    ),
+                                    endDate: formatToDateTimeLocal(
+                                      item.endDate
+                                    ),
+                                  });
+                                  setShowEdit(true);
+                                }}
+                              />
+                              <Modal
+                                size="lg"
+                                show={showEdit}
+                                onHide={handleCloseEdit}
+                                aria-labelledby="example-modal-sizes-title-lg"
+                              >
+                                <Modal.Header closeButton>
+                                  <Modal.Title id="example-modal-sizes-title-lg">
+                                    Edit Coupon
+                                  </Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                  <Form onSubmit={editCouponSubmit}>
+                                    <Form.Group className="mb-3">
+                                      <Form.Label>Code</Form.Label>
+                                      <Form.Control
+                                        type="text"
+                                        placeholder="SU24"
+                                        value={editCoupon.code}
+                                        name="code"
+                                        onChange={handleEditInputChange}
+                                      />
+                                    </Form.Group>
+                                    <Form.Group className="mb-3">
+                                      <Form.Label>Coupon Name</Form.Label>
+                                      <Form.Control
+                                        type="text"
+                                        placeholder="Summer 2024"
+                                        value={editCoupon.name}
+                                        name="name"
+                                        onChange={handleEditInputChange}
+                                      />
+                                    </Form.Group>
+                                    <Form.Group className="mb-3">
+                                      <Form.Label>Quantity</Form.Label>
+                                      <Form.Control
+                                        type="number"
+                                        placeholder="10"
+                                        value={editCoupon.quantity}
+                                        name="quantity"
+                                        onChange={handleEditInputChange}
+                                      />
+                                    </Form.Group>
+                                    <Form.Group className="mb-3">
+                                      <Form.Label>Price Discount</Form.Label>
+                                      <Form.Control
+                                        type="number"
+                                        placeholder="10000"
+                                        value={editCoupon.priceDiscount}
+                                        name="priceDiscount"
+                                        onChange={handleEditInputChange}
+                                      />
+                                    </Form.Group>
+                                    <Form.Group className="mb-3">
+                                      <Form.Label>Start Date</Form.Label>
+                                      <Form.Control
+                                        type="datetime-local"
+                                        value={editCoupon.startDate}
+                                        name="startDate"
+                                        onChange={handleEditInputChange}
+                                      />
+                                    </Form.Group>
+                                    <Form.Group className="mb-3">
+                                      <Form.Label>End Date</Form.Label>
+                                      <Form.Control
+                                        type="datetime-local"
+                                        value={editCoupon.endDate}
+                                        name="endDate"
+                                        onChange={handleEditInputChange}
+                                      />
+                                    </Form.Group>
+                                    <Modal.Footer>
+                                      <Button
+                                        variant="secondary"
+                                        onClick={handleCloseEdit}
+                                      >
+                                        Close
+                                      </Button>
+                                      <Button variant="warning" type="submit">
+                                        Update
+                                      </Button>
+                                    </Modal.Footer>
+                                  </Form>
+                                </Modal.Body>
+                                {errorEdit && (
+                                  <Alert variant="danger">{errorEdit}</Alert>
+                                )}
+                                {editSuccess && (
+                                  <Alert variant="success">{editSuccess}</Alert>
+                                )}
+                              </Modal>
+                            </a>
 
-                          <Link className="link__icon">
-                            <FaTrash
-                              className="coupon__icon coupon__icon--delete"
-                              onClick={() => handleShow2(item.id)}
-                            />
-                            <Modal
-                              show={show2}
-                              onHide={handleClose2}
-                              backdrop="static"
-                              keyboard={false}
-                            >
-                              <Modal.Header closeButton>
-                                <Modal.Title>Delete Coupon</Modal.Title>
-                              </Modal.Header>
-                              <Modal.Body>
-                                Are you sure you want to delete this coupon?
-                              </Modal.Body>
-                              <Modal.Footer>
-                                <Button
-                                  variant="secondary"
-                                  onClick={handleClose2}
-                                >
-                                  Close
-                                </Button>
-                                <Button variant="danger" onClick={handleDelete}>
-                                  Delete
-                                </Button>
-                              </Modal.Footer>
-                            </Modal>
-                          </Link>
+                            <Link className="link__icon">
+                              <FaTrash
+                                className="coupon__icon coupon__icon--delete"
+                                onClick={() => handleShow2(item.id)}
+                              />
+                              <Modal
+                                show={show2}
+                                onHide={handleClose2}
+                                backdrop="static"
+                                keyboard={false}
+                              >
+                                <Modal.Header closeButton>
+                                  <Modal.Title>Delete Coupon</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                  Are you sure you want to delete this coupon?
+                                </Modal.Body>
+                                <Modal.Footer>
+                                  <Button
+                                    variant="secondary"
+                                    onClick={handleClose2}
+                                  >
+                                    Close
+                                  </Button>
+                                  <Button
+                                    variant="danger"
+                                    onClick={handleDelete}
+                                  >
+                                    Delete
+                                  </Button>
+                                </Modal.Footer>
+                              </Modal>
+                            </Link>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="8" className="text-center">
+                          No data available.
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </Table>
 
