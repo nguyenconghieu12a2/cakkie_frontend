@@ -1,7 +1,6 @@
-import Sidebar from "../sidebar.jsx";
+import Sidebar from "../admin-sidebar/sidebar.jsx";
 import { useEffect, useState } from "react";
 import "../../styles/admin-category/deleted-category.css";
-import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaArrowsRotate } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
@@ -12,7 +11,7 @@ import axios from "axios";
 import { Col, Container, Row } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
-
+import AvatarHeader from "../admin-header/admin-header.jsx";
 //API
 //Get Deleted SubSubCate
 const api = "/api/admin/view-deleted/sub-sub-category";
@@ -177,18 +176,13 @@ const DeletedCategory = () => {
           <div className="deleted__category--head">
             <div className="deleted__category--head--main">
               <h3 className="deleted__category--title">Deleted Category</h3>
-              <div className="admin__avater">
-                <img src="../images/diddy.jpg" alt="Avatar" />
-              </div>
+              <AvatarHeader />
             </div>
 
             <div className="deleted__category--breadcrumb">
-              <Breadcrumb>
-                <Breadcrumb.Item active>Home</Breadcrumb.Item>
-                <Breadcrumb.Item active>Catelog</Breadcrumb.Item>
-                <Breadcrumb.Item active>Category</Breadcrumb.Item>
-                <Breadcrumb.Item active>Deleted Category</Breadcrumb.Item>
-              </Breadcrumb>
+              <p>
+                <Link to="/dashboard">Home</Link> / Catlog / Deleted Category
+              </p>
             </div>
             <hr />
           </div>
@@ -240,47 +234,6 @@ const DeletedCategory = () => {
                                 className="deleted__subSubCategory--icon deleted__subSubCategory--icon--edit"
                                 onClick={() => handleShowDelete(item.id)}
                               />
-                              <Modal
-                                show={showDelete}
-                                onHide={handleCloseDelete}
-                              >
-                                <Modal.Header closeButton>
-                                  <Modal.Title>Recovery Category</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                  Are you sure to recovery this category?
-                                </Modal.Body>
-                                <Modal.Footer>
-                                  <Button
-                                    variant="secondary"
-                                    onClick={handleCloseDelete}
-                                  >
-                                    Close
-                                  </Button>
-                                  <Button
-                                    variant="success"
-                                    onClick={recoverySubSubCate}
-                                  >
-                                    Recovery
-                                  </Button>
-                                </Modal.Footer>
-                                {recoverError && (
-                                  <Alert
-                                    variant="danger"
-                                    className="text-center"
-                                  >
-                                    {recoverError}
-                                  </Alert>
-                                )}
-                                {recoverSuccess && (
-                                  <Alert
-                                    variant="success"
-                                    className="text-center"
-                                  >
-                                    {recoverSuccess}
-                                  </Alert>
-                                )}
-                              </Modal>
                             </Link>
                           </td>
                         </tr>
@@ -445,6 +398,32 @@ const DeletedCategory = () => {
           </div>
         </div>
       </div>
+
+      {/* Madal Recover */}
+      <Modal show={showDelete} onHide={handleCloseDelete}>
+        <Modal.Header closeButton>
+          <Modal.Title>Recovery Category</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure to recovery this category?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseDelete}>
+            Close
+          </Button>
+          <Button variant="success" onClick={recoverySubSubCate}>
+            Recovery
+          </Button>
+        </Modal.Footer>
+        {recoverError && (
+          <Alert variant="danger" className="text-center">
+            {recoverError}
+          </Alert>
+        )}
+        {recoverSuccess && (
+          <Alert variant="success" className="text-center">
+            {recoverSuccess}
+          </Alert>
+        )}
+      </Modal>
     </>
   );
 };

@@ -1,4 +1,4 @@
-import "../styles/admin-sidebar/sidebar.css";
+import "../../styles/admin-sidebar/sidebar.css";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {

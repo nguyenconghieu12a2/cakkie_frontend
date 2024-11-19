@@ -14,6 +14,7 @@
 .order__head--main {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .order__title {
@@ -27,6 +28,9 @@
     border-radius: 50%;
 }
 
+.order__breadcrumb p {
+    text-align: left;
+}
 /* order Body */
 .order__body {
     background-color: #F0E8D6;
@@ -57,7 +61,7 @@
     font-size: 24px;
     color: #106d37;
     font-weight: 700;
-    transition: all ease-in-out 0.2s; 
+    transition: all ease-in-out 0.2s;
 }
 
 .table,
@@ -77,21 +81,21 @@
 }
 
 .order__icon--menu:hover {
-    color: #725B3C    ;
+    color: #725B3C;
     font-weight: 900;
-    transition: all ease-in-out 0.2s; 
+    transition: all ease-in-out 0.2s;
 }
 
 .order__icon--edit:hover {
     color: #FFCCBC;
     font-weight: 900;
-    transition: all ease-in-out 0.2s; 
+    transition: all ease-in-out 0.2s;
 }
 
 .order__icon--delete:hover {
-    color: #C1473C ;
+    color: #C1473C;
     font-weight: 900;
-    transition: all ease-in-out 0.2s; 
+    transition: all ease-in-out 0.2s;
 }
 
 .link__icon {
@@ -111,4 +115,45 @@
 .icon__container {
     display: flex;
     justify-content: center;
+}
+
+/* CSS Status */
+
+.status-confirm {
+    color: white;
+    background-color: green;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+/* Canceled status */
+.status-cancel {
+    color: white;
+    background-color: red;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+/* Shipping status */
+.status-shipping {
+    color: white;
+    background-color: blue;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+/* Arrived status */
+.status-arrived {
+    color: white;
+    background-color: orange;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+/* Ordered status */
+.status-ordered {
+    color: white;
+    background-color: gray;
+    border-radius: 5px;
+    padding: 5px;
 }

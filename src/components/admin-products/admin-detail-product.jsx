@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../sidebar.jsx";
+import Sidebar from "../admin-sidebar/sidebar.jsx";
 import "../../styles/admin-product/product-detail.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import {
@@ -15,7 +15,7 @@ import axios from "axios";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
-
+import AvatarHeader from "../admin-header/admin-header.jsx";
 //API
 //get productbyId
 const proById = "/api/admin/product";
@@ -334,18 +334,13 @@ const ProductDetail = () => {
           <div className="product__head">
             <div className="product__head--main">
               <h3 className="product__title">Product</h3>
-              <div className="admin__avatar">
-                <img src="../../images/diddy.jpg" alt="Avatar" />
-              </div>
+              <AvatarHeader />
             </div>
 
             <div className="product__breadcrumb">
-              <Breadcrumb>
-                <Breadcrumb.Item link>Home</Breadcrumb.Item>
-                <Breadcrumb.Item active>Catalog</Breadcrumb.Item>
-                <Breadcrumb.Item active>Product</Breadcrumb.Item>
-                <Breadcrumb.Item active>Product Detail</Breadcrumb.Item>
-              </Breadcrumb>
+              <p>
+                <Link to="/dashboard">Home</Link> / Catlog / Product / Detail
+              </p>
             </div>
             <hr />
           </div>
@@ -448,81 +443,6 @@ const ProductDetail = () => {
                                     handleShowEdit();
                                   }}
                                 />
-                                <Modal show={showEdit} onHide={handleCloseEdit}>
-                                  <Modal.Header closeButton>
-                                    <Modal.Title>
-                                      Update Product Description
-                                    </Modal.Title>
-                                  </Modal.Header>
-                                  <Modal.Body>
-                                    <Form onSubmit={editDesSubmit}>
-                                      <Form.Group
-                                        className="mb-3"
-                                        controlId="desTitleID"
-                                      >
-                                        <Form.Label>
-                                          Description Title
-                                        </Form.Label>
-                                        <Form.Select
-                                          name="desTitleId"
-                                          value={editDes.desTitleId}
-                                          onChange={handleEditInputChange}
-                                          disabled
-                                        >
-                                          <option value="">
-                                            Select Description Title
-                                          </option>
-                                          {desTitles.map((title, index) => (
-                                            <option
-                                              key={index}
-                                              value={index + 1}
-                                            >
-                                              {title}
-                                            </option>
-                                          ))}
-                                        </Form.Select>
-                                      </Form.Group>
-                                      <Form.Group
-                                        className="mb-3"
-                                        controlId="desInfo"
-                                      >
-                                        <Form.Label>
-                                          Description Information
-                                        </Form.Label>
-                                        <Form.Control
-                                          type="text"
-                                          name="desInfo"
-                                          value={editDes.desInfo}
-                                          onChange={handleEditInputChange}
-                                        />
-                                      </Form.Group>
-                                    </Form>
-                                  </Modal.Body>
-                                  <Modal.Footer>
-                                    <Button
-                                      variant="secondary"
-                                      onClick={handleCloseEdit}
-                                    >
-                                      Close
-                                    </Button>
-                                    <Button
-                                      variant="warning"
-                                      onClick={editDesSubmit}
-                                    >
-                                      Update
-                                    </Button>
-                                  </Modal.Footer>
-                                  {editDesError && (
-                                    <Alert variant="danger">
-                                      {editDesError}
-                                    </Alert>
-                                  )}
-                                  {editDesSuccess && (
-                                    <Alert variant="success">
-                                      {editDesSuccess}
-                                    </Alert>
-                                  )}
-                                </Modal>
                               </div>
                               <div className="icon-container5">
                                 <FaTrash
@@ -532,31 +452,6 @@ const ProductDetail = () => {
                                     handleShow3();
                                   }}
                                 />
-                                <Modal show={show3} onHide={handleClose3}>
-                                  <Modal.Header closeButton>
-                                    <Modal.Title>
-                                      Delete Product Description
-                                    </Modal.Title>
-                                  </Modal.Header>
-                                  <Modal.Body>
-                                    Are you sure you want to delete this product
-                                    description?
-                                  </Modal.Body>
-                                  <Modal.Footer>
-                                    <Button
-                                      variant="secondary"
-                                      onClick={handleClose3}
-                                    >
-                                      Close
-                                    </Button>
-                                    <Button
-                                      variant="danger"
-                                      onClick={handleDeleteDesInfo}
-                                    >
-                                      Delete
-                                    </Button>
-                                  </Modal.Footer>
-                                </Modal>
                               </div>
                             </div>
                           </td>
@@ -600,41 +495,6 @@ const ProductDetail = () => {
                             }}
                           />
                           {/* Delete Size Modal */}
-                          <Modal
-                            show={showDeleteModal}
-                            onHide={() => setShowDeleteModal(false)}
-                          >
-                            <Modal.Header closeButton>
-                              <Modal.Title>Delete Size</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                              Are you sure you want to delete this size?
-                            </Modal.Body>
-                            <Modal.Footer>
-                              <Button
-                                variant="secondary"
-                                onClick={() => setShowDeleteModal(false)}
-                              >
-                                Cancel
-                              </Button>
-                              <Button
-                                variant="danger"
-                                onClick={handleDeleteSize}
-                              >
-                                Delete
-                              </Button>
-                            </Modal.Footer>
-                            {successSizes && (
-                              <Alert variant="success" className="text-center">
-                                {successSizes}
-                              </Alert>
-                            )}
-                            {deleteSizes && (
-                              <Alert variant="danger" className="text-center">
-                                {deleteSizes}
-                              </Alert>
-                            )}
-                          </Modal>
                         </td>
                       </tr>
                     ))}
@@ -645,6 +505,96 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* Update Des Modal */}
+      <Modal show={showEdit} onHide={handleCloseEdit}>
+        <Modal.Header closeButton>
+          <Modal.Title>Update Product Description</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={editDesSubmit}>
+            <Form.Group className="mb-3" controlId="desTitleID">
+              <Form.Label>Description Title</Form.Label>
+              <Form.Select
+                name="desTitleId"
+                value={editDes.desTitleId}
+                onChange={handleEditInputChange}
+                disabled
+              >
+                <option value="">Select Description Title</option>
+                {desTitles.map((title, index) => (
+                  <option key={index} value={index + 1}>
+                    {title}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="desInfo">
+              <Form.Label>Description Information</Form.Label>
+              <Form.Control
+                type="text"
+                name="desInfo"
+                value={editDes.desInfo}
+                onChange={handleEditInputChange}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseEdit}>
+            Close
+          </Button>
+          <Button variant="warning" onClick={editDesSubmit}>
+            Update
+          </Button>
+        </Modal.Footer>
+        {editDesError && <Alert variant="danger">{editDesError}</Alert>}
+        {editDesSuccess && <Alert variant="success">{editDesSuccess}</Alert>}
+      </Modal>
+
+      {/* Delete Des Modal */}
+      <Modal show={show3} onHide={handleClose3}>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Product Description</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete this product description?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose3}>
+            Close
+          </Button>
+          <Button variant="danger" onClick={handleDeleteDesInfo}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Delete Size Modal */}
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Size</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this size?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDeleteSize}>
+            Delete
+          </Button>
+        </Modal.Footer>
+        {successSizes && (
+          <Alert variant="success" className="text-center">
+            {successSizes}
+          </Alert>
+        )}
+        {deleteSizes && (
+          <Alert variant="danger" className="text-center">
+            {deleteSizes}
+          </Alert>
+        )}
+      </Modal>
     </>
   );
 };

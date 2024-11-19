@@ -14,9 +14,10 @@
 .deleted__category--head--main {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
-.deleted__category--title {
+.deleted__category--title p {
     text-align: left;
 }
 
@@ -25,6 +26,10 @@
     height: 50px;
     object-fit: cover;
     border-radius: 50%;
+}
+
+.deleted__category--breadcrumb {
+    text-align: left;
 }
 
 /* deleted__category Body */

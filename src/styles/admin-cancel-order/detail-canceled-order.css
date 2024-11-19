@@ -14,6 +14,7 @@
 .detail__canceled--head--main {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .detail__canceled--title {
@@ -27,6 +28,9 @@
     border-radius: 50%;
 }
 
+.detail__canceled--breadcrumb p {
+    text-align: left;
+}
 /* order Body */
 .detail__canceled--body {
     background-color: #F0E8D6;

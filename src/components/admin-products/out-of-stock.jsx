@@ -1,5 +1,4 @@
-import Sidebar from "../sidebar.jsx";
-import Breadcrumb from "react-bootstrap/Breadcrumb";
+import Sidebar from "../admin-sidebar/sidebar.jsx";
 import "../../styles/admin-product/out-of-stock.css";
 import { Table } from "react-bootstrap";
 import { useEffect, useState } from "react";
@@ -12,7 +11,8 @@ import Modal from "react-bootstrap/Modal";
 import Alert from "react-bootstrap/Alert";
 import { Col, Container, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-
+import AvatarHeader from "../admin-header/admin-header.jsx";
+import { Link } from "react-router-dom";
 // Get out-of-stock products API
 const api = "/api/admin/oos-products";
 // Update quantity API
@@ -151,17 +151,13 @@ const OutOfStock = () => {
           <div className="stock__head">
             <div className="stock__head--main">
               <h3 className="stock__title">Out of Stock</h3>
-              <div className="admin__avatar">
-                <img src="../images/diddy.jpg" alt="Avatar" />
-              </div>
+              <AvatarHeader />
             </div>
 
             <div className="stock__breadcrumb">
-              <Breadcrumb>
-                <Breadcrumb.Item link>Home</Breadcrumb.Item>
-                <Breadcrumb.Item active>Catalog</Breadcrumb.Item>
-                <Breadcrumb.Item active>Out of Stock</Breadcrumb.Item>
-              </Breadcrumb>
+              <p>
+                <Link to="/dashboard">Home</Link> / Catlog / Out of Stock
+              </p>
             </div>
             <hr />
           </div>

@@ -1,4 +1,4 @@
-import Sidebar from "../sidebar.jsx";
+import Sidebar from "../admin-sidebar/sidebar.jsx";
 import "../../styles/admin-cancel-order/detail-canceled-order.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaRegCircleLeft } from "react-icons/fa6";
@@ -7,7 +7,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
-
+import AvatarHeader from "../admin-header/admin-header.jsx";
 //API
 //GET PRODUCT DETAIL
 const orderDetailPro = "/api/admin/cancel-order/product-detail";
@@ -77,20 +77,16 @@ const DetailCanceledOrder = () => {
         <div className="detail__canceled--wrap">
           <div className="detail__canceled--head">
             <div className="detail__canceled--head--main">
-              <h3 className="detail__canceled--title">List Canceled Order</h3>
+              <h3 className="detail__canceled--title">Detail Canceled Order</h3>
               <div className="admin__avater">
                 <img src="../images/diddy.jpg" alt="Avatar" />
               </div>
             </div>
 
             <div className="detail__canceled--breadcrumb">
-              <Breadcrumb>
-                <Breadcrumb.Item link>Home</Breadcrumb.Item>
-                <Breadcrumb.Item active>Catalog</Breadcrumb.Item>
-                <Breadcrumb.Item active>Sales</Breadcrumb.Item>
-                <Breadcrumb.Item active>Canceled Order</Breadcrumb.Item>
-                <Breadcrumb.Item active>List Canceled Order</Breadcrumb.Item>
-              </Breadcrumb>
+              <p>
+                <Link to="/dashboard">Home</Link> / Sales / Cancel Order / Detail
+              </p>
             </div>
             <hr />
           </div>
@@ -127,7 +123,7 @@ const DetailCanceledOrder = () => {
                         order.product.map((product) =>
                           product.productItem.map((item, index) => (
                             <tr key={index}>
-                              <td className="td">{order.id}</td>
+                              <td className="td">{index + 1}</td>
                               <td className="td">{order.fullName}</td>
                               <td className="td">{product.productName}</td>
                               <td className="td">{item.quantity}</td>

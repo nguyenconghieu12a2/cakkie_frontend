@@ -1,6 +1,5 @@
-import Sidebar from "../sidebar.jsx";
+import Sidebar from "../admin-sidebar/sidebar.jsx";
 import { useEffect, useState } from "react";
-import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaArrowsRotate } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
 import "../../styles/admin-product/deleted-product.css";
@@ -11,7 +10,7 @@ import axios from "axios";
 import Form from "react-bootstrap/Form";
 import { Link, useNavigate } from "react-router-dom";
 import { Col, Container, Row } from "react-bootstrap";
-
+import AvatarHeader from "../admin-header/admin-header.jsx";
 //API
 //Get Deleted
 const api = "/api/admin/admin-product/deleted";
@@ -208,17 +207,13 @@ const DeletedProduct = () => {
           <div className="deleted__head">
             <div className="deleted__head--main">
               <h3 className="deleted__title">Deleted Product</h3>
-              <div className="admin__avater">
-                <img src="../images/diddy.jpg" alt="Avatar" />
-              </div>
+              <AvatarHeader />
             </div>
 
             <div className="deleted__breadcrumb">
-              <Breadcrumb>
-                <Breadcrumb.Item active>Home</Breadcrumb.Item>
-                <Breadcrumb.Item active>Catelog</Breadcrumb.Item>
-                <Breadcrumb.Item active>Deleted Product</Breadcrumb.Item>
-              </Breadcrumb>
+              <p>
+                <Link to="/dashboard">Home</Link> / Catlog / Deleted Product
+              </p>
             </div>
             <hr />
           </div>

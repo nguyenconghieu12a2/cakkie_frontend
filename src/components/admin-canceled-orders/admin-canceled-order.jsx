@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../sidebar.jsx";
+import Sidebar from "../admin-sidebar/sidebar.jsx";
 import "../../styles/admin-cancel-order/canceled-order.css";
-import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaBars, FaLock } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
 import Modal from "react-bootstrap/Modal";
@@ -12,7 +11,7 @@ import ReactPaginate from "react-paginate";
 import axios from "axios";
 import Form from "react-bootstrap/Form";
 import { Col, Container, Row } from "react-bootstrap";
-
+import AvatarHeader from "../admin-header/admin-header.jsx";
 //API
 const api = "/api/admin/cacel-order";
 const banApi = "/api/admin/ban-user";
@@ -69,10 +68,12 @@ const CanceledOrder = () => {
 
   const [banReason, setBanReason] = useState("");
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [banError, setBanError] = useState("");
 
   const handleBanUser = async () => {
     if (!selectedUserId || !banReason) {
-      alert("Please enter a reason for banning the user.");
+      setBanError("Please enter a reason for banning the user.");
+      setTimeout(() => setBanError(), 3000);
       return;
     }
     try {
@@ -86,8 +87,14 @@ const CanceledOrder = () => {
       setBanReason("");
       loadCancel();
     } catch (error) {
-      console.error("Failed to ban user:", error);
-      alert("Failed to ban user. Please try again.");
+      if (error.response && error.response.status === 400) {
+        setBanError(error.response.data);
+        setTimeout(() => setBanError(), 5000);
+      } else {
+        setBanError("Failed to ban user:", error);
+        setBanError("Failed to ban user. Please try again.");
+        setTimeout(() => setBanError(), 5000);
+      }
     }
   };
 
@@ -129,17 +136,12 @@ const CanceledOrder = () => {
           <div className="canceled__head">
             <div className="canceled__head--main">
               <h3 className="canceled__title">Canceled Order</h3>
-              <div className="admin__avatar">
-                <img src="../images/diddy.jpg" alt="Avatar" />
-              </div>
+              <AvatarHeader />
             </div>
             <div className="canceled__breadcrumb">
-              <Breadcrumb>
-                <Breadcrumb.Item link>Home</Breadcrumb.Item>
-                <Breadcrumb.Item active>Catalog</Breadcrumb.Item>
-                <Breadcrumb.Item active>Sales</Breadcrumb.Item>
-                <Breadcrumb.Item active>Canceled Order</Breadcrumb.Item>
-              </Breadcrumb>
+              <p>
+                <Link to="/dashboard">Home</Link> / Sales / Cancel Order
+              </p>
             </div>
             <hr />
           </div>
@@ -234,65 +236,7 @@ const CanceledOrder = () => {
                               />
                             </div>
 
-                            <Modal show={show2} onHide={handleClose2}>
-                              <Modal.Header closeButton>
-                                <Modal.Title>Lock Customer</Modal.Title>
-                              </Modal.Header>
-                              <Modal.Body>
-                                Are you sure you want to lock this customer?
-                                <Form>
-                                  <Form.Group className="mb-3">
-                                    <Form.Label>
-                                      Reason for locking this customer
-                                    </Form.Label>
-                                    <Form.Control
-                                      type="text"
-                                      placeholder="Reason for lock..."
-                                      value={banReason}
-                                      onChange={(e) =>
-                                        setBanReason(e.target.value)
-                                      }
-                                    />
-                                  </Form.Group>
-                                </Form>
-                              </Modal.Body>
-                              <Modal.Footer>
-                                <Button
-                                  variant="secondary"
-                                  onClick={handleClose2}
-                                >
-                                  Close
-                                </Button>
-                                <Button
-                                  variant="danger"
-                                  onClick={handleBanUser}
-                                >
-                                  Lock
-                                </Button>
-                              </Modal.Footer>
-                            </Modal>
-
                             {/* Notification Modal for insufficient cancellations */}
-                            <Modal
-                              show={showNotificationModal}
-                              onHide={handleCloseNotificationModal}
-                            >
-                              <Modal.Header closeButton>
-                                <Modal.Title>Cannot Lock Customer</Modal.Title>
-                              </Modal.Header>
-                              <Modal.Body>
-                                This customer needs to have more than 5 canceled
-                                orders to be locked.
-                              </Modal.Body>
-                              <Modal.Footer>
-                                <Button
-                                  variant="secondary"
-                                  onClick={handleCloseNotificationModal}
-                                >
-                                  Close
-                                </Button>
-                              </Modal.Footer>
-                            </Modal>
                           </td>
                         </tr>
                       ))
@@ -332,6 +276,55 @@ const CanceledOrder = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal Lock */}
+      <Modal show={show2} onHide={handleClose2}>
+        <Modal.Header closeButton>
+          <Modal.Title>Lock Customer</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to lock this customer?
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Reason for locking this customer</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Reason for lock..."
+                value={banReason}
+                onChange={(e) => setBanReason(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose2}>
+            Close
+          </Button>
+          <Button variant="danger" onClick={handleBanUser}>
+            Lock
+          </Button>
+        </Modal.Footer>
+        {banError && (
+          <Alert variant="danger" className="text-center">
+            {banError}
+          </Alert>
+        )}
+      </Modal>
+
+      {/* Modal */}
+      <Modal show={showNotificationModal} onHide={handleCloseNotificationModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Cannot Lock Customer</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          This customer needs to have more than 5 canceled orders to be locked.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseNotificationModal}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

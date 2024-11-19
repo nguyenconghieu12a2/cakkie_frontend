@@ -1,7 +1,6 @@
-import Sidebar from "../sidebar.jsx";
+import Sidebar from "../admin-sidebar/sidebar.jsx";
 import { useEffect, useState } from "react";
 import "../../styles/admin-category/category.css";
-import Breadcrumb from "react-bootstrap/Breadcrumb";
 import {
   FaRegSquarePlus,
   FaBars,
@@ -17,7 +16,7 @@ import ReactPaginate from "react-paginate";
 import axios from "axios";
 import Alert from "react-bootstrap/Alert";
 import { Col, Container, Row } from "react-bootstrap";
-
+import AvatarHeader from "../admin-header/admin-header.jsx";
 //API
 //Get Cate
 const api = "/api/admin/category";
@@ -292,18 +291,13 @@ const Category = () => {
           <div className="category__head">
             <div className="category__head--main">
               <h3 className="category__title">Category</h3>
-              <div className="admin__avatar">
-                <img src="../images/diddy.jpg" alt="Avatar" />
-              </div>
+              <AvatarHeader />
             </div>
 
             <div className="category__breadcrumb">
-              <Breadcrumb>
-                <Breadcrumb.Item active>Home</Breadcrumb.Item>
-                <Breadcrumb.Item active>Catalog</Breadcrumb.Item>
-                <Breadcrumb.Item active>Category</Breadcrumb.Item>
-                <Breadcrumb.Item active>Main Category</Breadcrumb.Item>
-              </Breadcrumb>
+              <p>
+                <Link to="/dashboard">Home</Link> / Catlog / Main Category
+              </p>
             </div>
             <hr />
           </div>
@@ -402,53 +396,6 @@ const Category = () => {
                                   handleShowEdit();
                                 }}
                               />
-                              <Modal show={showEdit} onHide={handleCloseEdit}>
-                                <Modal.Header closeButton>
-                                  <Modal.Title>Edit Main Category</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                  <Form onSubmit={editCateSubmit}>
-                                    <Form.Group className="mb-3">
-                                      <Form.Label>
-                                        Main Category Name
-                                      </Form.Label>
-                                      <Form.Control
-                                        type="text"
-                                        name="cateName"
-                                        value={editCate.cateName}
-                                        onChange={handleEditInputChange}
-                                        placeholder="Enter category name"
-                                        autoFocus
-                                      />
-                                    </Form.Group>
-                                    {editSuccess && (
-                                      <Alert variant="success">
-                                        {editSuccess}
-                                      </Alert>
-                                    )}
-                                    {editError && (
-                                      <Alert variant="danger">
-                                        {editError}
-                                      </Alert>
-                                    )}
-                                  </Form>
-                                </Modal.Body>
-                                <Modal.Footer>
-                                  <Button
-                                    variant="secondary"
-                                    onClick={handleCloseEdit}
-                                  >
-                                    Close
-                                  </Button>
-                                  <Button
-                                    variant="warning"
-                                    type="submit"
-                                    onClick={editCateSubmit}
-                                  >
-                                    Update
-                                  </Button>
-                                </Modal.Footer>
-                              </Modal>
 
                               <FaTrash
                                 className="category__icon category__icon--delete"
@@ -456,44 +403,6 @@ const Category = () => {
                                   handleShowDelete(item.id);
                                 }}
                               />
-                              <Modal
-                                show={showDelete}
-                                onHide={handleCloseDelete}
-                              >
-                                <Modal.Header closeButton>
-                                  <Modal.Title>Delete Category</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                  "Are you sure you want to delete this
-                                  category? This action cannot be undone."
-                                </Modal.Body>
-                                <Modal.Footer>
-                                  <Button
-                                    variant="secondary"
-                                    onClick={handleCloseDelete}
-                                  >
-                                    Cancel
-                                  </Button>
-                                  <Button
-                                    variant="danger"
-                                    onClick={() => {
-                                      if (categoryIdToDelete) {
-                                        deleteCategory(categoryIdToDelete);
-                                      }
-                                    }}
-                                  >
-                                    Delete
-                                  </Button>
-                                </Modal.Footer>
-                                {deleteError && (
-                                  <Alert variant="danger">{deleteError}</Alert>
-                                )}
-                                {deleteSuccess && (
-                                  <Alert variant="success">
-                                    {deleteSuccess}
-                                  </Alert>
-                                )}
-                              </Modal>
                             </div>
                           </td>
                         </tr>
@@ -533,6 +442,66 @@ const Category = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal Update Cate */}
+      <Modal show={showEdit} onHide={handleCloseEdit}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Main Category</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={editCateSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label>Main Category Name</Form.Label>
+              <Form.Control
+                type="text"
+                name="cateName"
+                value={editCate.cateName}
+                onChange={handleEditInputChange}
+                placeholder="Enter category name"
+                autoFocus
+              />
+            </Form.Group>
+            {editSuccess && <Alert variant="success">{editSuccess}</Alert>}
+            {editError && <Alert variant="danger">{editError}</Alert>}
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseEdit}>
+            Close
+          </Button>
+          <Button variant="warning" type="submit" onClick={editCateSubmit}>
+            Update
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal Delete Cate */}
+      <Modal show={showDelete} onHide={handleCloseDelete}>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Category</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          "Are you sure you want to delete this category? This action cannot be
+          undone."
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseDelete}>
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => {
+              if (categoryIdToDelete) {
+                deleteCategory(categoryIdToDelete);
+              }
+            }}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+        {deleteError && <Alert variant="danger">{deleteError}</Alert>}
+        {deleteSuccess && <Alert variant="success">{deleteSuccess}</Alert>}
+      </Modal>
     </>
   );
 };

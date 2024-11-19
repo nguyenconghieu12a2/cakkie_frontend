@@ -1,12 +1,12 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Sidebar from "./components/sidebar";
+import Sidebar from "./components/admin-sidebar/sidebar";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 // LOGIN PAGE
-import Login from "./components/admin-logins/admin-login";
-import ResetPasswordEmail from "./components/admin-logins/reset-password-email";
-import NewPassword from "./components/admin-logins/new-password";
+import Login from "./components/admin-login/admin-login";
+import ResetPasswordEmail from "./components/admin-login/reset-password-email";
+import NewPassword from "./components/admin-login/new-password";
 
 //PRODUCT
 import Product from "./components/admin-products/admin-product";
@@ -31,6 +31,10 @@ import DetailOrder from "./components/admin-orders/admin-detail-order";
 
 //COUPON
 import Coupon from "./components/admin-coupons/admin-coupon";
+
+//NOT FOUND
+import FourOhFour from "./components/not-found/not-found";
+
 
 function App() {
   return (
@@ -76,6 +80,9 @@ function App() {
 
           {/* COUPON PAGE */}
           <Route path="/coupon" element={<Coupon />} />
+
+          {/* NOT FOUND */}
+          <Route path="*" element={<FourOhFour />} />
         </Routes>
       </Router>
     </div>

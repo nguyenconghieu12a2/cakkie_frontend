@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import Sidebar from "../sidebar.jsx";
+import Sidebar from "../admin-sidebar/sidebar.jsx";
 import "../../styles/admin-category/subcategory.css";
-import Breadcrumb from "react-bootstrap/Breadcrumb";
 import {
   FaRegSquarePlus,
   FaBars,
@@ -18,6 +17,7 @@ import ReactPaginate from "react-paginate";
 import axios from "axios";
 import Alert from "react-bootstrap/Alert";
 import { Col, Container, Row } from "react-bootstrap";
+import AvatarHeader from "../admin-header/admin-header.jsx";
 
 //API
 //Get SubCate
@@ -285,19 +285,14 @@ const SubCategory = () => {
           <div className="subcategory__head">
             <div className="subcategory__head--main">
               <h3 className="subcategory__title">Sub-Category</h3>
-              <div className="admin__avatar">
-                <img src="../../images/diddy.jpg" alt="Avatar" />
-              </div>
+              <AvatarHeader />
             </div>
 
             <div className="subcategory__breadcrumb">
-              <Breadcrumb>
-                <Breadcrumb.Item active>Home</Breadcrumb.Item>
-                <Breadcrumb.Item active>Catalog</Breadcrumb.Item>
-                <Breadcrumb.Item active>Category</Breadcrumb.Item>
-                <Breadcrumb.Item active>Main Category</Breadcrumb.Item>
-                <Breadcrumb.Item active>Sub-Category</Breadcrumb.Item>
-              </Breadcrumb>
+              <p>
+                <Link to="/dashboard">Home</Link> / Catlog / Main Category /
+                Sub-Category
+              </p>
             </div>
             <hr />
           </div>
@@ -402,54 +397,7 @@ const SubCategory = () => {
                                   handleShowEdit();
                                 }}
                               />
-                              <Modal show={showEdit} onHide={handleCloseEdit}>
-                                <Modal.Header closeButton>
-                                  <Modal.Title>Edit Sub-Category</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                  <Form
-                                    id="editSubCateForm"
-                                    onSubmit={editSubSubmit}
-                                  >
-                                    <Form.Group className="mb-3">
-                                      <Form.Label>Sub-Category Name</Form.Label>
-                                      <Form.Control
-                                        type="text"
-                                        name="cateName"
-                                        value={editSubCate.cateName || ""}
-                                        onChange={handleEditInputChange}
-                                        placeholder="Enter category name"
-                                        autoFocus
-                                      />
-                                    </Form.Group>
-                                    {editSuccess && (
-                                      <Alert variant="success">
-                                        {editSuccess}
-                                      </Alert>
-                                    )}
-                                    {editError && (
-                                      <Alert variant="danger">
-                                        {editError}
-                                      </Alert>
-                                    )}
-                                  </Form>
-                                </Modal.Body>
-                                <Modal.Footer>
-                                  <Button
-                                    variant="secondary"
-                                    onClick={handleCloseEdit}
-                                  >
-                                    Close
-                                  </Button>
-                                  <Button
-                                    variant="warning"
-                                    type="submit"
-                                    form="editSubCateForm"
-                                  >
-                                    Update
-                                  </Button>
-                                </Modal.Footer>
-                              </Modal>
+
                               <FaTrash
                                 className="subcategory__icon subcategory__icon--delete"
                                 onClick={() => {
@@ -457,42 +405,6 @@ const SubCategory = () => {
                                   handleShowDelete();
                                 }}
                               />
-                              <Modal
-                                show={showDelete}
-                                onHide={handleCloseDelete}
-                              >
-                                <Modal.Header closeButton>
-                                  <Modal.Title>Delete Sub-Category</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                  Are you sure you want to delete this
-                                  sub-category?
-                                </Modal.Body>
-                                <Modal.Footer>
-                                  <Button
-                                    variant="secondary"
-                                    onClick={handleCloseDelete}
-                                  >
-                                    Close
-                                  </Button>
-                                  <Button
-                                    variant="danger"
-                                    onClick={() =>
-                                      deleteSubCategory(cateIdSubEdit)
-                                    }
-                                  >
-                                    Delete
-                                  </Button>
-                                </Modal.Footer>
-                                {deleteError && (
-                                  <Alert variant="danger">{deleteError}</Alert>
-                                )}
-                                {deleteSuccess && (
-                                  <Alert variant="success">
-                                    {deleteSuccess}
-                                  </Alert>
-                                )}
-                              </Modal>
                             </div>
                           </td>
                         </tr>
@@ -530,6 +442,61 @@ const SubCategory = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal Update */}
+      <Modal show={showEdit} onHide={handleCloseEdit}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Sub-Category</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form id="editSubCateForm" onSubmit={editSubSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label>Sub-Category Name</Form.Label>
+              <Form.Control
+                type="text"
+                name="cateName"
+                value={editSubCate.cateName || ""}
+                onChange={handleEditInputChange}
+                placeholder="Enter category name"
+                autoFocus
+              />
+            </Form.Group>
+            {editSuccess && <Alert variant="success">{editSuccess}</Alert>}
+            {editError && <Alert variant="danger">{editError}</Alert>}
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseEdit}>
+            Close
+          </Button>
+          <Button variant="warning" type="submit" form="editSubCateForm">
+            Update
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal Delete */}
+      <Modal show={showDelete} onHide={handleCloseDelete}>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Sub-Category</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete this sub-category?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseDelete}>
+            Close
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => deleteSubCategory(cateIdSubEdit)}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+        {deleteError && <Alert variant="danger">{deleteError}</Alert>}
+        {deleteSuccess && <Alert variant="success">{deleteSuccess}</Alert>}
+      </Modal>
     </>
   );
 };

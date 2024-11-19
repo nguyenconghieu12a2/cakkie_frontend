@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../sidebar.jsx";
+import Sidebar from "../admin-sidebar/sidebar.jsx";
 import "../../styles/admin-orders/order.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaBars, FaPenToSquare } from "react-icons/fa6";
@@ -11,7 +11,8 @@ import ReactPaginate from "react-paginate";
 import axios from "axios";
 import Form from "react-bootstrap/Form";
 import { Col, Container, Row } from "react-bootstrap";
-
+import { Alert } from "react-bootstrap";
+import AvatarHeader from "../admin-header/admin-header.jsx";
 //API
 const api = "/api/admin/order";
 const status = "/api/admin/order/statuses";
@@ -100,6 +101,7 @@ const Order = () => {
   };
 
   // Called when clicking the edit icon
+
   const handleEditClick = async (orderId) => {
     if (orderId) {
       setEditOrderId(orderId);
@@ -127,8 +129,23 @@ const Order = () => {
   };
 
   // Handle status selection change in the dropdown
+  const [reason, setReason] = useState("");
+  const [statusError, setStatusError] = useState("");
+  const [statusSuccess, setStatusSuccess] = useState("");
+
   const handleStatusChange = (e) => {
-    setStatusById(e.target.value);
+    const selectedStatusId = e.target.value;
+    setStatusById(selectedStatusId);
+
+    // Reset cancel reason if status is not "Cancel"
+    const selectedStatus = allStatuses.find(
+      (status) => status.orderStatusId === parseInt(selectedStatusId)
+    );
+    if (selectedStatus && selectedStatus.status === "Cancel") {
+      setReason(""); // Clear cancel reason when changing to "Cancel"
+    } else {
+      setReason(null); // Disable cancel reason for other statuses
+    }
   };
 
   // Update the order status by order ID
@@ -138,12 +155,28 @@ const Order = () => {
       return;
     }
 
+    const selectedStatus = allStatuses.find(
+      (status) => status.orderStatusId === parseInt(statusById)
+    );
+    if (
+      selectedStatus &&
+      selectedStatus.status === "Cancel" &&
+      (!reason || reason.trim() === "")
+    ) {
+      setStatusError("Cancel reason is required for canceling an order");
+      setTimeout(() => setStatusError(), 5000);
+      return;
+    }
+
     try {
       await axios.put(`${updateStatus}/${editOrderId}`, {
         statusId: parseInt(statusById),
+        cancelReason: reason || null,
       });
       loadOrders();
-      handleClose();
+      setStatusSuccess("Order status updated successfully!"); // Set success message
+      setTimeout(() => setStatusSuccess(""), 5000);
+      // handleClose();
     } catch (error) {
       console.error("Failed to update order status", error);
     }
@@ -195,17 +228,13 @@ const Order = () => {
           <div className="order__head">
             <div className="order__head--main">
               <h3 className="order__title">Order</h3>
-              <div className="admin__avatar">
-                <img src="../images/diddy.jpg" alt="Avatar" />
-              </div>
+              <AvatarHeader />
             </div>
 
             <div className="order__breadcrumb">
-              <Breadcrumb>
-                <Breadcrumb.Item link>Home</Breadcrumb.Item>
-                <Breadcrumb.Item active>Catalog</Breadcrumb.Item>
-                <Breadcrumb.Item active>Order</Breadcrumb.Item>
-              </Breadcrumb>
+              <p>
+                <Link to="/dashboard">Home</Link> / Sales / Order
+              </p>
             </div>
             <hr />
           </div>
@@ -260,7 +289,11 @@ const Order = () => {
                           <td className="td">
                             {formatCurrency(item.totalDiscount)}
                           </td>
-                          <td className="td">{item.status}</td>
+                          <td
+                            className={`td status-${item.status.toLowerCase()}`}
+                          >
+                            {item.status}
+                          </td>
                           <td className="th handle__icon">
                             <div className="icon__container">
                               <Link
@@ -314,8 +347,6 @@ const Order = () => {
           </div>
         </div>
       </div>
-
-      {/* Modal Component */}
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Update Order</Modal.Title>
@@ -341,6 +372,22 @@ const Order = () => {
                 ))}
               </Form.Select>
             </Form.Group>
+
+            {/* Conditionally render Cancel Reason input */}
+            {allStatuses.find(
+              (status) => status.orderStatusId === parseInt(statusById)
+            )?.status === "Cancel" && (
+              <Form.Group controlId="cancelReasonInput" className="mt-3">
+                <Form.Label>Cancel Reason</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  value={reason}
+                  onChange={(e) => setReason(e.target.value)}
+                  placeholder="Enter the reason for cancellation"
+                />
+              </Form.Group>
+            )}
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -351,7 +398,18 @@ const Order = () => {
             Update
           </Button>
         </Modal.Footer>
+        {statusError && (
+          <Alert variant="danger" className="text-center">
+            {statusError}
+          </Alert>
+        )}
+        {statusSuccess && (
+          <Alert variant="success" className="text-center mt-2">
+            {statusSuccess}
+          </Alert>
+        )}
       </Modal>
+      ;
     </>
   );
 };

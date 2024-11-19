@@ -1,4 +1,4 @@
-import Sidebar from "../sidebar.jsx";
+import Sidebar from "../admin-sidebar/sidebar.jsx";
 import "../../styles/admin-orders/orderDetail.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import Table from "react-bootstrap/Table";
@@ -7,7 +7,7 @@ import { FaRegCircleLeft } from "react-icons/fa6";
 import ReactPaginate from "react-paginate";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import AvatarHeader from "../admin-header/admin-header.jsx";
 //API
 const api = "/api/admin/detail-order";
 
@@ -80,6 +80,18 @@ const DetailOrder = () => {
       .replace("₫", "VND");
   };
 
+  const formatDateTime = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  };
+
   return (
     <>
       <div className="main__wrap">
@@ -89,17 +101,14 @@ const DetailOrder = () => {
             <div className="order__detail__head--main">
               <h3 className="order__detail__title">Order Detail</h3>
               <div className="admin__avatar">
-                <img src="../../images/diddy.jpg" alt="Avatar" />
+                <AvatarHeader />
               </div>
             </div>
 
             <div className="order__detail__breadcrumb">
-              <Breadcrumb>
-                <Breadcrumb.Item link>Home</Breadcrumb.Item>
-                <Breadcrumb.Item active>Catalog</Breadcrumb.Item>
-                <Breadcrumb.Item active>Order</Breadcrumb.Item>
-                <Breadcrumb.Item active>Order Detail</Breadcrumb.Item>
-              </Breadcrumb>
+              <p>
+                <Link to="/dashboard">Home</Link> / Sales / Order / Detail
+              </p>
             </div>
             <hr />
           </div>
@@ -185,7 +194,7 @@ const DetailOrder = () => {
                     {displayProducts.length > 0 ? (
                       displayProducts.map((product, index) => (
                         <tr key={index}>
-                          <td className="td">{details.id}</td>
+                          <td className="td">{index + 1}</td>
                           <td className="td">{product}</td>
                           <td className="td">{details.qty[index]}</td>
                           <td className="td">

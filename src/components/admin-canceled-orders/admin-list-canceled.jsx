@@ -1,4 +1,4 @@
-import Sidebar from "../sidebar.jsx";
+import Sidebar from "../admin-sidebar/sidebar.jsx";
 import "../../styles/admin-cancel-order/list-canceled-order.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaBars, FaRegCircleLeft } from "react-icons/fa6";
@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect } from "react";
-
+import AvatarHeader from "../admin-header/admin-header.jsx";
 //API
 //GET DETAIL
 const api = "/api/admin/cancel-order/detail";
@@ -59,6 +59,19 @@ const ListCanceledOrder = () => {
       .format(value)
       .replace("₫", "VND");
   };
+
+  const formatDateTime = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  };
+
   return (
     <>
       <div className="main__wrap">
@@ -67,19 +80,13 @@ const ListCanceledOrder = () => {
           <div className="list__canceled--head">
             <div className="list__canceled--head--main">
               <h3 className="list__canceled--title">List Canceled Order</h3>
-              <div className="admin__avater">
-                <img src="../images/diddy.jpg" alt="Avatar" />
-              </div>
+              <AvatarHeader />
             </div>
 
             <div className="list__canceled--breadcrumb">
-              <Breadcrumb>
-                <Breadcrumb.Item link>Home</Breadcrumb.Item>
-                <Breadcrumb.Item active>Catelog</Breadcrumb.Item>
-                <Breadcrumb.Item active>Sales</Breadcrumb.Item>
-                <Breadcrumb.Item active>Canceled Order</Breadcrumb.Item>
-                <Breadcrumb.Item active>List Canceled Order</Breadcrumb.Item>
-              </Breadcrumb>
+              <p>
+                <Link to="/dashboard">Home</Link> / Sales / Cancel Order / List
+              </p>
             </div>
             <hr />
           </div>
@@ -121,7 +128,9 @@ const ListCanceledOrder = () => {
                           <td className="td">
                             {formatCurrency(item.orderTotal)}
                           </td>
-                          <td className="td">{item.cancelDate}</td>
+                          <td className="td">
+                            {formatDateTime(item.cancelDate)}
+                          </td>
                           <td className="td">{item.cancelReason}</td>
                           <td className="th handle__icon">
                             <Link

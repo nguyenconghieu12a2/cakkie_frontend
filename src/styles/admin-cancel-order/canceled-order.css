@@ -14,6 +14,7 @@
 .canceled__head--main {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .canceled__title {
@@ -25,6 +26,10 @@
     height: 50px;
     object-fit: cover;
     border-radius: 50%;
+}
+
+.canceled__breadcrumb p {
+    text-align: left;
 }
 
 /* order Body */

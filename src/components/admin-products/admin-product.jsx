@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../sidebar.jsx";
+import Sidebar from "../admin-sidebar/sidebar.jsx";
 import "../../styles/admin-product/product.css";
-import Breadcrumb from "react-bootstrap/Breadcrumb";
 import {
   FaRegSquarePlus,
   FaPenToSquare,
@@ -21,6 +20,7 @@ import Col from "react-bootstrap/Col";
 import Alert from "react-bootstrap/Alert";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
+import AvatarHeader from "../admin-header/admin-header.jsx";
 
 //API
 //Get Product
@@ -225,7 +225,6 @@ const Product = () => {
       !newProduct.name ||
       !newProduct.categoryId ||
       !newProduct.description ||
-      !newProduct.size ||
       !newProduct.price ||
       !newProduct.qtyInStock
     ) {
@@ -248,18 +247,20 @@ const Product = () => {
       return;
     }
 
-    const validSizes = ["S", "M", "L"];
-    const numericRangeRegex = /^\d+\s*x\s*\d+$/;
+    if (newProduct.size) {
+      const validSizes = ["S", "M", "L"];
+      const numericRangeRegex = /^\d+\s*x\s*\d+$/;
 
-    if (
-      !validSizes.includes(newProduct.size.toUpperCase()) &&
-      !numericRangeRegex.test(newProduct.size)
-    ) {
-      setCreateError(
-        "Invalid size format. Please use 'S', 'M', 'L', or 'number x number' (e.g., '5 x 10')."
-      );
-      setTimeout(() => setCreateError(""), 3000);
-      return;
+      if (
+        !validSizes.includes(newProduct.size.toUpperCase()) &&
+        !numericRangeRegex.test(newProduct.size)
+      ) {
+        setCreateError(
+          "Invalid size format. Please use 'S', 'M', 'L', or 'number x number' (e.g., '5 x 10')."
+        );
+        setTimeout(() => setCreateError(""), 3000);
+        return;
+      }
     }
 
     // Validation: Check if price is a positive number
@@ -373,12 +374,47 @@ const Product = () => {
     setEditProduct({ ...editProduct, sizes: updatedSizes });
   };
 
+  //Validate image
+  const validateImage = (file) => {
+    if (!file) {
+      return "No file selected. Please choose an image.";
+    }
+
+    const fileType = file.type;
+    const fileName = file.name;
+    const fileSizeInMB = file.size / (1024 * 1024);
+
+    const invalidFileNameRegex = /[^a-zA-Z0-9-_().]/;
+    if (invalidFileNameRegex.test(fileName)) {
+      return "File name contains spaces or special characters. Please rename it.";
+    }
+
+    if (fileSizeInMB > 1) {
+      return "File size exceeds 1 MB. Please upload a smaller image.";
+    }
+
+    if (fileType !== "image/jpeg" && fileType !== "image/png") {
+      return "Only .jpg and .png files are allowed.";
+    }
+
+    return ""; // No errors
+  };
+  
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
 
     // Clear previous messages
     setUpdateError("");
     setUpdateSuccess("");
+
+    if (editProductImage) {
+      const error = validateImage(editProductImage);
+      if (error) {
+        setUpdateError(error);
+        setTimeout(() => setUpdateError(""), 3000);
+        return;
+      }
+    }
 
     // Validation: Check if all required fields are filled
     if (
@@ -407,45 +443,49 @@ const Product = () => {
     }
 
     // Validation: Check sizes
-    const validSizes = ["S", "M", "L"];
-    const numericRangeRegex = /^\d+\s*x\s*\d+$/;
+    if (editProduct.sizes.length > 0) {
+      const validSizes = ["S", "M", "L"];
+      const numericRangeRegex = /^\d+\s*x\s*\d+$/;
 
-    for (const sizeData of editProduct.sizes) {
-      if (
-        !validSizes.includes(sizeData.size.toUpperCase()) &&
-        !numericRangeRegex.test(sizeData.size)
-      ) {
-        setUpdateError(
-          "Invalid size format. Please use 'S', 'M', 'L', or 'number x number' (e.g., '5 x 10')."
-        );
-        setTimeout(() => setUpdateError(""), 3000);
-        return;
-      }
+      for (const sizeData of editProduct.sizes) {
+        if (sizeData.size) {
+          if (
+            !validSizes.includes(sizeData.size.toUpperCase()) &&
+            !numericRangeRegex.test(sizeData.size)
+          ) {
+            setUpdateError(
+              "Invalid size format. Please use 'S', 'M', 'L', or 'number x number' (e.g., '5 x 10')."
+            );
+            setTimeout(() => setUpdateError(""), 3000);
+            return;
+          }
+        }
 
-      // Validation: Check price for each size
-      if (isNaN(sizeData.price) || Number(sizeData.price) <= 0) {
-        setUpdateError(
-          `Price for size ${sizeData.size} must be a positive number.`
-        );
-        setTimeout(() => setUpdateError(""), 3000);
-        return;
-      }
+        // Validation: Check price for each size
+        if (isNaN(sizeData.price) || Number(sizeData.price) <= 0) {
+          setUpdateError(
+            `Price for size ${sizeData.size} must be a positive number.`
+          );
+          setTimeout(() => setUpdateError(""), 3000);
+          return;
+        }
 
-      // Validation: Check quantity in stock for each size
-      if (isNaN(sizeData.qtyInStock) || Number(sizeData.qtyInStock) < 0) {
-        setUpdateError(
-          `Quantity for size ${sizeData.size} must be a non-negative number.`
-        );
-        setTimeout(() => setUpdateError(""), 3000);
-        return;
-      }
+        // Validation: Check quantity in stock for each size
+        if (isNaN(sizeData.qtyInStock) || Number(sizeData.qtyInStock) < 0) {
+          setUpdateError(
+            `Quantity for size ${sizeData.size} must be a non-negative number.`
+          );
+          setTimeout(() => setUpdateError(""), 3000);
+          return;
+        }
 
-      if (sizeData.qtyInStock < sizeData.oldQtyInStock) {
-        setUpdateError(
-          `Quantity for size ${sizeData.size} cannot be less than the current stock (${sizeData.oldQtyInStock}).`
-        );
-        setTimeout(() => setUpdateError(""), 3000);
-        return;
+        if (sizeData.qtyInStock < sizeData.oldQtyInStock) {
+          setUpdateError(
+            `Quantity for size ${sizeData.size} cannot be less than the current stock (${sizeData.oldQtyInStock}).`
+          );
+          setTimeout(() => setUpdateError(""), 3000);
+          return;
+        }
       }
     }
 
@@ -637,7 +677,7 @@ const Product = () => {
     const numericRangeRegex = /^\d+\s*x\s*\d+$/;
 
     if (
-      !validSizes.includes(newSize.size.toUpperCase()) && 
+      !validSizes.includes(newSize.size.toUpperCase()) &&
       !numericRangeRegex.test(newSize.size)
     ) {
       setAlertMessage(
@@ -735,16 +775,11 @@ const Product = () => {
           <div className="product__head">
             <div className="product__head--wrap">
               <h3 className="product__title">Product</h3>
-              <div className="admin__avatar">
-                <img src="../../images/diddy.jpg" alt="Avatar" />
-              </div>
+              <AvatarHeader />
             </div>
-            <Breadcrumb>
-              <Breadcrumb.Item link>Home</Breadcrumb.Item>
-              <Breadcrumb.Item active>Catalog</Breadcrumb.Item>
-              <Breadcrumb.Item active>Product</Breadcrumb.Item>
-            </Breadcrumb>
-
+            <p className="admin__breadcumb">
+              <Link to="/dashboard">Home</Link> / Catlog / Product
+            </p>
             <hr />
           </div>
 
@@ -874,7 +909,6 @@ const Product = () => {
                                     name="size"
                                     value={newProduct.size}
                                     onChange={handleChange}
-                                    required
                                   />
                                 </Form.Group>
                               </Col>
@@ -1075,7 +1109,7 @@ const Product = () => {
                             <td className="td">{item.description}</td>
                             <td className="td">
                               <img
-                                src={(`/images/${item.productImage}`)}
+                                src={`/images/${item.productImage}`}
                                 alt={item.productName}
                                 className="product__image"
                               />
@@ -1112,78 +1146,6 @@ const Product = () => {
                                       handleShow2();
                                     }}
                                   />
-                                  <Modal show={show2} onHide={handleClose2}>
-                                    <Modal.Header closeButton>
-                                      <Modal.Title>
-                                        Add Product Description
-                                      </Modal.Title>
-                                    </Modal.Header>
-                                    <Modal.Body>
-                                      <Form>
-                                        <Form.Group
-                                          className="mb-3"
-                                          controlId="desTitleID"
-                                        >
-                                          <Form.Label>
-                                            Description Title
-                                          </Form.Label>
-                                          <Form.Select
-                                            name="desTitleID"
-                                            value={newDesInfo.desTitleID}
-                                            onChange={handleDesInfoChange}
-                                          >
-                                            <option value="">
-                                              Select Description Title
-                                            </option>
-                                            {desTitles.map((title, index) => (
-                                              <option
-                                                key={index}
-                                                value={index + 1}
-                                              >
-                                                {title}
-                                              </option>
-                                            ))}
-                                          </Form.Select>
-                                        </Form.Group>
-                                        <Form.Group
-                                          className="mb-3"
-                                          controlId="desInfo"
-                                        >
-                                          <Form.Label>
-                                            Description Information
-                                          </Form.Label>
-                                          <Form.Control
-                                            type="text"
-                                            name="desInfo"
-                                            value={newDesInfo.desInfo}
-                                            onChange={handleDesInfoChange}
-                                          />
-                                        </Form.Group>
-                                      </Form>
-                                    </Modal.Body>
-                                    <Modal.Footer>
-                                      <Button
-                                        variant="secondary"
-                                        onClick={handleClose2}
-                                      >
-                                        Close
-                                      </Button>
-                                      <Button
-                                        variant="success"
-                                        onClick={handleAddDesInfo}
-                                      >
-                                        Create
-                                      </Button>
-                                    </Modal.Footer>
-                                    {desError && (
-                                      <Alert variant="danger">{desError}</Alert>
-                                    )}
-                                    {desSuccess && (
-                                      <Alert variant="success">
-                                        {desSuccess}
-                                      </Alert>
-                                    )}
-                                  </Modal>
 
                                   <Link
                                     to={`/product/detail/${item.productId}`}
@@ -1199,231 +1161,6 @@ const Product = () => {
                                     className="product__icon1 product__icon--edit"
                                     onClick={() => openEditModal(item)}
                                   />
-                                  <Modal
-                                    size="lg"
-                                    show={lgShow1}
-                                    onHide={handleClose1}
-                                  >
-                                    <Modal.Header closeButton>
-                                      <Modal.Title>Update Product</Modal.Title>
-                                    </Modal.Header>
-                                    <Modal.Body>
-                                      <Form onSubmit={handleUpdateSubmit}>
-                                        <Container>
-                                          <Row>
-                                            <Col>
-                                              <Form.Group
-                                                className="mb-3"
-                                                controlId="productName"
-                                              >
-                                                <Form.Label>
-                                                  Product Name
-                                                </Form.Label>
-                                                <Form.Control
-                                                  type="text"
-                                                  name="name"
-                                                  value={editProduct.name}
-                                                  onChange={(e) =>
-                                                    setEditProduct({
-                                                      ...editProduct,
-                                                      name: e.target.value,
-                                                    })
-                                                  }
-                                                  required
-                                                />
-                                              </Form.Group>
-                                            </Col>
-                                            <Col>
-                                              <Form.Group
-                                                className="mb-3"
-                                                controlId="categoryId"
-                                              >
-                                                <Form.Label>
-                                                  Category Name
-                                                </Form.Label>
-                                                <Form.Select
-                                                  name="categoryId"
-                                                  value={editProduct.categoryId}
-                                                  onChange={(e) =>
-                                                    setEditProduct({
-                                                      ...editProduct,
-                                                      categoryId:
-                                                        e.target.value,
-                                                    })
-                                                  }
-                                                  required
-                                                >
-                                                  <option value="">
-                                                    Select Category
-                                                  </option>
-                                                  {categories.map(
-                                                    (category) => (
-                                                      <option
-                                                        key={category.id}
-                                                        value={category.id}
-                                                      >
-                                                        {category.cateName}
-                                                      </option>
-                                                    )
-                                                  )}
-                                                </Form.Select>
-                                              </Form.Group>
-                                            </Col>
-                                          </Row>
-                                          <Row>
-                                            <Col>
-                                              <Form.Group
-                                                className="mb-3"
-                                                controlId="description"
-                                              >
-                                                <Form.Label>
-                                                  Description
-                                                </Form.Label>
-                                                <Form.Control
-                                                  as="textarea"
-                                                  name="description"
-                                                  value={
-                                                    editProduct.description
-                                                  }
-                                                  onChange={(e) =>
-                                                    setEditProduct({
-                                                      ...editProduct,
-                                                      description:
-                                                        e.target.value,
-                                                    })
-                                                  }
-                                                  rows={2}
-                                                  required
-                                                />
-                                              </Form.Group>
-                                            </Col>
-                                          </Row>
-                                          <Row>
-                                            <Col>
-                                              <Form.Group
-                                                className="mb-3"
-                                                controlId="productImage"
-                                              >
-                                                <Form.Label>
-                                                  Product Image
-                                                </Form.Label>
-                                                <Form.Control
-                                                  type="file"
-                                                  name="productImage"
-                                                  onChange={(e) =>
-                                                    setEditProductImage(
-                                                      e.target.files[0]
-                                                    )
-                                                  }
-                                                />
-                                              </Form.Group>
-                                            </Col>
-                                          </Row>
-                                          {editProduct.sizes.map(
-                                            (sizeData, index) => (
-                                              <Row key={index}>
-                                                <Col>
-                                                  <Form.Group
-                                                    className="mb-3"
-                                                    controlId={`size-${index}`}
-                                                  >
-                                                    <Form.Label>
-                                                      Size
-                                                    </Form.Label>
-                                                    <Form.Control
-                                                      type="text"
-                                                      name="size"
-                                                      value={sizeData.size}
-                                                      onChange={(e) =>
-                                                        handleSizeChangeUpdate(
-                                                          index,
-                                                          "size",
-                                                          e.target.value
-                                                        )
-                                                      }
-                                                    />
-                                                  </Form.Group>
-                                                </Col>
-                                                <Col>
-                                                  <Form.Group
-                                                    className="mb-3"
-                                                    controlId={`qtyInStock-${index}`}
-                                                  >
-                                                    <Form.Label>
-                                                      Quantity in Stock
-                                                    </Form.Label>
-                                                    <Form.Control
-                                                      type="number"
-                                                      name="qtyInStock"
-                                                      value={
-                                                        sizeData.qtyInStock
-                                                      }
-                                                      onChange={(e) =>
-                                                        handleSizeChangeUpdate(
-                                                          index,
-                                                          "qtyInStock",
-                                                          e.target.value
-                                                        )
-                                                      }
-                                                      required
-                                                    />
-                                                  </Form.Group>
-                                                </Col>
-                                                <Col>
-                                                  <Form.Group
-                                                    className="mb-3"
-                                                    controlId={`price-${index}`}
-                                                  >
-                                                    <Form.Label>
-                                                      Price
-                                                    </Form.Label>
-                                                    <Form.Control
-                                                      type="number"
-                                                      name="price"
-                                                      value={sizeData.price}
-                                                      onChange={(e) =>
-                                                        handleSizeChangeUpdate(
-                                                          index,
-                                                          "price",
-                                                          e.target.value
-                                                        )
-                                                      }
-                                                      required
-                                                    />
-                                                  </Form.Group>
-                                                </Col>
-                                              </Row>
-                                            )
-                                          )}
-
-                                          <Modal.Footer>
-                                            <Button
-                                              variant="secondary"
-                                              onClick={handleClose1}
-                                            >
-                                              Close
-                                            </Button>
-                                            <Button
-                                              variant="warning"
-                                              type="submit"
-                                            >
-                                              Update
-                                            </Button>
-                                          </Modal.Footer>
-                                          {updateError && (
-                                            <Alert variant="danger">
-                                              {updateError}
-                                            </Alert>
-                                          )}
-                                          {updateSuccess && (
-                                            <Alert variant="success">
-                                              {updateSuccess}
-                                            </Alert>
-                                          )}
-                                        </Container>
-                                      </Form>
-                                    </Modal.Body>
-                                  </Modal>
 
                                   <FaTrash
                                     className="product__icon1 product__icon--delete"
@@ -1431,35 +1168,6 @@ const Product = () => {
                                       handleShowDelete(item.productId)
                                     }
                                   />
-                                  <Modal
-                                    show={showDelete}
-                                    onHide={handleCloseDelete}
-                                  >
-                                    <Modal.Header closeButton>
-                                      <Modal.Title>Delete Product</Modal.Title>
-                                    </Modal.Header>
-                                    <Modal.Body>
-                                      Are you sure you want to delete this
-                                      product?
-                                    </Modal.Body>
-                                    <Modal.Footer>
-                                      <Button
-                                        variant="secondary"
-                                        onClick={handleCloseDelete}
-                                      >
-                                        Cancel
-                                      </Button>
-                                      <Button
-                                        variant="danger"
-                                        onClick={deleteProduct}
-                                      >
-                                        Delete
-                                      </Button>
-                                    </Modal.Footer>
-                                    {error && (
-                                      <Alert variant="danger">{error}</Alert>
-                                    )}
-                                  </Modal>
                                 </div>
                               </div>
                             </td>
@@ -1499,6 +1207,221 @@ const Product = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal Update Product */}
+      <Modal size="lg" show={lgShow1} onHide={handleClose1}>
+        <Modal.Header closeButton>
+          <Modal.Title>Update Product</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleUpdateSubmit}>
+            <Container>
+              <Row>
+                <Col>
+                  <Form.Group className="mb-3" controlId="productName">
+                    <Form.Label>Product Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="name"
+                      value={editProduct.name}
+                      onChange={(e) =>
+                        setEditProduct({
+                          ...editProduct,
+                          name: e.target.value,
+                        })
+                      }
+                      required
+                    />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className="mb-3" controlId="categoryId">
+                    <Form.Label>Category Name</Form.Label>
+                    <Form.Select
+                      name="categoryId"
+                      value={editProduct.categoryId}
+                      onChange={(e) =>
+                        setEditProduct({
+                          ...editProduct,
+                          categoryId: e.target.value,
+                        })
+                      }
+                      required
+                    >
+                      <option value="">Select Category</option>
+                      {categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                          {category.cateName}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group className="mb-3" controlId="description">
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      name="description"
+                      value={editProduct.description}
+                      onChange={(e) =>
+                        setEditProduct({
+                          ...editProduct,
+                          description: e.target.value,
+                        })
+                      }
+                      rows={2}
+                      required
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group className="mb-3" controlId="productImage">
+                    <Form.Label>Product Image</Form.Label>
+                    <Form.Control
+                      type="file"
+                      name="productImage"
+                      onChange={(e) => setEditProductImage(e.target.files[0])}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              {editProduct.sizes.map((sizeData, index) => (
+                <Row key={index}>
+                  <Col>
+                    <Form.Group className="mb-3" controlId={`size-${index}`}>
+                      <Form.Label>Size</Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="size"
+                        value={sizeData.size}
+                        onChange={(e) =>
+                          handleSizeChangeUpdate(index, "size", e.target.value)
+                        }
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group
+                      className="mb-3"
+                      controlId={`qtyInStock-${index}`}
+                    >
+                      <Form.Label>Quantity in Stock</Form.Label>
+                      <Form.Control
+                        type="number"
+                        name="qtyInStock"
+                        value={sizeData.qtyInStock}
+                        onChange={(e) =>
+                          handleSizeChangeUpdate(
+                            index,
+                            "qtyInStock",
+                            e.target.value
+                          )
+                        }
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group className="mb-3" controlId={`price-${index}`}>
+                      <Form.Label>Price</Form.Label>
+                      <Form.Control
+                        type="number"
+                        name="price"
+                        value={sizeData.price}
+                        onChange={(e) =>
+                          handleSizeChangeUpdate(index, "price", e.target.value)
+                        }
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+              ))}
+
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose1}>
+                  Close
+                </Button>
+                <Button variant="warning" type="submit">
+                  Update
+                </Button>
+              </Modal.Footer>
+              {updateError && <Alert variant="danger">{updateError}</Alert>}
+              {updateSuccess && (
+                <Alert variant="success">{updateSuccess}</Alert>
+              )}
+              {imageError && <Alert variant="danger">{imageError}</Alert>}
+            </Container>
+          </Form>
+        </Modal.Body>
+      </Modal>
+
+      {/* Modal Add Product Description */}
+      <Modal show={show2} onHide={handleClose2}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add Product Description</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3" controlId="desTitleID">
+              <Form.Label>Description Title</Form.Label>
+              <Form.Select
+                name="desTitleID"
+                value={newDesInfo.desTitleID}
+                onChange={handleDesInfoChange}
+              >
+                <option value="">Select Description Title</option>
+                {desTitles.map((title, index) => (
+                  <option key={index} value={index + 1}>
+                    {title}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="desInfo">
+              <Form.Label>Description Information</Form.Label>
+              <Form.Control
+                type="text"
+                name="desInfo"
+                value={newDesInfo.desInfo}
+                onChange={handleDesInfoChange}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose2}>
+            Close
+          </Button>
+          <Button variant="success" onClick={handleAddDesInfo}>
+            Create
+          </Button>
+        </Modal.Footer>
+        {desError && <Alert variant="danger">{desError}</Alert>}
+        {desSuccess && <Alert variant="success">{desSuccess}</Alert>}
+      </Modal>
+
+      {/* Modal Delete Product */}
+      <Modal show={showDelete} onHide={handleCloseDelete}>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Product</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this product?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseDelete}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={deleteProduct}>
+            Delete
+          </Button>
+        </Modal.Footer>
+        {error && <Alert variant="danger">{error}</Alert>}
+      </Modal>
     </>
   );
 };

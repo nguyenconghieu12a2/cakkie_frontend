@@ -20,7 +20,7 @@ const AdminLogin = () => {
     if (!jwtToken) {
       navigate("/admin-login");
     } else {
-      navigate("/sidebar");
+      navigate("/dashboard");
     }
   }, [navigate]);
 
@@ -56,7 +56,7 @@ const AdminLogin = () => {
 
       // onLoginSuccess();
 
-      navigate("/sidebar");
+      navigate("/dashboard");
     } catch (error) {
       if (error.response && error.response.status === 400) {
         setMessage("Invalid username or password!");
