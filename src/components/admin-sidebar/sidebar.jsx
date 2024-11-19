@@ -36,6 +36,7 @@ function Sidebar({ onLogout }) {
       ],
       sales: ["sales", "order", "canceled_order", "coupons"],
       report: ["reports", "report", "statistic"],
+      reviews: ["pending", "approved", "reject"],
     };
 
     const isSelectedInMenu =
@@ -325,17 +326,56 @@ function Sidebar({ onLogout }) {
             </div>
 
             {/* Reviews Link */}
-            <Link className="sidebar__link" to="/admin-reviews">
+            <div
+              // href="#"
+              className="sidebar__link"
+              onClick={() => handleMenuClick("reviews")}
+            >
               <div
                 className={`menu__list ${
-                  selected === "review" ? "active" : ""
+                  selected === "reviews" ? "active" : ""
                 }`}
-                onClick={() => handleSelected("review")}
               >
                 <MdOutlineRateReview className="list__icon" />
                 <h3 className="list__title">Reviews</h3>
+                <FaAngleDown
+                  className={`icon__down ${
+                    openMenu === "reviews" ? "rotate" : ""
+                  }`}
+                />
               </div>
-            </Link>
+              {openMenu === "reviews" && (
+                <div className="list__subitems">
+                  <Link
+                    className={`sidebar__link ${
+                      selected === "pending" ? "active" : ""
+                    }`}
+                    onClick={() => handleSelected("reviews")}
+                    to="/1"
+                  >
+                    <h4 className="item__cate">Pending</h4>
+                  </Link>
+                  <Link
+                    className={`sidebar__link ${
+                      selected === "approved" ? "active" : ""
+                    }`}
+                    onClick={() => handleSelected("reviews")}
+                    to="/2"
+                  >
+                    <h4 className="item__cate">Approved</h4>
+                  </Link>
+                  <Link
+                    className={`sidebar__link ${
+                      selected === "reject" ? "active" : ""
+                    }`}
+                    onClick={() => handleSelected("reviews")}
+                    to="/3"
+                  >
+                    <h4 className="item__cate">Rejected</h4>
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         <div className="sidebar__footer">

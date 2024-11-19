@@ -17,6 +17,8 @@ a {
   height: 100%;
   display: flex;
   flex-direction: column;
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .sidebar__head {
@@ -33,7 +35,9 @@ a {
 
 .sidebar__body {
   flex-grow: 1;
-  padding: 18px;
+  padding: 15px;
+  max-height: calc(100vh - 100px); /* Adjust max height if you have a header/footer */
+  overflow-y: auto; /* Enable vertical scrolling for the body */
 }
 
 .title__main {
