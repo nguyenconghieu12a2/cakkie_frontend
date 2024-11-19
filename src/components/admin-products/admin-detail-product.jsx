@@ -331,19 +331,16 @@ const ProductDetail = () => {
       <div className="main__wrap">
         <Sidebar onLogout={handleLogoutClick} />
         <div className="product__wrap">
-          <div className="product__head">
-            <div className="product__head--main">
-              <h3 className="product__title">Product</h3>
-              <AvatarHeader />
-            </div>
-
-            <div className="product__breadcrumb">
+          <div className="upper-title">
+            <div className="profile-header1">
+              <h2 style={{ paddingTop: "0px" }}>Detail Products</h2>
               <p>
                 <Link to="/dashboard">Home</Link> / Catlog / Product / Detail
               </p>
             </div>
-            <hr />
+            <AvatarHeader />
           </div>
+          <hr className="hrr" />
 
           <div className="link__back">
             <Link to="/product">

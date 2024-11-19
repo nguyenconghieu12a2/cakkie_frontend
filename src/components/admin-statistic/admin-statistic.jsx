@@ -91,7 +91,7 @@ const AdminStatistic = () => {
                       {/* FORWARD TO ORDER MANAGE PROCESSING PAGE */}
                       {stat.name === "Orders Processing" && (
                         // Link to Order management
-                        <Link to="#">
+                        <Link to="/order">
                           <BsFillForwardFill className="forward-button" />
                         </Link>
                       )}
@@ -99,7 +99,7 @@ const AdminStatistic = () => {
                       {/* FORWARD TO MANAGE OUT OF STOCK PRODUCT PAGE */}
                       {stat.name === "Out of stock products" && (
                         // Link to out of stock product site
-                        <Link to="#">
+                        <Link to="/out-of-stock">
                           <BsFillForwardFill className="forward-button" />
                         </Link>
                       )}
@@ -107,7 +107,7 @@ const AdminStatistic = () => {
                       {/* FORWARD TO MANAGE CUSTOMER REVIEW PAGE */}
                       {stat.name === "Pending Reviews" && (
                         // Link to pending review site
-                        <Link to="#">
+                        <Link to="/admin-reviews/pending">
                           <BsFillForwardFill className="forward-button" />
                         </Link>
                       )}

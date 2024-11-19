@@ -225,19 +225,17 @@ const Order = () => {
       <div className="main__wrap">
         <Sidebar onLogout={handleLogoutClick} />
         <div className="order__wrap">
-          <div className="order__head">
-            <div className="order__head--main">
-              <h3 className="order__title">Order</h3>
-              <AvatarHeader />
-            </div>
-
-            <div className="order__breadcrumb">
+          <div className="upper-title">
+            <div className="profile-header1">
+              <h2 style={{ paddingTop: "0px" }}>Order</h2>
               <p>
                 <Link to="/dashboard">Home</Link> / Sales / Order
               </p>
             </div>
-            <hr />
+            <AvatarHeader />
           </div>
+          <hr className="hrr" />
+
           <div className="search__bar">
             <Container>
               <Row>

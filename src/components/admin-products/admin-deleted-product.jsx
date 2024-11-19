@@ -204,19 +204,16 @@ const DeletedProduct = () => {
           <Sidebar onLogout={handleLogoutClick} />
         </div>
         <div className="deleted__wrap">
-          <div className="deleted__head">
-            <div className="deleted__head--main">
-              <h3 className="deleted__title">Deleted Product</h3>
-              <AvatarHeader />
-            </div>
-
-            <div className="deleted__breadcrumb">
+          <div className="upper-title">
+            <div className="profile-header1">
+              <h2 style={{ paddingTop: "0px" }}>Deleted Products</h2>
               <p>
                 <Link to="/dashboard">Home</Link> / Catlog / Deleted Product
               </p>
             </div>
-            <hr />
+            <AvatarHeader />
           </div>
+          <hr className="hrr" />
 
           <div className="search__bar">
             <Container>

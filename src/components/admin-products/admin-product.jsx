@@ -399,7 +399,7 @@ const Product = () => {
 
     return ""; // No errors
   };
-  
+
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
 
@@ -772,16 +772,16 @@ const Product = () => {
       <div className="main__wrap">
         <Sidebar onLogout={handleLogoutClick} />
         <div className="product__wrap">
-          <div className="product__head">
-            <div className="product__head--wrap">
-              <h3 className="product__title">Product</h3>
-              <AvatarHeader />
+          <div className="upper-title">
+            <div className="profile-header1">
+              <h2 style={{ paddingTop: "0px" }}>Products</h2>
+              <p>
+                <Link to="/dashboard">Home</Link> / Catlog / Product
+              </p>
             </div>
-            <p className="admin__breadcumb">
-              <Link to="/dashboard">Home</Link> / Catlog / Product
-            </p>
-            <hr />
+            <AvatarHeader />
           </div>
+          <hr className="hrr" />
 
           <div className="search__bar">
             <Container>
@@ -1083,7 +1083,7 @@ const Product = () => {
                 <Table className="table">
                   <thead className="thead">
                     <tr>
-                      <th className="th">Product ID</th>
+                      <th className="th">#</th>
                       <th className="th">Category Name</th>
                       <th className="th">Product Name</th>
                       <th className="th">Description</th>
@@ -1105,8 +1105,41 @@ const Product = () => {
                               {index + 1 + currentPage * itemsPerPage}
                             </td>
                             <td className="td">{item.categoryName}</td>
-                            <td className="td">{item.productName}</td>
-                            <td className="td">{item.description}</td>
+                            <td>
+                              <div className="tooltip-wrapper">
+                                {item.productName.length > 15 ? (
+                                  <>
+                                    <span>
+                                      {item.productName.slice(0, 15)}...
+                                    </span>
+                                    <span className="tooltip-text">
+                                      {item.productName}
+                                    </span>
+                                  </>
+                                ) : (
+                                  item.productName
+                                )}
+                              </div>
+                            </td>
+
+                            {/* <td className="td">{item.productName}</td> */}
+                            <td>
+                              <div className="tooltip-wrapper">
+                                {item.description.length > 30 ? (
+                                  <>
+                                    <span>
+                                      {item.description.slice(0, 30)}...
+                                    </span>
+                                    <span className="tooltip-text">
+                                      {item.description}
+                                    </span>
+                                  </>
+                                ) : (
+                                  item.description
+                                )}
+                              </div>
+                            </td>
+                            {/* <td className="td">{item.description}</td> */}
                             <td className="td">
                               <img
                                 src={`/images/${item.productImage}`}

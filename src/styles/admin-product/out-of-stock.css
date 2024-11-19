@@ -3,7 +3,7 @@
 }
 
 .stock__wrap {
-    margin-left: 250px;
+    /* margin-left: 250px; */
     flex: 1;
     height: 100vh;
     padding: 10px;

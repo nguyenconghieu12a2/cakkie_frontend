@@ -335,19 +335,16 @@ const Coupon = () => {
       <div className="main__wrap">
         <Sidebar onLogout={handleLogoutClick} />
         <div className="coupon__wrap">
-          <div className="coupon__head">
-            <div className="coupon__head--main">
-              <h3 className="coupon__title">Coupon</h3>
-              <AvatarHeader />
-            </div>
-
-            <div className="coupon__breadcrumb">
+          <div className="upper-title">
+            <div className="profile-header1">
+              <h2 style={{ paddingTop: "0px" }}>Coupons</h2>
               <p>
                 <Link to="/dashboard">Home</Link> / Sales / Coupon
               </p>
             </div>
-            <hr />
+            <AvatarHeader />
           </div>
+          <hr className="hrr" />
 
           <div className="search__bar">
             <Container>

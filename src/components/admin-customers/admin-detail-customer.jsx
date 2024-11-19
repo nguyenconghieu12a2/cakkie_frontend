@@ -263,9 +263,9 @@ const AdminDetailCustomer = () => {
                                 <CiViewList className="view-detail-order" />
                               </button>
                               {/* Link to order management of particular customer */}
-                              <Link to="/admin-customers">
+                              {/* <Link to="/admin-customers">
                                 <BsFillForwardFill className="forward-oMana" />
-                              </Link>
+                              </Link> */}
                             </div>
                           )}
 
@@ -279,9 +279,9 @@ const AdminDetailCustomer = () => {
                                 <CiViewList className="view-detail-order" />
                               </button>
                               {/* Link to completed order of particular customer */}
-                              <Link to="/admin-customers">
+                              {/* <Link to="/admin-customers">
                                 <BsFillForwardFill className="forward-oMana" />
-                              </Link>
+                              </Link> */}
                             </div>
                           )}
 
@@ -295,9 +295,9 @@ const AdminDetailCustomer = () => {
                                 <CiViewList className="view-detail-order" />
                               </button>
                               {/* Link to cancel order of particular customer for ban action */}
-                              <Link to="/admin-customers">
+                              {/* <Link to="/admin-customers">
                                 <BsFillForwardFill className="forward-oMana" />
-                              </Link>
+                              </Link> */}
                             </div>
                           )}
 

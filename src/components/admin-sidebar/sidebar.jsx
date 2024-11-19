@@ -351,7 +351,7 @@ function Sidebar({ onLogout }) {
                       selected === "pending" ? "active" : ""
                     }`}
                     onClick={() => handleSelected("reviews")}
-                    to="/1"
+                    to="/admin-reviews/pending"
                   >
                     <h4 className="item__cate">Pending</h4>
                   </Link>
@@ -360,7 +360,7 @@ function Sidebar({ onLogout }) {
                       selected === "approved" ? "active" : ""
                     }`}
                     onClick={() => handleSelected("reviews")}
-                    to="/2"
+                    to="/admin-reviews/approved"
                   >
                     <h4 className="item__cate">Approved</h4>
                   </Link>
@@ -369,7 +369,7 @@ function Sidebar({ onLogout }) {
                       selected === "reject" ? "active" : ""
                     }`}
                     onClick={() => handleSelected("reviews")}
-                    to="/3"
+                    to="/admin-reviews/rejected"
                   >
                     <h4 className="item__cate">Rejected</h4>
                   </Link>

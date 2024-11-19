@@ -97,21 +97,16 @@ const DetailOrder = () => {
       <div className="main__wrap">
         <Sidebar onLogout={handleLogoutClick} />
         <div className="order__detail__wrap">
-          <div className="order__detail__head">
-            <div className="order__detail__head--main">
-              <h3 className="order__detail__title">Order Detail</h3>
-              <div className="admin__avatar">
-                <AvatarHeader />
-              </div>
-            </div>
-
-            <div className="order__detail__breadcrumb">
+          <div className="upper-title">
+            <div className="profile-header1">
+              <h2 style={{ paddingTop: "0px" }}>Order Detail</h2>
               <p>
                 <Link to="/dashboard">Home</Link> / Sales / Order / Detail
               </p>
             </div>
-            <hr />
+            <AvatarHeader />
           </div>
+          <hr className="hrr" />
 
           <div className="link__back">
             <Link to="/order">

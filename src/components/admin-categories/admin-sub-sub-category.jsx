@@ -298,20 +298,17 @@ const SubSubCategory = () => {
       <div className="main__wrap">
         <Sidebar onLogout={handleLogoutClick} />
         <div className="sub__subcategory__wrap">
-          <div className="sub__subcategory__head">
-            <div className="sub__subcategory__head--main">
-              <h3 className="sub__subcategory__title">Category</h3>
-              <AvatarHeader />
-            </div>
-
-            <div className="sub__subcategory__breadcrumb">
+          <div className="upper-title">
+            <div className="profile-header1">
+              <h2 style={{ paddingTop: "0px" }}>Sub Sub-Category</h2>
               <p>
                 <Link to="/dashboard">Home</Link> / Catlog / Main Category /
                 Sub-Category / Sub Sub-Category
               </p>
             </div>
-            <hr />
+            <AvatarHeader />
           </div>
+          <hr className="hrr" />
 
           <div className="search__bar">
             <Container>

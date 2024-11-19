@@ -173,19 +173,16 @@ const DeletedCategory = () => {
           <Sidebar onLogout={handleLogoutClick} />
         </div>
         <div className="deleted__category--wrap">
-          <div className="deleted__category--head">
-            <div className="deleted__category--head--main">
-              <h3 className="deleted__category--title">Deleted Category</h3>
-              <AvatarHeader />
-            </div>
-
-            <div className="deleted__category--breadcrumb">
+          <div className="upper-title">
+            <div className="profile-header1">
+              <h2 style={{ paddingTop: "0px" }}>Deleted Category</h2>
               <p>
                 <Link to="/dashboard">Home</Link> / Catlog / Deleted Category
               </p>
             </div>
-            <hr />
+            <AvatarHeader />
           </div>
+          <hr className="hrr" />
 
           <div className="search__bar">
             <Container>

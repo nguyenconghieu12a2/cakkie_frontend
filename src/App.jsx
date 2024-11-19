@@ -24,6 +24,11 @@ import AdminDetailCustomer from "./components/admin-customers/admin-detail-custo
 import AdminDetailBannedCustomer from "./components/admin-customers/admin-detail-banned-customer";
 import AdminEditCustomer from "./components/admin-customers/admin-edit-customer";
 
+//MANAGE REVIEWS
+import AdminPendingReviews from "./components/admin-review/AdminPendingReviews";
+import AdminApprovedReviews from "./components/admin-review/AdminApprovedReviews";
+import AdminRejectedReviews from "./components/admin-review/AdminRejectedReviews";
+
 //PRODUCT
 import Product from "./components/admin-products/admin-product";
 import DeletedProduct from "./components/admin-products/admin-deleted-product";
@@ -48,8 +53,6 @@ import DetailOrder from "./components/admin-orders/admin-detail-order";
 //COUPON
 import Coupon from "./components/admin-coupons/admin-coupon";
 
-//MANAGE REVIEWS
-import ManageReviews from "./components/admin-reviews/manage-reviews";
 //REPORTS (X2)
 import AdminReports from "./components/admin-reports/admin-report";
 import AdminStatistic from "./components/admin-statistic/admin-statistic";
@@ -134,6 +137,20 @@ function App() {
               element={<AdminEditCustomer />}
             />
 
+            {/* MANAGE REVIEW */}
+            <Route
+              path="/admin-reviews/pending"
+              element={<AdminPendingReviews />}
+            />
+            <Route
+              path="/admin-reviews/approved"
+              element={<AdminApprovedReviews />}
+            />
+            <Route
+              path="/admin-reviews/rejected"
+              element={<AdminRejectedReviews />}
+            />
+
             {/* PRODUCT PAGE */}
             <Route path="/product" element={<Product />} />
             <Route path="/product/detail/:id" element={<ProductDetail />} />
@@ -178,8 +195,6 @@ function App() {
               element={<DetailCateDiscount />}
             />
 
-            {/* MANAGE REVIEW */}
-            <Route path="/admin-reviews" element={<ManageReviews />} />
             {/* REPORTS (X2) */}
             <Route path="/admin-reports" element={<AdminReports />} />
             <Route path="/admin-statistics" element={<AdminStatistic />} />

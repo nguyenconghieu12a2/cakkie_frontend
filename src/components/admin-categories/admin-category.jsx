@@ -288,19 +288,16 @@ const Category = () => {
           <Sidebar onLogout={handleLogoutClick} />
         </div>
         <div className="category__wrap">
-          <div className="category__head">
-            <div className="category__head--main">
-              <h3 className="category__title">Category</h3>
-              <AvatarHeader />
-            </div>
-
-            <div className="category__breadcrumb">
+          <div className="upper-title">
+            <div className="profile-header1">
+              <h2 style={{ paddingTop: "0px" }}>Categories</h2>
               <p>
                 <Link to="/dashboard">Home</Link> / Catlog / Main Category
               </p>
             </div>
-            <hr />
+            <AvatarHeader />
           </div>
+          <hr className="hrr" />
 
           <div className="search__bar">
             <Container>
