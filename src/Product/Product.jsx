@@ -291,11 +291,10 @@ const Product = () => {
                 return (
                   <button
                     key={product}
-                    className={`size-button ${
-                      selectedSize === product.size && !isDisabled
+                    className={`size-button ${selectedSize === product.size && !isDisabled
                         ? "selected"
                         : ""
-                    }
+                      }
                     ${isDisabled ? "disabled" : ""}`}
                     onClick={() => chooseSize(product.size)}
                     disabled={isDisabled}
@@ -410,11 +409,11 @@ const Product = () => {
                     {/* Profile Picture */}
                     <img
                       src={
-                        review.profilePicture
-                          ? `/images/${review.profilePicture}`
-                          : "/images/default-avatar.png"
+                        review.profilePicture && review.isHide === 0
+                          ? "/images/default-avatar.png" // Show default avatar if isHide = 0
+                          : `/images/${review.profilePicture}`
                       }
-                      alt={`${review.username || "Anonymous"}'s profile`}
+                      alt={`${review.isHide === 0 ? "Anonymous" : review.username}'s profile`}
                       className="w-10 h-10 rounded-full"
                     />
 
@@ -422,19 +421,16 @@ const Product = () => {
                       <div className="flex justify-between items-center">
                         {/* Username */}
                         <p className="text-lg font-bold text-gray-800">
-                          {review.username || "Anonymous"}
+                          {review.isHide === 0 ? "Anonymous" : review.username || "Anonymous"}
                         </p>
                         {/* Date */}
                         <p className="text-xs text-gray-500">
                           {review.commentDate
-                            ? new Date(review.commentDate).toLocaleDateString(
-                                "en-US",
-                                {
-                                  year: "numeric",
-                                  month: "long",
-                                  day: "numeric",
-                                }
-                              )
+                            ? new Date(review.commentDate).toLocaleDateString("en-US", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })
                             : "No Date Provided"}
                         </p>
                       </div>
@@ -455,6 +451,17 @@ const Product = () => {
                       <p className="text-sm text-gray-600 mt-2">
                         {review.feedback || "No feedback provided."}
                       </p>
+
+                      {/* Review Image */}
+                      {review.reviewImage && (
+                        <div className="mt-4">
+                          <img
+                            src={`/images/${review.reviewImage}`} // Ensure the image is fetched from the `images` folder
+                            alt="Review Image"
+                            className="w-full max-w-xs rounded-md border border-gray-300 shadow-md"
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))
