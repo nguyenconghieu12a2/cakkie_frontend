@@ -26,7 +26,14 @@ function Sidebar({ onLogout }) {
         "banned_customer",
         "deleted_customer",
       ],
-      catalog: ["catalog", "category", "product"],
+      catalog: [
+        "catalog",
+        "category",
+        "product",
+        "out_of_stock",
+        "deleted_category",
+        "deleted_product",
+      ],
       sales: ["sales", "order", "canceled_order", "coupons"],
       report: ["reports", "report", "statistic"],
     };
@@ -150,22 +157,51 @@ function Sidebar({ onLogout }) {
               {openMenu === "catalog" && (
                 <div className="list__subitems">
                   <Link
+                    to={"/main-category"}
                     className={`sidebar__link ${
                       selected === "category" ? "active" : ""
                     }`}
                     onClick={() => handleSelected("category")}
-                    to="#"
                   >
                     <h4 className="item__cate">Category</h4>
                   </Link>
                   <Link
+                    to={"/product"}
                     className={`sidebar__link ${
                       selected === "product" ? "active" : ""
                     }`}
                     onClick={() => handleSelected("product")}
-                    to="#"
                   >
                     <h4 className="item__cate">Product</h4>
+                  </Link>
+                  <Link
+                    to={"/out-of-stock"}
+                    className={`sidebar__link ${
+                      selected === "out_of_stock" ? "active" : ""
+                    }`}
+                    onClick={() => handleSelected("out_of_stock")}
+                  >
+                    <h4 className="item__cate">Out of Stock</h4>
+                  </Link>
+                  <Link
+                    to={"/deleted-category"}
+                    className={`sidebar__link ${
+                      selected === "deleted_category" ? "active" : ""
+                    }`}
+                    onClick={() => handleSelected("deleted_category")}
+                  >
+                    <h4 className="item__cate">Deleted Category</h4>
+                  </Link>
+
+                  <Link
+                    to={"/deleted-product"}
+                    className={`sidebar__link ${
+                      selected === "delect_product" ? "active" : ""
+                    }`}
+                    onClick={() => handleSelected("deleted-product")}
+                    href=""
+                  >
+                    <h4 className="item__cate">Deleted Product</h4>
                   </Link>
                   <Link
                     className={`sidebar__link ${
@@ -200,29 +236,31 @@ function Sidebar({ onLogout }) {
               {openMenu === "sales" && (
                 <div className="list__subitems">
                   <Link
+                    to={"/order"}
                     className={`sidebar__link ${
                       selected === "order" ? "active" : ""
                     }`}
                     onClick={() => handleSelected("order")}
-                    to="#"
+                    href=""
                   >
                     <h4 className="item__cate">Order</h4>
                   </Link>
                   <Link
+                    to={"/canceled-order"}
                     className={`sidebar__link ${
                       selected === "canceled_order" ? "active" : ""
                     }`}
                     onClick={() => handleSelected("canceled_order")}
-                    to="#"
+                    href=""
                   >
                     <h4 className="item__cate">Canceled Order</h4>
                   </Link>
                   <Link
+                    to={"/coupon"}
                     className={`sidebar__link ${
                       selected === "coupons" ? "active" : ""
                     }`}
                     onClick={() => handleSelected("coupons")}
-                    to="#"
                   >
                     <h4 className="item__cate">Coupons</h4>
                   </Link>
