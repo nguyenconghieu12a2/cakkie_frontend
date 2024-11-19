@@ -177,6 +177,7 @@ const AdminProfile = () => {
                     src={`/images/admin-avt/${profile.adminImage}`}
                     alt="Avatar"
                     className="avatar-img"
+                    onError={(e) => (e.target.style.display = "none")}
                   />
                 </div>
                 {imageError && <p className="error-text">{imageError}</p>}

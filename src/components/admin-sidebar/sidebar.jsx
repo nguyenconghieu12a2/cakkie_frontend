@@ -80,8 +80,8 @@ function Sidebar({ onLogout }) {
             </Link>
 
             {/* Customer Menu */}
-            <a
-              // href="#"
+            <div
+              // to="#"
               className="sidebar__link"
               onClick={() => handleMenuClick("customer")}
             >
@@ -125,11 +125,11 @@ function Sidebar({ onLogout }) {
                   </Link>
                 </div>
               )}
-            </a>
+            </div>
 
             {/* Catalog Menu */}
-            <a
-              // href="#"
+            <div
+              // to="#"
               className="sidebar__link"
               onClick={() => handleMenuClick("catalog")}
             >
@@ -177,11 +177,11 @@ function Sidebar({ onLogout }) {
                   </Link>
                 </div>
               )}
-            </a>
+            </div>
 
             {/* Sales Menu */}
-            <a
-              // href="#"
+            <div
+              // to="#"
               className="sidebar__link"
               onClick={() => handleMenuClick("sales")}
             >
@@ -203,7 +203,7 @@ function Sidebar({ onLogout }) {
                       selected === "order" ? "active" : ""
                     }`}
                     onClick={() => handleSelected("order")}
-                    href="#"
+                    to="#"
                   >
                     <h4 className="item__cate">Order</h4>
                   </Link>
@@ -212,7 +212,7 @@ function Sidebar({ onLogout }) {
                       selected === "canceled_order" ? "active" : ""
                     }`}
                     onClick={() => handleSelected("canceled_order")}
-                    href="#"
+                    to="#"
                   >
                     <h4 className="item__cate">Canceled Order</h4>
                   </Link>
@@ -236,7 +236,7 @@ function Sidebar({ onLogout }) {
                   </Link>
                 </div>
               )}
-            </a>
+            </div>
 
             {/* Banner Link */}
             <Link className="sidebar__link" to="/admin-banners">
@@ -252,7 +252,7 @@ function Sidebar({ onLogout }) {
             </Link>
 
             {/* Report Menu */}
-            <a
+            <div
               // href="#"
               className="sidebar__link"
               onClick={() => handleMenuClick("report")}
@@ -292,7 +292,7 @@ function Sidebar({ onLogout }) {
                   </Link>
                 </div>
               )}
-            </a>
+            </div>
           </div>
         </div>
         <div className="sidebar__footer">

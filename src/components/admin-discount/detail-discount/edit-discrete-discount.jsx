@@ -44,6 +44,17 @@ const EditDiscreteDiscount = ({ show, handleClose, discount, fetchData }) => {
     return `${date} ${time}:00`; // Combine into "yyyy-MM-dd HH:mm:ss"
   };
 
+  const formatToDateTimeLocal = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
   useEffect(() => {
     if (discount) {
       setEditedDiscount({
@@ -54,8 +65,8 @@ const EditDiscreteDiscount = ({ show, handleClose, discount, fetchData }) => {
           typeof discount.discountRate === "string"
             ? parseFloat(discount.discountRate.replace("%", "")) || 0
             : discount.discountRate || 0, // Handle number directly
-        startDate: transformToDateTimeLocal(discount.startDate),
-        endDate: transformToDateTimeLocal(discount.endDate),
+        startDate: formatToDateTimeLocal(discount.startDate),
+        endDate: formatToDateTimeLocal(discount.endDate),
       });
     }
   }, [discount]);
@@ -136,7 +147,7 @@ const EditDiscreteDiscount = ({ show, handleClose, discount, fetchData }) => {
       );
 
       if (response.status === 200) {
-        console.log("Updated successfully:", response.data);
+        // console.log("Updated successfully:", response.data);
         if (fetchData) fetchData(discountCategoryId); // Reload the data
         handleClose(); // Close the modal after successful save
       } else {

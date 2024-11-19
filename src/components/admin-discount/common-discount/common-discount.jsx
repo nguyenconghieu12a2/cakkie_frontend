@@ -157,7 +157,7 @@ const CommonDiscount = () => {
         // Add the new category to the categories list
         setCommonCate((prev) => {
           const updatedList = [...prev, category];
-          console.log("Updated category list:", updatedList); // Debugging the updated list
+          // console.log("Updated category list:", updatedList); // Debugging the updated list
           return updatedList;
         });
         fetchDetailCommonDiscount(commonDiscountId);
@@ -271,22 +271,33 @@ const CommonDiscount = () => {
     setCurrentPage(1);
   };
 
-  const formatDateToVietnamese = (dateString) => {
+  // const formatDateToVietnamese = (dateString) => {
+  //   if (!dateString) return "";
+  //   const date = new Date(dateString);
+
+  //   // Extract date components
+  //   const day = String(date.getDate()).padStart(2, "0");
+  //   const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+  //   const year = date.getFullYear();
+
+  //   // Extract time components
+  //   const hours = String(date.getHours()).padStart(2, "0");
+  //   const minutes = String(date.getMinutes()).padStart(2, "0");
+  //   const seconds = String(date.getSeconds()).padStart(2, "0");
+
+  //   // Combine into the desired format
+  //   return `${month}-${day}-${year} ${hours}:${minutes}:${seconds}`;
+  // };
+
+  const formatToDateTimeLocal = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
-
-    // Extract date components
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
     const year = date.getFullYear();
-
-    // Extract time components
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
     const hours = String(date.getHours()).padStart(2, "0");
     const minutes = String(date.getMinutes()).padStart(2, "0");
-    const seconds = String(date.getSeconds()).padStart(2, "0");
-
-    // Combine into the desired format
-    return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
 
   if (loadingTimeout && !discount) {
@@ -340,15 +351,11 @@ const CommonDiscount = () => {
             </p>
             <p>
               <strong style={{ marginRight: "33px" }}>Start-date: </strong>
-              {discount.startDate
-                ? formatDateToVietnamese(discount.startDate)
-                : "N/A"}
+              {discount.startDate ? discount.startDate : "N/A"}
             </p>
             <p>
               <strong style={{ marginRight: "38px" }}>End-date: </strong>
-              {discount.endDate
-                ? formatDateToVietnamese(discount.endDate)
-                : "N/A"}
+              {discount.endDate ? discount.endDate : "N/A"}
             </p>
             <button
               className="btn btn-primary float-end"

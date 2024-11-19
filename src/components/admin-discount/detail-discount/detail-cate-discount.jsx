@@ -342,7 +342,7 @@ const DetailCateDiscount = () => {
                     </tr>
                   ) : (
                     discountActivate.map((disAct, index) => (
-                      <tr>
+                      <tr key={index}>
                         <td>{disAct.discountName}</td>
                         <td>{disAct.discountRate}%</td>
                         <td>{disAct.startDate}</td>

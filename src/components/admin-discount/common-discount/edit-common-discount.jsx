@@ -22,10 +22,10 @@ const EditCommonDiscount = ({ show, handleClose, discount, handleSave }) => {
     if (!date || !time) return ""; // Handle cases where date or time is missing
 
     const [day, month, year] = date.split("-");
-    const [hours, minutes] = time.split("-"); // Use only hours and minutes
+    const [hours, minutes, second] = time.split("-"); // Use only hours and minutes
 
     // Validate that all required components are present
-    if (!day || !month || !year || !hours || !minutes) return "";
+    if (!day || !month || !year || !hours || !minutes || !second) return "";
 
     // Return the formatted string in "yyyy-MM-ddTHH:mm"
     return `${year}-${month}-${day}T${hours}:${minutes}`;
@@ -38,6 +38,17 @@ const EditCommonDiscount = ({ show, handleClose, discount, handleSave }) => {
     return `${date} ${time}:00`; // Combine into "yyyy-MM-dd HH:mm:ss"
   };
 
+  const formatToDateTimeLocal = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
   useEffect(() => {
     if (discount) {
       setEditedDiscount({
@@ -47,8 +58,8 @@ const EditCommonDiscount = ({ show, handleClose, discount, handleSave }) => {
           typeof discount.discountRate === "string"
             ? parseFloat(discount.discountRate.replace("%", "")) || 0
             : discount.discountRate || 0, // Handle number directly
-        startDate: transformToDateTimeLocal(discount.startDate),
-        endDate: transformToDateTimeLocal(discount.endDate),
+        startDate: formatToDateTimeLocal(discount.startDate),
+        endDate: formatToDateTimeLocal(discount.endDate),
       });
     }
   }, [discount]);
