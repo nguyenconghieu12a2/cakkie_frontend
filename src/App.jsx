@@ -24,7 +24,9 @@ import AdminDetailCustomer from "./components/admin-customers/admin-detail-custo
 import AdminDetailBannedCustomer from "./components/admin-customers/admin-detail-banned-customer";
 import AdminEditCustomer from "./components/admin-customers/admin-edit-customer";
 //MANAGE REVIEWS
-import ManageReviews from "./components/admin-reviews/manage-reviews";
+import AdminPendingReviews from "./components/admin-review/AdminPendingReviews";
+import AdminApprovedReviews from "./components/admin-review/AdminApprovedReviews";
+import AdminRejectedReviews from "./components/admin-review/AdminRejectedReviews";
 //REPORTS (X2)
 import AdminReports from "./components/admin-reports/admin-report";
 import AdminStatistic from "./components/admin-statistic/admin-statistic";
@@ -121,7 +123,9 @@ function App() {
             />
 
             {/* MANAGE REVIEW */}
-            <Route path="/admin-reviews" element={<ManageReviews />} />
+            <Route path="/admin-reviews/pending" element={<AdminPendingReviews />}/>
+            <Route path="/admin-reviews/approved" element={<AdminApprovedReviews />}/>
+            <Route path="/admin-reviews/rejected" element={<AdminRejectedReviews />}/>
             {/* REPORTS (X2) */}
             <Route path="/admin-reports" element={<AdminReports />} />
             <Route path="/admin-statistics" element={<AdminStatistic />} />

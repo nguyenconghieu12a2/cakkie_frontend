@@ -52,6 +52,7 @@ function Sidebar({ onLogout }) {
 
   const handleSelected = (selection) => {
     setSelected(selection); // Set the selected item
+    console.log("Selected:", selection);
   };
 
   const handleSignOut = (e) => {
@@ -78,9 +79,8 @@ function Sidebar({ onLogout }) {
             {/* Dashboard Link */}
             <Link to="/dashboard" className="sidebar__link">
               <div
-                className={`menu__list ${
-                  selected === "Dashboard" ? "active" : ""
-                }`}
+                className={`menu__list ${selected === "Dashboard" ? "active" : ""
+                  }`}
                 onClick={() => handleSelected("Dashboard")}
               >
                 <FaChartLine className="list__icon" />
@@ -98,35 +98,31 @@ function Sidebar({ onLogout }) {
                 <FaUsers className="list__icon" />
                 <h3 className="list__title">Customer</h3>
                 <FaAngleDown
-                  className={`icon__down ${
-                    openMenu === "customer" ? "rotate" : ""
-                  }`}
+                  className={`icon__down ${openMenu === "customer" ? "rotate" : ""
+                    }`}
                 />
               </div>
               {openMenu === "customer" && (
                 <div className="list__subitems">
                   <Link
-                    className={`sidebar__link ${
-                      selected === "manage_customer" ? "active" : ""
-                    }`}
+                    className={`sidebar__link ${selected === "manage_customer" ? "active" : ""
+                      }`}
                     onClick={() => handleSelected("manage_customer")}
                     to="/admin-customers"
                   >
                     <h4 className="item__cate">Manage Customer</h4>
                   </Link>
                   <Link
-                    className={`sidebar__link ${
-                      selected === "banned_customer" ? "active" : ""
-                    }`}
+                    className={`sidebar__link ${selected === "banned_customer" ? "active" : ""
+                      }`}
                     onClick={() => handleSelected("banned_customer")}
                     to="/admin-banned-customers"
                   >
                     <h4 className="item__cate">Banned Customer</h4>
                   </Link>
                   <Link
-                    className={`sidebar__link ${
-                      selected === "deleted_customer" ? "active" : ""
-                    }`}
+                    className={`sidebar__link ${selected === "deleted_customer" ? "active" : ""
+                      }`}
                     onClick={() => handleSelected("deleted_customer")}
                     to="/admin-deleted-customers"
                   >
@@ -143,52 +139,46 @@ function Sidebar({ onLogout }) {
               onClick={() => handleMenuClick("catalog")}
             >
               <div
-                className={`menu__list ${
-                  selected === "catalog" ? "active" : ""
-                }`}
+                className={`menu__list ${selected === "catalog" ? "active" : ""
+                  }`}
               >
                 <FaDatabase className="list__icon" />
                 <h3 className="list__title">Catalog</h3>
                 <FaAngleDown
-                  className={`icon__down ${
-                    openMenu === "catalog" ? "rotate" : ""
-                  }`}
+                  className={`icon__down ${openMenu === "catalog" ? "rotate" : ""
+                    }`}
                 />
               </div>
               {openMenu === "catalog" && (
                 <div className="list__subitems">
                   <Link
                     to={"/main-category"}
-                    className={`sidebar__link ${
-                      selected === "category" ? "active" : ""
-                    }`}
+                    className={`sidebar__link ${selected === "category" ? "active" : ""
+                      }`}
                     onClick={() => handleSelected("category")}
                   >
                     <h4 className="item__cate">Category</h4>
                   </Link>
                   <Link
                     to={"/product"}
-                    className={`sidebar__link ${
-                      selected === "product" ? "active" : ""
-                    }`}
+                    className={`sidebar__link ${selected === "product" ? "active" : ""
+                      }`}
                     onClick={() => handleSelected("product")}
                   >
                     <h4 className="item__cate">Product</h4>
                   </Link>
                   <Link
                     to={"/out-of-stock"}
-                    className={`sidebar__link ${
-                      selected === "out_of_stock" ? "active" : ""
-                    }`}
+                    className={`sidebar__link ${selected === "out_of_stock" ? "active" : ""
+                      }`}
                     onClick={() => handleSelected("out_of_stock")}
                   >
                     <h4 className="item__cate">Out of Stock</h4>
                   </Link>
                   <Link
                     to={"/deleted-category"}
-                    className={`sidebar__link ${
-                      selected === "deleted_category" ? "active" : ""
-                    }`}
+                    className={`sidebar__link ${selected === "deleted_category" ? "active" : ""
+                      }`}
                     onClick={() => handleSelected("deleted_category")}
                   >
                     <h4 className="item__cate">Deleted Category</h4>
@@ -196,18 +186,16 @@ function Sidebar({ onLogout }) {
 
                   <Link
                     to={"/deleted-product"}
-                    className={`sidebar__link ${
-                      selected === "delect_product" ? "active" : ""
-                    }`}
+                    className={`sidebar__link ${selected === "delect_product" ? "active" : ""
+                      }`}
                     onClick={() => handleSelected("deleted-product")}
                     href=""
                   >
                     <h4 className="item__cate">Deleted Product</h4>
                   </Link>
                   <Link
-                    className={`sidebar__link ${
-                      selected === "product" ? "active" : ""
-                    }`}
+                    className={`sidebar__link ${selected === "product" ? "active" : ""
+                      }`}
                     onClick={() => handleSelected("product")}
                     to="/admin-discount"
                   >
@@ -229,18 +217,16 @@ function Sidebar({ onLogout }) {
                 <FaMoneyBillTransfer className="list__icon" />
                 <h3 className="list__title">Sales</h3>
                 <FaAngleDown
-                  className={`icon__down ${
-                    openMenu === "sales" ? "rotate" : ""
-                  }`}
+                  className={`icon__down ${openMenu === "sales" ? "rotate" : ""
+                    }`}
                 />
               </div>
               {openMenu === "sales" && (
                 <div className="list__subitems">
                   <Link
                     to={"/order"}
-                    className={`sidebar__link ${
-                      selected === "order" ? "active" : ""
-                    }`}
+                    className={`sidebar__link ${selected === "order" ? "active" : ""
+                      }`}
                     onClick={() => handleSelected("order")}
                     href=""
                   >
@@ -248,9 +234,8 @@ function Sidebar({ onLogout }) {
                   </Link>
                   <Link
                     to={"/canceled-order"}
-                    className={`sidebar__link ${
-                      selected === "canceled_order" ? "active" : ""
-                    }`}
+                    className={`sidebar__link ${selected === "canceled_order" ? "active" : ""
+                      }`}
                     onClick={() => handleSelected("canceled_order")}
                     href=""
                   >
@@ -258,9 +243,8 @@ function Sidebar({ onLogout }) {
                   </Link>
                   <Link
                     to={"/coupon"}
-                    className={`sidebar__link ${
-                      selected === "coupons" ? "active" : ""
-                    }`}
+                    className={`sidebar__link ${selected === "coupons" ? "active" : ""
+                      }`}
                     onClick={() => handleSelected("coupons")}
                   >
                     <h4 className="item__cate">Coupons</h4>
@@ -272,9 +256,8 @@ function Sidebar({ onLogout }) {
             {/* Banner Link */}
             <Link className="sidebar__link" to="/admin-banners">
               <div
-                className={`menu__list ${
-                  selected === "banner" ? "active" : ""
-                }`}
+                className={`menu__list ${selected === "banner" ? "active" : ""
+                  }`}
                 onClick={() => handleSelected("banner")}
               >
                 <FaPalette className="list__icon" />
@@ -289,33 +272,29 @@ function Sidebar({ onLogout }) {
               onClick={() => handleMenuClick("report")}
             >
               <div
-                className={`menu__list ${
-                  selected === "reports" ? "active" : ""
-                }`}
+                className={`menu__list ${selected === "reports" ? "active" : ""
+                  }`}
               >
                 <BsClipboardDataFill className="list__icon" />
                 <h3 className="list__title">Reports</h3>
                 <FaAngleDown
-                  className={`icon__down ${
-                    openMenu === "report" ? "rotate" : ""
-                  }`}
+                  className={`icon__down ${openMenu === "report" ? "rotate" : ""
+                    }`}
                 />
               </div>
               {openMenu === "report" && (
                 <div className="list__subitems">
                   <Link
-                    className={`sidebar__link ${
-                      selected === "report" ? "active" : ""
-                    }`}
+                    className={`sidebar__link ${selected === "report" ? "active" : ""
+                      }`}
                     onClick={() => handleSelected("report")}
                     to="/admin-reports"
                   >
                     <h4 className="item__cate">Report</h4>
                   </Link>
                   <Link
-                    className={`sidebar__link ${
-                      selected === "statistic" ? "active" : ""
-                    }`}
+                    className={`sidebar__link ${selected === "statistic" ? "active" : ""
+                      }`}
                     onClick={() => handleSelected("statistic")}
                     to="/admin-statistics"
                   >
@@ -332,44 +311,44 @@ function Sidebar({ onLogout }) {
               onClick={() => handleMenuClick("reviews")}
             >
               <div
-                className={`menu__list ${
-                  selected === "reviews" ? "active" : ""
-                }`}
+                className={`menu__list ${selected === "reviews" ? "active" : ""
+                  }`}
               >
                 <MdOutlineRateReview className="list__icon" />
                 <h3 className="list__title">Reviews</h3>
                 <FaAngleDown
-                  className={`icon__down ${
-                    openMenu === "reviews" ? "rotate" : ""
-                  }`}
+                  className={`icon__down ${openMenu === "reviews" ? "rotate" : ""
+                    }`}
                 />
               </div>
               {openMenu === "reviews" && (
                 <div className="list__subitems">
+                  {/* Pending Reviews */}
                   <Link
-                    className={`sidebar__link ${
-                      selected === "pending" ? "active" : ""
-                    }`}
-                    onClick={() => handleSelected("reviews")}
-                    to="/1"
+                    className={`sidebar__link ${selected === "pending_reviews" ? "active" : ""
+                      }`}
+                    onClick={() => handleSelected("pending_reviews")}
+                    to="/admin-reviews/pending"
                   >
                     <h4 className="item__cate">Pending</h4>
                   </Link>
+
+                  {/* Approved Reviews */}
                   <Link
-                    className={`sidebar__link ${
-                      selected === "approved" ? "active" : ""
-                    }`}
-                    onClick={() => handleSelected("reviews")}
-                    to="/2"
+                    className={`sidebar__link ${selected === "approved_reviews" ? "active" : ""
+                      }`}
+                    onClick={() => handleSelected("approved_reviews")}
+                    to="/admin-reviews/approved"
                   >
                     <h4 className="item__cate">Approved</h4>
                   </Link>
+
+                  {/* Rejected Reviews */}
                   <Link
-                    className={`sidebar__link ${
-                      selected === "reject" ? "active" : ""
-                    }`}
-                    onClick={() => handleSelected("reviews")}
-                    to="/3"
+                    className={`sidebar__link ${selected === "rejected_reviews" ? "active" : ""
+                      }`}
+                    onClick={() => handleSelected("rejected_reviews")}
+                    to="/admin-reviews/rejected"
                   >
                     <h4 className="item__cate">Rejected</h4>
                   </Link>
