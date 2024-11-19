@@ -3,32 +3,34 @@ import "../../styles/admin-login/reset-password.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BsArrowLeftSquareFill } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
-import {useFlow} from './Flow'
+import { useFlow } from "./Flow";
 import axios from "axios";
 
-const api = "/api/admin/forgotPassword/verifyEmail"
+const api = "/api/admin/forgotPassword/verifyEmail";
 
 const AdminResetPasswordEmail = () => {
-  const {advanceFlow, saveEmail} = useFlow();
+  const { advanceFlow, saveEmail } = useFlow();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Simulate email validation and advance the flow
-    try{
-      const response = await axios.post(`${api}/${email}`)
+    try {
+      const response = await axios.post(`${api}/${email}`);
 
-      if(response.status === 200){
+      if (response.status === 200) {
         saveEmail(email);
         advanceFlow("otp");
         navigate("/admin-reset-otp");
       }
       // console.log(response.status);
-    }catch(error){
+    } catch (error) {
       if (error.response && error.response.status === 500) {
-        setErrorMessage("Email doesn't exist in admin system. Please try again.");
+        setErrorMessage(
+          "Email doesn't exist in admin system. Please try again."
+        );
       } else {
         console.error("email error: ", error);
         setErrorMessage("An unexpected error occurred. Please try again.");
@@ -72,7 +74,9 @@ const AdminResetPasswordEmail = () => {
                   Send
                 </button>
               </Link> */}
-              <button type="submit" className="btn btn-primary">Send</button>
+              <button type="submit" className="btn btn-primary">
+                Send
+              </button>
             </div>
           </form>
         </div>

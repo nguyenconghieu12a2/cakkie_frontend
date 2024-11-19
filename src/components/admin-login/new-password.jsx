@@ -1,11 +1,11 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import "../../styles/admin-login/new-password.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
-import {useFlow} from './Flow';
+import { useFlow } from "./Flow";
 import axios from "axios";
 
-const api = "/api/admin/forgotPassword/changePassword"
+const api = "/api/admin/forgotPassword/changePassword";
 
 const AdminNewPassword = () => {
   const { advanceFlow, email } = useFlow();
@@ -14,7 +14,7 @@ const AdminNewPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Handle password change logic here
 
@@ -63,24 +63,23 @@ const AdminNewPassword = () => {
     // Create JSON object to send to the API
     const requestData = {
       password: password,
-      repeatPassword: confirmPassword
+      repeatPassword: confirmPassword,
     };
 
     try {
       const response = await axios.post(`${api}/${email}`, requestData, {
         headers: {
-          'Content-Type': 'application/json'
-        }
+          "Content-Type": "application/json",
+        },
       });
 
       if (response.status === 200) {
         navigate("/admin-login");
       }
     } catch (error) {
-        console.error("Error during password change: ", error);
-        setError("An error occurred. Please try again later.");
+      console.error("Error during password change: ", error);
+      setError("An error occurred. Please try again later.");
     }
-
   };
 
   return (
@@ -132,7 +131,9 @@ const AdminNewPassword = () => {
                   Change
                 </button>
               </Link> */}
-              <button type="submit" className="btn btn-primary">Send</button>
+              <button type="submit" className="btn btn-primary">
+                Send
+              </button>
             </div>
           </form>
         </div>
