@@ -11,6 +11,10 @@ function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredSearchResults, setFilteredSearchResults] = useState([]);
   const itemsPerPage = 20;
+  const [filterCriteria, setFilterCriteria] = useState({
+    rating: null,
+    price: null,
+  });
 
   const fetchProduct = async () => {
     try {
@@ -48,18 +52,45 @@ function Home() {
     return acc;
   }, {});
 
-  const filteredProducts = () => {
-    if (selectedCategory === "All") return uniqueProducts;
+  const handleFilterChange = (criteria, value) => {
+    setFilterCriteria((prevCriteria) => ({
+      ...prevCriteria,
+      [criteria]: value === prevCriteria[criteria] ? null : value,
+    }));
+    setCurrentPage(1);
+  };
 
-    return uniqueProducts.filter((product) => {
-      return (
-        product.categoryName === selectedCategory &&
-        (!selectedSubCategory ||
-          product.subCategoryName === selectedSubCategory) &&
-        (!selectedSubSubCategory ||
-          product.subsubCategoryName === selectedSubSubCategory)
+  const filteredProducts = () => {
+    let products = uniqueProducts;
+
+    if (selectedCategory !== "All") {
+      products = products.filter((product) => {
+        return (
+          product.categoryName === selectedCategory &&
+          (!selectedSubCategory ||
+            product.subCategoryName === selectedSubCategory) &&
+          (!selectedSubSubCategory ||
+            product.subsubCategoryName === selectedSubSubCategory)
+        );
+      });
+    }
+
+    if (filterCriteria.rating) {
+      products = products.filter(
+        (product) => Math.round(product.averageRating) >= filterCriteria.rating
       );
-    });
+    }
+
+    if (filterCriteria.price) {
+      const [minPrice, maxPrice] = filterCriteria.price.split("-");
+      products = products.filter(
+        (product) =>
+          product.price >= parseInt(minPrice) &&
+          product.price <= parseInt(maxPrice)
+      );
+    }
+
+    return products;
   };
 
   const totalPages = Math.ceil(filteredProducts().length / itemsPerPage);
@@ -110,6 +141,7 @@ function Home() {
     setSearchQuery("");
     setFilteredSearchResults([]);
   };
+
   return (
     <div className="bg-gray-50 min-h-screen font-sans">
       <div className="bg-white px-8 py-4 flex justify-center relative border-b">
@@ -221,6 +253,49 @@ function Home() {
           ))}
         </div>
       )}
+      <div>
+        <p className="font-semibold mb-2">Filter by Rating:</p>
+        <div className="flex space-x-2">
+          {[5, 4, 3, 2, 1].map((rating) => (
+            <button
+              key={rating}
+              onClick={() => handleFilterChange("rating", rating)}
+              className={`px-3 py-1 rounded-full font-semibold ${
+                filterCriteria.rating === rating
+                  ? "bg-yellow-400 text-white"
+                  : "bg-gray-200 text-gray-700"
+              }`}
+            >
+              {rating} stars
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <p className="font-semibold mb-2">Filter by Price:</p>
+        <div className="flex space-x-2">
+          {[
+            "0-100000",
+            "100000-200000",
+            "200000-300000",
+            "300000-400000",
+            "400000-10000000",
+          ].map((priceRange) => (
+            <button
+              key={priceRange}
+              onClick={() => handleFilterChange("price", priceRange)}
+              className={`px-3 py-1 rounded-full font-semibold ${
+                filterCriteria.price === priceRange
+                  ? "bg-green-400 text-white"
+                  : "bg-gray-200 text-gray-700"
+              }`}
+            >
+              {priceRange} VND
+            </button>
+          ))}
+        </div>
+      </div>
 
       <section className="px-8 py-12 bg-white">
         <h2 className="text-2xl font-bold mb-6">More To Buy</h2>

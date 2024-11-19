@@ -34,31 +34,41 @@ const BestSeller = () => {
         <Row>
           {bestSeller.map((bs, i) => (
             <Col xl={3} md={6} sm={12}>
-              <Card style={{ width: "100%", marginBottom: "20px" }}>
-                <Card.Img
-                  variant="top"
-                  src={`./${bs.productImage}.jpg`}
-                  alt="image"
-                  className="image"
-                />
-                <Card.Body>
-                  <Card.Title className="bs-title text-truncate">
-                    {bs.productName}
-                  </Card.Title>
-                  <Card.Text className="bs-price">
-                    <strong>Price: {bs.productPrice}</strong>
-                  </Card.Text>
-                  <div className="separation">
-                    <div>
-                      <strong>Rate: </strong>
-                      <p className="rating">
-                        {bs.productRating ? bs.productRating.toFixed(1) : "0.0"}
-                      </p>
-                      <FaStar className="rating" />
+              <Link
+                to={`/product/${bs.productId}`}
+                style={{ textDecoration: "none", color: "black" }}
+                state={{ userId: 1 }}
+                key={bs.productId}
+                className="flex flex-col items-center w-full h-full p-2"
+              >
+                <Card style={{ width: "100%", marginBottom: "20px" }}>
+                  <Card.Img
+                    variant="top"
+                    src={`./${bs.productImage}.jpg`}
+                    alt="image"
+                    className="image"
+                  />
+                  <Card.Body>
+                    <Card.Title className="bs-title text-truncate">
+                      {bs.productName}
+                    </Card.Title>
+                    <Card.Text className="bs-price">
+                      <strong>Price: {bs.productPrice}</strong>
+                    </Card.Text>
+                    <div className="separation">
+                      <div>
+                        <strong>Rate: </strong>
+                        <p className="rating">
+                          {bs.productRating
+                            ? bs.productRating.toFixed(1)
+                            : "0.0"}
+                        </p>
+                        <FaStar className="rating" />
+                      </div>
                     </div>
-                  </div>
-                </Card.Body>
-              </Card>
+                  </Card.Body>
+                </Card>
+              </Link>
             </Col>
           ))}
         </Row>
