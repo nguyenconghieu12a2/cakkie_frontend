@@ -1,4 +1,4 @@
-import Sidebar from "../sidebar.js";
+import Sidebar from "../sidebar.jsx";
 import "../../styles/admin-cancel-order/list-canceled-order.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaBars, FaRegCircleLeft } from "react-icons/fa6";
@@ -12,7 +12,24 @@ import { useEffect } from "react";
 //GET DETAIL
 const api = "/api/admin/cancel-order/detail";
 
-function ListCanceledOrder() {
+const ListCanceledOrder = () => {
+  // Logout
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
+    if (!jwtToken) {
+      navigate("/admin-login");
+    }
+  }, [navigate]);
+
+  const handleLogoutClick = () => {
+    console.log("Logging out...");
+    sessionStorage.removeItem("jwtAdmin");
+    // onLogout();
+    navigate("/admin-login");
+  };
+
   const { id } = useParams();
 
   //Fetch Detail
@@ -31,8 +48,6 @@ function ListCanceledOrder() {
     loadDetail();
   }, [id]);
 
-  const navigate = useNavigate();
-
   //Format Price
   const formatCurrency = (value) => {
     if (!value) return "0 VND";
@@ -47,7 +62,7 @@ function ListCanceledOrder() {
   return (
     <>
       <div className="main__wrap">
-        <Sidebar />
+        <Sidebar onLogout={handleLogoutClick} />
         <div className="list__canceled--wrap">
           <div className="list__canceled--head">
             <div className="list__canceled--head--main">
@@ -138,6 +153,6 @@ function ListCanceledOrder() {
       </div>
     </>
   );
-}
+};
 
 export default ListCanceledOrder;

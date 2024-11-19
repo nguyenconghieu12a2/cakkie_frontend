@@ -1,9 +1,9 @@
-import Sidebar from "../sidebar";
+import Sidebar from "../sidebar.jsx";
 import "../../styles/admin-cancel-order/detail-canceled-order.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaRegCircleLeft } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
@@ -12,7 +12,24 @@ import ReactPaginate from "react-paginate";
 //GET PRODUCT DETAIL
 const orderDetailPro = "/api/admin/cancel-order/product-detail";
 
-function DetailCanceledOrder() {
+const DetailCanceledOrder = () => {
+  // Logout
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
+    if (!jwtToken) {
+      navigate("/admin-login");
+    }
+  }, [navigate]);
+
+  const handleLogoutClick = () => {
+    console.log("Logging out...");
+    sessionStorage.removeItem("jwtAdmin");
+    // onLogout();
+    navigate("/admin-login");
+  };
+
   const { id } = useParams();
 
   // Fetch data
@@ -55,7 +72,7 @@ function DetailCanceledOrder() {
     <>
       <div className="main__wrap">
         <div className="navbar">
-          <Sidebar />
+          <Sidebar onLogout={handleLogoutClick} />
         </div>
         <div className="detail__canceled--wrap">
           <div className="detail__canceled--head">
@@ -160,6 +177,6 @@ function DetailCanceledOrder() {
       </div>
     </>
   );
-}
+};
 
 export default DetailCanceledOrder;

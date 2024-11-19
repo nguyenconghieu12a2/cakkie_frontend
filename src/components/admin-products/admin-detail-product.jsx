@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../sidebar.js";
+import Sidebar from "../sidebar.jsx";
 import "../../styles/admin-product/product-detail.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import {
@@ -12,7 +12,7 @@ import Table from "react-bootstrap/Table";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 
@@ -32,7 +32,23 @@ const getSize = "/api/admin/detail-size";
 //Delete Size
 const deleteSize = "/api/admin/delete-size";
 
-function ProductDetail() {
+const ProductDetail = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
+    if (!jwtToken) {
+      navigate("/admin-login");
+    }
+  }, [navigate]);
+
+  const handleLogoutClick = () => {
+    console.log("Logging out...");
+    sessionStorage.removeItem("jwtAdmin");
+    // onLogout();
+    navigate("/admin-login");
+  };
+
   const { id } = useParams();
 
   const [productDetail, setProductDetail] = useState(null);
@@ -184,6 +200,10 @@ function ProductDetail() {
     }));
   };
 
+  //Delete Size
+  const [deleteSizes, setDeleteSizes] = useState("");
+  const [successSizes, setSuccessSizes] = useState("");
+
   // Fix: Update only desInfo
   const editDesSubmit = async (e) => {
     // Clear previous error or success messages
@@ -256,8 +276,8 @@ function ProductDetail() {
       });
       console.log("Description info deleted successfully");
       setDeleteDesTitleId(null);
-      loadProduct(); // Reload product details after delete
-      handleClose3(); // Close modal after delete
+      loadProduct();
+      handleClose3();
     } catch (error) {
       console.error("Error deleting description info:", error);
     }
@@ -271,14 +291,26 @@ function ProductDetail() {
     return <div>No product details available.</div>;
   }
 
+  //Delete Size
   const handleDeleteSize = async () => {
     try {
-      await axios.put(`${deleteSize}/${selectedProItemId}`);
-      setShowDeleteModal(false);
-      loadGetSize();
+      const response = await axios.put(`${deleteSize}/${selectedProItemId}`);
+      if (response.status === 200) {
+        setSuccessSizes("Successfully deleted this size in product!");
+        setTimeout(() => setSuccessSizes(), 3000);
+        setShowDeleteModal(false);
+        loadGetSize();
+      }
     } catch (error) {
-      console.error("Error deleting size:", error);
-      alert("Failed to delete product size. Please try again.");
+      if (error.response && error.response.status === 400) {
+        setDeleteSizes(error.response.data);
+        setTimeout(() => setDeleteSizes(), 3000);
+      } else {
+        setDeleteSizes("Error deleting size:", error);
+        setTimeout(() => setDeleteSizes(), 3000);
+        setDeleteSizes("Failed to delete product size. Please try again.");
+        setTimeout(() => setDeleteSizes(), 3000);
+      }
     }
   };
 
@@ -297,7 +329,7 @@ function ProductDetail() {
   return (
     <>
       <div className="main__wrap">
-        <Sidebar />
+        <Sidebar onLogout={handleLogoutClick} />
         <div className="product__wrap">
           <div className="product__head">
             <div className="product__head--main">
@@ -592,6 +624,16 @@ function ProductDetail() {
                                 Delete
                               </Button>
                             </Modal.Footer>
+                            {successSizes && (
+                              <Alert variant="success" className="text-center">
+                                {successSizes}
+                              </Alert>
+                            )}
+                            {deleteSizes && (
+                              <Alert variant="danger" className="text-center">
+                                {deleteSizes}
+                              </Alert>
+                            )}
                           </Modal>
                         </td>
                       </tr>
@@ -605,6 +647,6 @@ function ProductDetail() {
       </div>
     </>
   );
-}
+};
 
 export default ProductDetail;

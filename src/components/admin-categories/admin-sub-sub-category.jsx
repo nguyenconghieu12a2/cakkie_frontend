@@ -1,4 +1,4 @@
-import Sidebar from "../sidebar";
+import Sidebar from "../sidebar.jsx";
 import { useEffect, useState } from "react";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import {
@@ -13,7 +13,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import ReactPaginate from "react-paginate";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Alert from "react-bootstrap/Alert";
 import { Col, Container, Row } from "react-bootstrap";
@@ -31,7 +31,24 @@ const updateSubSubCate = "/api/admin/update-category";
 //Delete SubSubCate
 const deleteSubSub = "/api/admin/delete/sub-sub-category";
 
-function SubSubCategory() {
+const SubSubCategory = () => {
+  // Logout
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
+    if (!jwtToken) {
+      navigate("/admin-login");
+    }
+  }, [navigate]);
+
+  const handleLogoutClick = () => {
+    console.log("Logging out...");
+    sessionStorage.removeItem("jwtAdmin");
+    // onLogout();
+    navigate("/admin-login");
+  };
+
   //Search Logic
   const [filteredOrders, setFilteredOrders] = useState([]); // For filtered results
   const [searchTerm, setSearchTerm] = useState("");
@@ -279,7 +296,7 @@ function SubSubCategory() {
   return (
     <>
       <div className="main__wrap">
-        <Sidebar />
+        <Sidebar onLogout={handleLogoutClick} />
         <div className="sub__subcategory__wrap">
           <div className="sub__subcategory__head">
             <div className="sub__subcategory__head--main">
@@ -538,6 +555,6 @@ function SubSubCategory() {
       </div>
     </>
   );
-}
+};
 
 export default SubSubCategory;

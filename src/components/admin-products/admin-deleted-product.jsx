@@ -1,4 +1,4 @@
-import Sidebar from "../sidebar";
+import Sidebar from "../sidebar.jsx";
 import { useEffect, useState } from "react";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaArrowsRotate } from "react-icons/fa6";
@@ -9,7 +9,7 @@ import Modal from "react-bootstrap/Modal";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import Form from "react-bootstrap/Form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Col, Container, Row } from "react-bootstrap";
 
 //API
@@ -20,7 +20,24 @@ const cateNotDelete = "/api/admin/admin-product/category-not-deleted";
 //Recover
 const recoverPro = "/api/admin/product-recovery";
 
-function DeletedProduct() {
+const DeletedProduct = () => {
+  // Logout
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
+    if (!jwtToken) {
+      navigate("/admin-login");
+    }
+  }, [navigate]);
+
+  const handleLogoutClick = () => {
+    console.log("Logging out...");
+    sessionStorage.removeItem("jwtAdmin");
+    // onLogout();
+    navigate("/admin-login");
+  };
+
   //Search Logic
   const [filteredOrders, setFilteredOrders] = useState([]); // For filtered results
   const [searchTerm, setSearchTerm] = useState("");
@@ -185,7 +202,7 @@ function DeletedProduct() {
     <>
       <div className="main__wrap">
         <div className="navbar">
-          <Sidebar />
+          <Sidebar onLogout={handleLogoutClick} />
         </div>
         <div className="deleted__wrap">
           <div className="deleted__head">
@@ -480,6 +497,6 @@ function DeletedProduct() {
       </div>
     </>
   );
-}
+};
 
 export default DeletedProduct;

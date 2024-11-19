@@ -1,4 +1,4 @@
-import Sidebar from "../sidebar";
+import Sidebar from "../sidebar.jsx";
 import { useEffect, useState } from "react";
 import "../../styles/admin-category/deleted-category.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
@@ -6,7 +6,7 @@ import { FaArrowsRotate } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import { Col, Container, Row } from "react-bootstrap";
@@ -26,7 +26,24 @@ const allDelete = "/api/admin/full-deleted-categories";
 //Get All Sub Deleted
 const getAllSubDeleted = "/api/admin/full-sub-deleted";
 
-function DeletedCategory() {
+const DeletedCategory = () => {
+  // Logout
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
+    if (!jwtToken) {
+      navigate("/admin-login");
+    }
+  }, [navigate]);
+
+  const handleLogoutClick = () => {
+    console.log("Logging out...");
+    sessionStorage.removeItem("jwtAdmin");
+    // onLogout();
+    navigate("/admin-login");
+  };
+
   //Search Logic
   const [filteredOrders, setFilteredOrders] = useState([]); // For filtered results
   const [searchTerm, setSearchTerm] = useState("");
@@ -87,7 +104,9 @@ function DeletedCategory() {
       loadDeletedSubSub();
     } catch (error) {
       if (error.response && error.response.data) {
-        setRecoverError("Cannot deleted this sub sub-category because the sub-category is not existed");
+        setRecoverError(
+          "Cannot deleted this sub sub-category because the sub-category is not existed"
+        );
       } else {
         setRecoverError(
           "Failed to recover the sub-subcategory. Please try again."
@@ -152,7 +171,7 @@ function DeletedCategory() {
     <>
       <div className="main__wrap">
         <div className="navbar">
-          <Sidebar />
+          <Sidebar onLogout={handleLogoutClick} />
         </div>
         <div className="deleted__category--wrap">
           <div className="deleted__category--head">
@@ -246,10 +265,20 @@ function DeletedCategory() {
                                   </Button>
                                 </Modal.Footer>
                                 {recoverError && (
-                                  <Alert variant="danger" className="text-center">{recoverError}</Alert>
+                                  <Alert
+                                    variant="danger"
+                                    className="text-center"
+                                  >
+                                    {recoverError}
+                                  </Alert>
                                 )}
                                 {recoverSuccess && (
-                                  <Alert variant="success" className="text-center">{recoverSuccess}</Alert>
+                                  <Alert
+                                    variant="success"
+                                    className="text-center"
+                                  >
+                                    {recoverSuccess}
+                                  </Alert>
                                 )}
                               </Modal>
                             </Link>
@@ -418,6 +447,6 @@ function DeletedCategory() {
       </div>
     </>
   );
-}
+};
 
 export default DeletedCategory;

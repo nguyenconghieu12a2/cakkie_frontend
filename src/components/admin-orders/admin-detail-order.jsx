@@ -1,19 +1,36 @@
-import Sidebar from "../sidebar.js";
+import Sidebar from "../sidebar.jsx";
 import "../../styles/admin-orders/orderDetail.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import Table from "react-bootstrap/Table";
 import { useEffect, useState } from "react";
 import { FaRegCircleLeft } from "react-icons/fa6";
 import ReactPaginate from "react-paginate";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 //API
 const api = "/api/admin/detail-order";
 
-function DetailOrder() {
+const DetailOrder = () => {
   const { id } = useParams();
   const [details, setDetails] = useState({});
+
+  // Logout
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
+    if (!jwtToken) {
+      navigate("/admin-login");
+    }
+  }, [navigate]);
+
+  const handleLogoutClick = () => {
+    console.log("Logging out...");
+    sessionStorage.removeItem("jwtAdmin");
+    // onLogout();
+    navigate("/admin-login");
+  };
 
   // Fetch Detail
   const loadDetail = async (id) => {
@@ -66,7 +83,7 @@ function DetailOrder() {
   return (
     <>
       <div className="main__wrap">
-        <Sidebar />
+        <Sidebar onLogout={handleLogoutClick} />
         <div className="order__detail__wrap">
           <div className="order__detail__head">
             <div className="order__detail__head--main">
@@ -171,7 +188,9 @@ function DetailOrder() {
                           <td className="td">{details.id}</td>
                           <td className="td">{product}</td>
                           <td className="td">{details.qty[index]}</td>
-                          <td className="td">{formatCurrency(details.price[index])}</td>
+                          <td className="td">
+                            {formatCurrency(details.price[index])}
+                          </td>
                         </tr>
                       ))
                     ) : (
@@ -212,6 +231,6 @@ function DetailOrder() {
       </div>
     </>
   );
-}
+};
 
 export default DetailOrder;

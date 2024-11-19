@@ -1,4 +1,4 @@
-import Sidebar from "../sidebar";
+import Sidebar from "../sidebar.jsx";
 import { useEffect, useState } from "react";
 import "../../styles/admin-category/category.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
@@ -12,7 +12,7 @@ import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import Alert from "react-bootstrap/Alert";
@@ -27,7 +27,24 @@ const addCate = "/api/admin/add-category";
 const updateCate = "/api/admin/update-category";
 //Delete Cate
 const deleteCate = "/api/admin/delete/category";
-function Category() {
+const Category = () => {
+  // Logout
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
+    if (!jwtToken) {
+      navigate("/admin-login");
+    }
+  }, [navigate]);
+
+  const handleLogoutClick = () => {
+    console.log("Logging out...");
+    sessionStorage.removeItem("jwtAdmin");
+    // onLogout();
+    navigate("/admin-login");
+  };
+
   //Search
   const [filteredOrders, setFilteredOrders] = useState([]); // For filtered results
   const [searchTerm, setSearchTerm] = useState("");
@@ -269,7 +286,7 @@ function Category() {
     <>
       <div className="main__wrap">
         <div className="navbar">
-          <Sidebar />
+          <Sidebar onLogout={handleLogoutClick} />
         </div>
         <div className="category__wrap">
           <div className="category__head">
@@ -518,6 +535,6 @@ function Category() {
       </div>
     </>
   );
-}
+};
 
 export default Category;

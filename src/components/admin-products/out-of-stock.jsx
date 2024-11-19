@@ -1,4 +1,4 @@
-import Sidebar from "../sidebar";
+import Sidebar from "../sidebar.jsx";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import "../../styles/admin-product/out-of-stock.css";
 import { Table } from "react-bootstrap";
@@ -11,13 +11,32 @@ import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Alert from "react-bootstrap/Alert";
 import { Col, Container, Row } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 // Get out-of-stock products API
 const api = "/api/admin/oos-products";
 // Update quantity API
 const updateQuan = "api/admin/oos-products/update";
 
-function OutOfStock() {
+const OutOfStock = () => {
+  // Logout
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
+    console.log(jwtToken);
+    if (!jwtToken) {
+      navigate("/admin-login");
+    }
+  }, [navigate]);
+
+  const handleLogoutClick = () => {
+    console.log("Logging out...");
+    sessionStorage.removeItem("jwtAdmin");
+    // onLogout();
+    navigate("/admin-login");
+  };
+
   // State for out-of-stock products
   const [stock, setStock] = useState([]);
   const [filteredStock, setFilteredStock] = useState([]);
@@ -126,7 +145,7 @@ function OutOfStock() {
     <>
       <div className="main__wrap">
         <div className="sidebar">
-          <Sidebar />
+          <Sidebar onLogout={handleLogoutClick} />
         </div>
         <div className="stock__wrap">
           <div className="stock__head">
@@ -212,7 +231,11 @@ function OutOfStock() {
                       ))
                     ) : (
                       <tr>
-                        <td colSpan="7" className="text-center" style={{border: "1px"}}>
+                        <td
+                          colSpan="7"
+                          className="text-center"
+                          style={{ border: "1px" }}
+                        >
                           No data available.
                         </td>
                       </tr>
@@ -277,6 +300,6 @@ function OutOfStock() {
       </Modal>
     </>
   );
-}
+};
 
 export default OutOfStock;

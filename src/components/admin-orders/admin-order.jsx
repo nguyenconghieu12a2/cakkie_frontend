@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../sidebar.js";
+import Sidebar from "../sidebar.jsx";
 import "../../styles/admin-orders/order.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaBars, FaPenToSquare } from "react-icons/fa6";
 import Table from "react-bootstrap/Table";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import Form from "react-bootstrap/Form";
@@ -18,7 +18,7 @@ const status = "/api/admin/order/statuses";
 const orderStatus = "/api/admin/order/status";
 const updateStatus = "/api/admin/order/update-status";
 
-function Order() {
+const Order = () => {
   const [show, setShow] = useState(false);
   const [editOrderId, setEditOrderId] = useState(null);
   const [order, setOrder] = useState([]);
@@ -26,6 +26,23 @@ function Order() {
   const [allStatuses, setAllStatuses] = useState([]);
   const [statusById, setStatusById] = useState(null);
   const [searchTerm, setSearchTerm] = useState(""); // For search input
+
+  // Logout
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
+    if (!jwtToken) {
+      navigate("/admin-login");
+    }
+  }, [navigate]);
+
+  const handleLogoutClick = () => {
+    console.log("Logging out...");
+    sessionStorage.removeItem("jwtAdmin");
+    // onLogout();
+    navigate("/admin-login");
+  };
 
   // Pagination setup
   const [currentPage, setCurrentPage] = useState(0);
@@ -173,7 +190,7 @@ function Order() {
   return (
     <>
       <div className="main__wrap">
-        <Sidebar />
+        <Sidebar onLogout={handleLogoutClick} />
         <div className="order__wrap">
           <div className="order__head">
             <div className="order__head--main">
@@ -337,6 +354,6 @@ function Order() {
       </Modal>
     </>
   );
-}
+};
 
 export default Order;

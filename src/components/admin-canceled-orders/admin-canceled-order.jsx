@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../sidebar.js";
+import Sidebar from "../sidebar.jsx";
 import "../../styles/admin-cancel-order/canceled-order.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaBars, FaLock } from "react-icons/fa6";
@@ -7,7 +7,7 @@ import Table from "react-bootstrap/Table";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import Form from "react-bootstrap/Form";
@@ -17,7 +17,24 @@ import { Col, Container, Row } from "react-bootstrap";
 const api = "/api/admin/cacel-order";
 const banApi = "/api/admin/ban-user";
 
-function CanceledOrder() {
+const CanceledOrder = () => {
+  // Logout
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
+    if (!jwtToken) {
+      navigate("/admin-login");
+    }
+  }, [navigate]);
+
+  const handleLogoutClick = () => {
+    console.log("Logging out...");
+    sessionStorage.removeItem("jwtAdmin");
+    // onLogout();
+    navigate("/admin-login");
+  };
+
   const [filteredOrders, setFilteredOrders] = useState([]); // For filtered results
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -106,7 +123,7 @@ function CanceledOrder() {
     <>
       <div className="main__wrap">
         <div className="navbar">
-          <Sidebar />
+          <Sidebar onLogout={handleLogoutClick} />
         </div>
         <div className="canceled__wrap">
           <div className="canceled__head">
@@ -317,6 +334,6 @@ function CanceledOrder() {
       </div>
     </>
   );
-}
+};
 
 export default CanceledOrder;

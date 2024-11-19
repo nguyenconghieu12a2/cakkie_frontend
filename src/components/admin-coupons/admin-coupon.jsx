@@ -1,4 +1,4 @@
-import Sidebar from "../sidebar";
+import Sidebar from "../sidebar.jsx";
 import { useEffect, useState } from "react";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { FaRegSquarePlus, FaPenToSquare, FaTrash } from "react-icons/fa6";
@@ -19,7 +19,7 @@ const addCou = "/api/admin/add-coupons";
 const updateCou = "/api/admin/update-coupons";
 const deleteCou = "/api/admin/delete-coupons";
 
-function Coupon({ onLogout }) {
+const Coupon = () => {
   //Search
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCoupons, setFilteredCoupons] = useState([]);
@@ -38,11 +38,18 @@ function Coupon({ onLogout }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const jwtToken = sessionStorage.getItem("jwt");
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
     if (!jwtToken) {
       navigate("/admin-login");
     }
   }, [navigate]);
+
+  const handleLogoutClick = () => {
+    console.log("Logging out...");
+    sessionStorage.removeItem("jwtAdmin");
+    // onLogout();
+    navigate("/admin-login");
+  };
 
   const [lgShow, setLgShow] = useState(false);
   const handleClose = () => setLgShow(false);
@@ -181,7 +188,12 @@ function Coupon({ onLogout }) {
   };
 
   const editCouponSubmit = async (e) => {
+    const currentDate = new Date();
+    const startDate = new Date(editCoupon.startDate);
+    const endDate = new Date(editCoupon.endDate);
+
     e.preventDefault();
+
     if (
       editCoupon.code === "" ||
       editCoupon.name === "" ||
@@ -190,31 +202,31 @@ function Coupon({ onLogout }) {
       editCoupon.startDate === "" ||
       editCoupon.endDate === ""
     ) {
-      setErrorEdit("Please fill all fields.");
+      setErrorEdit("Please fill in all required fields.");
       setTimeout(() => {
         setErrorEdit("");
       }, 3000);
       return;
     } else if (editCoupon.quantity <= 0) {
-      setErrorEdit("The quantity can not less than 0");
+      setErrorEdit("The quantity must be greater than 0.");
       setTimeout(() => {
         setErrorEdit("");
       }, 3000);
       return;
     } else if (editCoupon.priceDiscount <= 1000) {
-      setErrorEdit("The price discount must be greater than 1000");
+      setErrorEdit("The price discount must be greater than 1000.");
       setTimeout(() => {
         setErrorEdit("");
       }, 3000);
       return;
-    } else if (editCoupon.endDate <= editCoupon.startDate) {
+    } else if (startDate < currentDate) {
+      setErrorEdit("The start date must be from now to the future.");
+      setTimeout(() => {
+        setErrorEdit("");
+      }, 3000);
+      return;
+    } else if (endDate <= startDate) {
       setErrorEdit("The end date must be later than the start date.");
-      setTimeout(() => {
-        setErrorEdit("");
-      }, 3000);
-      return;
-    } else if (editCoupon.startDate < currentDate) {
-      setErrorEdit("The start date must be from now to the future");
       setTimeout(() => {
         setErrorEdit("");
       }, 3000);
@@ -286,7 +298,7 @@ function Coupon({ onLogout }) {
   return (
     <>
       <div className="main__wrap">
-        <Sidebar />
+        <Sidebar onLogout={handleLogoutClick} />
         <div className="coupon__wrap">
           <div className="coupon__head">
             <div className="coupon__head--main">
@@ -637,6 +649,6 @@ function Coupon({ onLogout }) {
       </div>
     </>
   );
-}
+};
 
 export default Coupon;

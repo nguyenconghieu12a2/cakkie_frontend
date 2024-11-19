@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import Sidebar from "../sidebar";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import Sidebar from "../sidebar.jsx";
 import "../../styles/admin-category/subcategory.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import {
@@ -30,7 +30,23 @@ const updateSub = "/api/admin/update-category";
 const nullSub = "/api/admin/null-sub-subCate";
 //Delete Sub Cate
 const deleteSub = "/api/admin/delete/sub-category";
-function SubCategory() {
+const SubCategory = () => {
+  // Logout
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
+    if (!jwtToken) {
+      navigate("/admin-login");
+    }
+  }, [navigate]);
+
+  const handleLogoutClick = () => {
+    console.log("Logging out...");
+    sessionStorage.removeItem("jwtAdmin");
+    // onLogout();
+    navigate("/admin-login");
+  };
   //Search Logic
   const [filteredOrders, setFilteredOrders] = useState([]); // For filtered results
   const [searchTerm, setSearchTerm] = useState("");
@@ -264,7 +280,7 @@ function SubCategory() {
   return (
     <>
       <div className="main__wrap">
-        <Sidebar />
+        <Sidebar onLogout={handleLogoutClick} />
         <div className="subcategory__wrap">
           <div className="subcategory__head">
             <div className="subcategory__head--main">
@@ -516,6 +532,6 @@ function SubCategory() {
       </div>
     </>
   );
-}
+};
 
 export default SubCategory;

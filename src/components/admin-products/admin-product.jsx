@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../sidebar.js";
+import Sidebar from "../sidebar.jsx";
 import "../../styles/admin-product/product.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import {
@@ -14,7 +14,7 @@ import Button from "react-bootstrap/Button";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import Form from "react-bootstrap/Form";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -50,7 +50,24 @@ const getSize = "/api/admin/sizes";
 //Add size, quantity, price
 const addSize = "/api/admin/add-size";
 
-function Product() {
+const Product = () => {
+  // Logout
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const jwtToken = sessionStorage.getItem("jwtAdmin");
+    if (!jwtToken) {
+      navigate("/admin-login");
+    }
+  }, [navigate]);
+
+  const handleLogoutClick = () => {
+    console.log("Logging out...");
+    sessionStorage.removeItem("jwtAdmin");
+    // onLogout();
+    navigate("/admin-login");
+  };
+
   //Search Logic
   const [filteredOrders, setFilteredOrders] = useState([]); // For filtered results
   const [searchTerm, setSearchTerm] = useState("");
@@ -338,6 +355,7 @@ function Product() {
       sizes: product.productItem.map((item) => ({
         oldSize: item.size,
         size: item.size,
+        oldQtyInStock: item.quantity,
         qtyInStock: item.quantity,
         price: item.price,
       })),
@@ -354,55 +372,6 @@ function Product() {
     };
     setEditProduct({ ...editProduct, sizes: updatedSizes });
   };
-
-  // Handle updating product submission
-  // const handleUpdateSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   const updatedProductData = {
-  //     productId: editProduct.productId,
-  //     categoryId: editProduct.categoryId || 0,
-  //     name: editProduct.name || "",
-  //     description: editProduct.description || "",
-  //     productRating: editProduct.productRating || 0,
-  //     isDelete: editProduct.isDelete || 1,
-  //     sizes: editProduct.sizes.length > 0 ? editProduct.sizes : [],
-  //   };
-
-  //   const formData = new FormData();
-  //   formData.append("categoryId", updatedProductData.categoryId);
-  //   formData.append("name", updatedProductData.name);
-  //   formData.append("description", updatedProductData.description);
-  //   formData.append("productRating", updatedProductData.productRating);
-  //   formData.append("isDelete", updatedProductData.isDelete);
-  //   formData.append("sizes", JSON.stringify(updatedProductData.sizes));
-
-  //   if (editProductImage) {
-  //     formData.append("productImage", editProductImage);
-  //   }
-
-  //   try {
-  //     const response = await axios.put(
-  //       `${updatePro}/${updatedProductData.productId}`,
-  //       formData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       }
-  //     );
-
-  //     if (response.status === 200) {
-  //       console.log("Product updated successfully:", response.data);
-  //       loadProduct();
-  //       handleClose1();
-  //     } else {
-  //       console.error("Unexpected response:", response);
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to update product:", error);
-  //   }
-  // };
 
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
@@ -429,14 +398,13 @@ function Product() {
       setUpdateError("Product name must be at least 3 characters long.");
       setTimeout(() => setUpdateError(""), 3000);
       return;
+    } else if (!nameRegex.test(editProduct.name)) {
+      setUpdateError(
+        "Product name cannot start with whitespace or contain special characters!"
+      );
+      setTimeout(() => setUpdateError(""), 3000);
+      return;
     }
-    // } else if (!nameRegex.test(editProduct.name)) {
-    //   setUpdateError(
-    //     "Product name cannot start with whitespace or contain special characters!"
-    //   );
-    //   setTimeout(() => setUpdateError(""), 3000);
-    //   return;
-    // }
 
     // Validation: Check sizes
     const validSizes = ["S", "M", "L"];
@@ -467,6 +435,14 @@ function Product() {
       if (isNaN(sizeData.qtyInStock) || Number(sizeData.qtyInStock) < 0) {
         setUpdateError(
           `Quantity for size ${sizeData.size} must be a non-negative number.`
+        );
+        setTimeout(() => setUpdateError(""), 3000);
+        return;
+      }
+
+      if (sizeData.qtyInStock < sizeData.oldQtyInStock) {
+        setUpdateError(
+          `Quantity for size ${sizeData.size} cannot be less than the current stock (${sizeData.oldQtyInStock}).`
         );
         setTimeout(() => setUpdateError(""), 3000);
         return;
@@ -657,6 +633,22 @@ function Product() {
       return;
     }
 
+    const validSizes = ["S", "M", "L"];
+    const numericRangeRegex = /^\d+\s*x\s*\d+$/;
+
+    if (
+      !validSizes.includes(newSize.size.toUpperCase()) && 
+      !numericRangeRegex.test(newSize.size)
+    ) {
+      setAlertMessage(
+        "Invalid size format. Please use 'S', 'M', 'L', or 'number x number' (e.g., '5 x 10')."
+      );
+      setTimeout(() => {
+        setAlertMessage("");
+      }, 3000);
+      return;
+    }
+
     if (isNaN(newSize.qtyInStock) || newSize.qtyInStock <= 0) {
       setAlertMessage("Quantity must be a positive number.");
       setTimeout(() => setAlertMessage(""), 3000);
@@ -738,7 +730,7 @@ function Product() {
   return (
     <>
       <div className="main__wrap">
-        <Sidebar />
+        <Sidebar onLogout={handleLogoutClick} />
         <div className="product__wrap">
           <div className="product__head">
             <div className="product__head--wrap">
@@ -1083,7 +1075,7 @@ function Product() {
                             <td className="td">{item.description}</td>
                             <td className="td">
                               <img
-                                src={`../images/${item.productImage}`}
+                                src={(`/images/${item.productImage}`)}
                                 alt={item.productName}
                                 className="product__image"
                               />
@@ -1509,6 +1501,6 @@ function Product() {
       </div>
     </>
   );
-}
+};
 
 export default Product;
