@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa6";
 import { VscSignOut } from "react-icons/vsc";
 import { BsClipboardDataFill } from "react-icons/bs";
+import { MdOutlineRateReview } from "react-icons/md";
 
 function Sidebar({ onLogout }) {
   const [openMenu, setOpenMenu] = useState(""); // Track which menu is open
@@ -225,15 +226,6 @@ function Sidebar({ onLogout }) {
                   >
                     <h4 className="item__cate">Coupons</h4>
                   </Link>
-                  <Link
-                    className={`sidebar__link ${
-                      selected === "coupons" ? "active" : ""
-                    }`}
-                    onClick={() => handleSelected("coupons")}
-                    to="/admin-reviews"
-                  >
-                    <h4 className="item__cate">Manage Reviews</h4>
-                  </Link>
                 </div>
               )}
             </div>
@@ -293,6 +285,19 @@ function Sidebar({ onLogout }) {
                 </div>
               )}
             </div>
+
+            {/* Reviews Link */}
+            <Link className="sidebar__link" to="/admin-reviews">
+              <div
+                className={`menu__list ${
+                  selected === "review" ? "active" : ""
+                }`}
+                onClick={() => handleSelected("review")}
+              >
+                <MdOutlineRateReview className="list__icon" />
+                <h3 className="list__title">Reviews</h3>
+              </div>
+            </Link>
           </div>
         </div>
         <div className="sidebar__footer">
