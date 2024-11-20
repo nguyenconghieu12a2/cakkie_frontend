@@ -101,6 +101,7 @@ const ProtectedRoute = ({ allowedStep, element }) => {
 function App() {
   const [userCart, setUserCart] = useState([]);
   const [userId, setUserId] = useState(1);
+  const [profileRefreshKey, setProfileRefreshKey] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return !!(localStorage.getItem("jwt") || sessionStorage.getItem("jwt"));
   });
@@ -159,7 +160,11 @@ function App() {
   return (
     <div className="d-flex flex-column min-vh-100">
       {shouldShowUserHeaderFooter && (
-        <UserHeader isLoggedIn={isLoggedIn} user={user} />
+        <UserHeader
+          isLoggedIn={isLoggedIn}
+          user={user}
+          refreshProfileKey={profileRefreshKey}
+        />
       )}
       <FlowProvider>
         <Routes>
@@ -177,7 +182,14 @@ function App() {
             path="/profile"
             element={<Profile onLogout={handleLogout} />}
           />
-          <Route path="/edit-profile" element={<EditProfile />} />
+          <Route
+            path="/edit-profile"
+            element={
+              <EditProfile
+              onSave={() => setProfileRefreshKey((prev) => prev + 1)}
+              />
+            }
+          />
           <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/product/:productId" element={<Product />} />
           <Route

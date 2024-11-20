@@ -12,20 +12,15 @@ const EditProfile = ({ profileData = {}, onSave }) => {
     firstname: profileData.firstname || "",
     lastname: profileData.lastname || "",
     username: profileData.username || "",
-    gender: profileData.gender || "",
-    birthday: profileData.birthday ? profileData.birthday.split("T")[0] : "",
+    gender: capitalizeFirstLetter(profileData.gender || ""),
+    birthday: profileData.birthday
+      ? formatDateToInput(profileData.birthday)
+      : "",
     phone: profileData.phone || "",
     email: profileData.email || "",
   });
 
-  const [imagePreview, setImagePreview] = useState(
-    profileData.gender === "Male"
-      ? "/images/male.jpg"
-      : profileData.gender === "Female"
-      ? "/images/female.jpg"
-      : "/images/default.jpg"
-  );
-
+  const [imagePreview, setImagePreview] = useState(profileData.image || "");
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
@@ -44,18 +39,23 @@ const EditProfile = ({ profileData = {}, onSave }) => {
           const response = await axios.get(api, {
             headers: { Authorization: `Bearer ${token}` },
           });
+          const data = response.data;
+
           setFormData({
-            ...response.data,
-            birthday: response.data.birthday
-              ? response.data.birthday.split("T")[0]
+            firstname: data.firstname,
+            lastname: data.lastname,
+            username: data.username,
+            gender: capitalizeFirstLetter(data.gender),
+            birthday: data.birthday
+              ? formatDateToInput(data.birthday)
               : "",
+            phone: data.phone,
+            email: data.email,
           });
 
-          setImagePreview(
-            response.data.gender === "male"
-              ? "/images/male.jpg"
-              : "/images/female.jpg"
-          );
+          if (data.image) {
+            setImagePreview(data.image);
+          }
         } catch (error) {
           console.error("Error fetching profile:", error);
           setErrorMessage("Failed to fetch profile data.");
@@ -73,14 +73,15 @@ const EditProfile = ({ profileData = {}, onSave }) => {
       [name]: value,
     }));
 
+    // Update imagePreview based on gender selection
     if (name === "gender") {
-      setImagePreview(
-        value === "Male"
-          ? "/images/male.jpg"
-          : value === "Female"
-          ? "/images/female.jpg"
-          : "/images/default.jpg"
-      );
+      const updatedImage =
+        value.toLowerCase() === "male"
+          ? "male.jpg"
+          : value.toLowerCase() === "female"
+          ? "female.jpg"
+          : "";
+      setImagePreview(updatedImage);
     }
   };
 
@@ -99,23 +100,9 @@ const EditProfile = ({ profileData = {}, onSave }) => {
         setErrorMessage("");
         if (onSave) {
           onSave(formData); // Notify Profile component of the saved profile data
-        } else {
-          const updatedResponse = await axios.get(api, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          setImagePreview(
-            updatedResponse.data.gender === "Male"
-              ? "/images/male.jpg"
-              : "/images/female.jpg"
-          );
-          setFormData({
-            ...updatedResponse.data,
-            birthday: updatedResponse.data.birthday
-              ? updatedResponse.data.birthday.split("T")[0]
-              : "",
-          });
-          navigate("/profile", { replace: true });
         }
+        // Reload the current page by setting the href to the current URL
+        window.location.href = window.location.href;
       }
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -125,7 +112,6 @@ const EditProfile = ({ profileData = {}, onSave }) => {
 
   return (
     <div className="edit-profile-containerr">
-      {console.log("tet: ", formData)}
       <div className="edit-profile-form-section">
         <h1 className="edit-profile-title">Edit Profile</h1>
         {errorMessage && (
@@ -186,11 +172,13 @@ const EditProfile = ({ profileData = {}, onSave }) => {
         </form>
       </div>
       <div className="edit-profile-right-section">
-        <img
-          src={imagePreview}
-          alt="Profile"
-          className="edit-profile-image-preview"
-        />
+        {imagePreview && (
+          <img
+            src={`/images/${imagePreview}`}
+            alt="Profile"
+            className="edit-profile-image-preview"
+          />
+        )}
       </div>
     </div>
   );
@@ -240,6 +228,15 @@ FormGroup.propTypes = {
   onChange: PropTypes.func.isRequired,
   type: PropTypes.string,
   disabled: PropTypes.bool,
+};
+
+// Helper functions
+const capitalizeFirstLetter = (string) =>
+  string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+
+const formatDateToInput = (dateString) => {
+  const date = new Date(dateString);
+  return date.toISOString().split("T")[0]; // Format to yyyy-MM-dd
 };
 
 export default EditProfile;

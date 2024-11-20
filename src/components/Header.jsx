@@ -4,7 +4,7 @@ import axios from "axios";
 
 const api = "/api/profile"; // Backend API route
 
-const Header = ({ isLoggedIn, Title }) => {
+const Header = ({ isLoggedIn, Title, refreshProfileKey }) => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
@@ -30,7 +30,7 @@ const Header = ({ isLoggedIn, Title }) => {
     if (isLoggedIn) {
       fetchUserProfile();
     }
-  }, [isLoggedIn, navigate]);
+  }, [isLoggedIn, refreshProfileKey]); // Added refreshProfile dependency
 
   const handleProfileClick = () => {
     navigate("/profile");
@@ -45,7 +45,7 @@ const Header = ({ isLoggedIn, Title }) => {
           </Link>
         </div>
         <ul className="nav-links">
-          {isLoggedIn && ( 
+          {isLoggedIn && (
             <>
               <li>
                 <Link to="/cart">
@@ -60,21 +60,19 @@ const Header = ({ isLoggedIn, Title }) => {
             </>
           )}
           {isLoggedIn ? (
-            <>
-              <li>
-                <img
-                  src={
-                    user?.image
-                      ? `/images/${user.image}`
-                      : "/images/default_profile.jpg"
-                  } // Use user's profile image, or fallback to default
-                  alt="Profile"
-                  className="profile-icon"
-                  onClick={handleProfileClick}
-                  style={{ cursor: "pointer" }}
-                />
-              </li>
-            </>
+            <li>
+              <img
+                src={
+                  user?.image
+                    ? `/images/${user.image}`
+                    : "/images/default_profile.jpg"
+                } // Use user's profile image, or fallback to default
+                alt="Profile"
+                className="profile-icon"
+                onClick={handleProfileClick}
+                style={{ cursor: "pointer" }}
+              />
+            </li>
           ) : (
             <li>
               <Link to="/login">LOGIN</Link>
