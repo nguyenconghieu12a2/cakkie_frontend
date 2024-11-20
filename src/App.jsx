@@ -1,7 +1,32 @@
-<<<<<<< HEAD
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { FlowProvider, useFlow } from "./components/admin-login/Flow";
-import "./App.css";
+import {
+  BrowserRouter,
+  matchPath,
+  Route,
+  Routes,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
+import { useState } from "react";
+import "./style/App.css";
+//CUSTOMER
+import HomePage from "./HomePage";
+import Login from "./Login";
+import Register from "./Register";
+import ForgotPassword from "./ForgotPassword";
+import OtpVerification from "./OtpVerification";
+import ResetPassword from "./ResetPassword";
+import Profile from "./Profile";
+import EditProfile from "./components/EditProfile";
+import ChangePassword from "./components/ChangePassword";
+import UserHeader from "./components/Header";
+import UserFooter from "./components/Footer";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Product from "./Product/Product";
+import Cart from "./Cart/Cart";
+import Checkout from "./Checkout/Checkout";
+import Order from "./Order/Order";
+
 // LOGIN PAGE
 import AdminLogin from "./components/admin-login/admin-login";
 import AdminResetPasswordEmail from "./components/admin-login/reset-password-email";
@@ -31,7 +56,7 @@ import AdminApprovedReviews from "./components/admin-review/AdminApprovedReviews
 import AdminRejectedReviews from "./components/admin-review/AdminRejectedReviews";
 
 //PRODUCT
-import Product from "./components/admin-products/admin-product";
+import AdminProduct from "./components/admin-products/admin-product";
 import DeletedProduct from "./components/admin-products/admin-deleted-product";
 import ProductDetail from "./components/admin-products/admin-detail-product";
 import OutOfStock from "./components/admin-products/out-of-stock";
@@ -48,7 +73,7 @@ import ListCanceledOrder from "./components/admin-canceled-orders/admin-list-can
 import DetailCanceledOrder from "./components/admin-canceled-orders/admin-detail-canceled-order";
 
 //ORDER
-import Order from "./components/admin-orders/admin-order";
+import AdminOrder from "./components/admin-orders/admin-order";
 import DetailOrder from "./components/admin-orders/admin-detail-order";
 
 //COUPON
@@ -72,158 +97,6 @@ const ProtectedRoute = ({ allowedStep, element }) => {
     <Navigate to="/admin-reset-email" />
   );
 };
-
-function App() {
-  return (
-    <div className="">
-      <BrowserRouter>
-        <FlowProvider>
-          <Routes>
-            {/* LOGIN PAGE */}
-            <Route path="/admin-login" element={<AdminLogin />} />
-            <Route
-              path="/admin-reset-email"
-              element={<AdminResetPasswordEmail />}
-            />
-            <Route
-              path="/admin-reset-otp"
-              element={
-                <ProtectedRoute allowedStep="otp" element={<AdminOTPEmail />} />
-              }
-            />
-            <Route
-              path="/admin-reset-password"
-              element={
-                <ProtectedRoute
-                  allowedStep="new-password"
-                  element={<AdminNewPassword />}
-                />
-              }
-            />
-            {/* DASHBOARD */}
-            <Route path="/dashboard" element={<Dashboard />} />
-
-            {/* BANNERS */}
-            <Route path="/admin-banners" element={<AdminBanner />} />
-            <Route path="/admin-add-banners" element={<AdminAddBanner />} />
-            <Route path="/admin-edit-banners" element={<AdminEditBanner />} />
-
-            {/* ADMIN PROFILES */}
-            <Route path="/admin-profile" element={<AdminProfile />} />
-            <Route path="/admin-profile/edit" element={<AdminEditProfile />} />
-            <Route
-              path="/admin-change-password"
-              element={<AdminChangePassword />}
-            />
-            {/* CUSTOMERS */}
-            <Route path="/admin-customers" element={<AdminManageCustomer />} />
-            <Route
-              path="/admin-banned-customers"
-              element={<AdminBannedCustomer />}
-            />
-            <Route
-              path="/admin-banned-customers/detail/:id"
-              element={<AdminDetailBannedCustomer />}
-            />
-            <Route
-              path="/admin-deleted-customers"
-              element={<AdminDeletedCustomer />}
-            />
-            <Route
-              path="/admin-customers/detail/:id"
-              element={<AdminDetailCustomer />}
-            />
-            <Route
-              path="/admin-customers/edit/:id"
-              element={<AdminEditCustomer />}
-            />
-
-            {/* MANAGE REVIEW */}
-            <Route
-              path="/admin-reviews/pending"
-              element={<AdminPendingReviews />}
-            />
-            <Route
-              path="/admin-reviews/approved"
-              element={<AdminApprovedReviews />}
-            />
-            <Route
-              path="/admin-reviews/rejected"
-              element={<AdminRejectedReviews />}
-            />
-
-            {/* PRODUCT PAGE */}
-            <Route path="/product" element={<Product />} />
-            <Route path="/product/detail/:id" element={<ProductDetail />} />
-            <Route path="/deleted-product" element={<DeletedProduct />} />
-            <Route path="/out-of-stock" element={<OutOfStock />} />
-
-            {/* CATEGORY PAGE */}
-            <Route path="/main-category" element={<Category />} />
-            <Route
-              path="/main-category/sub-category/:parentId"
-              element={<SubCategory />}
-            />
-            <Route
-              path="/main-category/sub-category/category/:parentId"
-              element={<SubSubCategory />}
-            />
-            <Route path="/deleted-category" element={<DeletedCategory />} />
-
-            {/* ORDER PAGE */}
-            <Route path="/order" element={<Order />} />
-            <Route path="/order/detail/:id" element={<DetailOrder />} />
-
-            {/* CANCELED PAGE */}
-            <Route path="/canceled-order" element={<CanceledOrder />} />
-            <Route path="/list-canceled/:id" element={<ListCanceledOrder />} />
-            <Route
-              path="/detail-canceled/:id"
-              element={<DetailCanceledOrder />}
-            />
-
-            {/* COUPON PAGE */}
-            <Route path="/coupon" element={<Coupon />} />
-
-            {/* DISCOUNT */}
-            <Route path="/admin-discount" element={<CategoryDiscount />} />
-            <Route
-              path="/admin-common-discount/:commonDiscountId"
-              element={<CommonDiscount />}
-            />
-            <Route
-              path="/admin-detail-category-discount/:discountCategoryId"
-              element={<DetailCateDiscount />}
-            />
-
-            {/* REPORTS (X2) */}
-            <Route path="/admin-reports" element={<AdminReports />} />
-            <Route path="/admin-statistics" element={<AdminStatistic />} />
-
-            {/* 404 Not Found Route */}
-            <Route path="*" element={<FourOhFour />} />
-          </Routes>
-        </FlowProvider>
-      </BrowserRouter>
-=======
-import { Link, matchPath, Route, Routes, useLocation } from "react-router-dom";
-import { useState } from "react";
-import HomePage from "./HomePage";
-import Login from "./Login";
-import Register from "./Register";
-import ForgotPassword from "./ForgotPassword";
-import OtpVerification from "./OtpVerification";
-import ResetPassword from "./ResetPassword";
-import Profile from "./Profile";
-import EditProfile from "./components/EditProfile";
-import ChangePassword from "./components/ChangePassword";
-import UserHeader from "./components/Header";
-import UserFooter from "./components/Footer";
-import "bootstrap/dist/css/bootstrap.min.css";
-import Product from "./Product/Product";
-import Cart from "./Cart/Cart";
-import Checkout from "./Checkout/Checkout";
-import Order from "./Order/Order";
 
 function App() {
   const [userCart, setUserCart] = useState([]);
@@ -288,9 +161,9 @@ function App() {
       {shouldShowUserHeaderFooter && (
         <UserHeader isLoggedIn={isLoggedIn} user={user} />
       )}
-
-      <main className="flex-grow-1">
+      <FlowProvider>
         <Routes>
+          {/*CUSTOMER*/}
           <Route path="/" element={<HomePage />} />
           <Route
             path="/login"
@@ -313,10 +186,133 @@ function App() {
           />
           <Route path="/checkout" element={<Checkout userCart={userCart} />} />
           <Route path="/order" element={<Order />} />
+
+          {/* LOGIN PAGE */}
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route
+            path="/admin-reset-email"
+            element={<AdminResetPasswordEmail />}
+          />
+          <Route
+            path="/admin-reset-otp"
+            element={
+              <ProtectedRoute allowedStep="otp" element={<AdminOTPEmail />} />
+            }
+          />
+          <Route
+            path="/admin-reset-password"
+            element={
+              <ProtectedRoute
+                allowedStep="new-password"
+                element={<AdminNewPassword />}
+              />
+            }
+          />
+          {/* DASHBOARD */}
+          <Route path="/dashboard" element={<Dashboard />} />
+
+          {/* BANNERS */}
+          <Route path="/admin-banners" element={<AdminBanner />} />
+          <Route path="/admin-add-banners" element={<AdminAddBanner />} />
+          <Route path="/admin-edit-banners" element={<AdminEditBanner />} />
+
+          {/* ADMIN PROFILES */}
+          <Route path="/admin-profile" element={<AdminProfile />} />
+          <Route path="/admin-profile/edit" element={<AdminEditProfile />} />
+          <Route
+            path="/admin-change-password"
+            element={<AdminChangePassword />}
+          />
+          {/* CUSTOMERS */}
+          <Route path="/admin-customers" element={<AdminManageCustomer />} />
+          <Route
+            path="/admin-banned-customers"
+            element={<AdminBannedCustomer />}
+          />
+          <Route
+            path="/admin-banned-customers/detail/:id"
+            element={<AdminDetailBannedCustomer />}
+          />
+          <Route
+            path="/admin-deleted-customers"
+            element={<AdminDeletedCustomer />}
+          />
+          <Route
+            path="/admin-customers/detail/:id"
+            element={<AdminDetailCustomer />}
+          />
+          <Route
+            path="/admin-customers/edit/:id"
+            element={<AdminEditCustomer />}
+          />
+
+          {/* MANAGE REVIEW */}
+          <Route
+            path="/admin-reviews/pending"
+            element={<AdminPendingReviews />}
+          />
+          <Route
+            path="/admin-reviews/approved"
+            element={<AdminApprovedReviews />}
+          />
+          <Route
+            path="/admin-reviews/rejected"
+            element={<AdminRejectedReviews />}
+          />
+
+          {/* PRODUCT PAGE */}
+          <Route path="/product" element={<AdminProduct />} />
+          <Route path="/product/detail/:id" element={<ProductDetail />} />
+          <Route path="/deleted-product" element={<DeletedProduct />} />
+          <Route path="/out-of-stock" element={<OutOfStock />} />
+
+          {/* CATEGORY PAGE */}
+          <Route path="/main-category" element={<Category />} />
+          <Route
+            path="/main-category/sub-category/:parentId"
+            element={<SubCategory />}
+          />
+          <Route
+            path="/main-category/sub-category/category/:parentId"
+            element={<SubSubCategory />}
+          />
+          <Route path="/deleted-category" element={<DeletedCategory />} />
+
+          {/* ORDER PAGE */}
+          <Route path="/admin-order" element={<AdminOrder />} />
+          <Route path="/order/detail/:id" element={<DetailOrder />} />
+
+          {/* CANCELED PAGE */}
+          <Route path="/canceled-order" element={<CanceledOrder />} />
+          <Route path="/list-canceled/:id" element={<ListCanceledOrder />} />
+          <Route
+            path="/detail-canceled/:id"
+            element={<DetailCanceledOrder />}
+          />
+
+          {/* COUPON PAGE */}
+          <Route path="/coupon" element={<Coupon />} />
+
+          {/* DISCOUNT */}
+          <Route path="/admin-discount" element={<CategoryDiscount />} />
+          <Route
+            path="/admin-common-discount/:commonDiscountId"
+            element={<CommonDiscount />}
+          />
+          <Route
+            path="/admin-detail-category-discount/:discountCategoryId"
+            element={<DetailCateDiscount />}
+          />
+
+          {/* REPORTS (X2) */}
+          <Route path="/admin-reports" element={<AdminReports />} />
+          <Route path="/admin-statistics" element={<AdminStatistic />} />
+
+          {/* 404 Not Found Route */}
+          <Route path="*" element={<FourOhFour />} />
         </Routes>
-      </main>
+      </FlowProvider>
       {shouldShowUserHeaderFooter && <UserFooter />}
->>>>>>> customer
     </div>
   );
 }

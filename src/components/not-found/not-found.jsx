@@ -135,7 +135,7 @@ const FourOhFour = () => {
         </div>
       </div>
       <div className="returned">
-        <Link to="/admin-login">
+        <Link to="/">
           <button className="return-button">Return to Login Page</button>
         </Link>
       </div>

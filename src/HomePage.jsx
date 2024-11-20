@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import ProductList from "./components/ProductList";
+// import ProductList from "./components/ProductList";
 import Coupon from "./components/Coupon";
 import Banner from "./components/Banner";
 import Home from "./Home/Home";
