@@ -1,0 +1,132 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5f5f5;
+}
+
+.register-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.register-form-section {
+    width: 50%;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.register-heading {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #4a3d33;
+}
+
+.register-message {
+    color: #d9534f;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.register-form-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.register-form-group .register-icon {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    color: #4a4a4a;
+    font-size: 1.2rem;
+}
+
+.register-form-group input,
+.register-form-group select {
+    width: 100%;
+    padding: 15px 15px 15px 40px;
+    border-radius: 30px;
+    border: 2px solid #ccc;
+    background-color: #f8f8f8;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.register-form-group input:focus,
+.register-form-group select:focus {
+    border-color: #d6b15d;
+}
+
+.register-gender-birthday {
+    display: flex;
+    gap: 10px;
+}
+
+.register-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: #4A3B2C;
+    color: #E1C16E;
+    font-weight: bold;
+    font-size: 1.3rem;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-top: 25px;
+    transition: background-color 0.3s ease;
+}
+
+.register-btn:hover {
+    background-color: #E1C16E;
+    color: #4A3B2C;
+}
+
+.register-back-to-login {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.register-back-to-login a {
+    text-decoration: none;
+    color: #a79a78;
+}
+
+.register-back-to-login a:hover {
+    color: #4A3B2C;
+}
+
+.register-right-section {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+}
+
+.register-image-section img {
+    width: 100%;
+    max-width: 300px;
+    border-radius: 50%;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    object-fit: cover;
+    border: 5px solid transparent;
+    transition: border 0.3s ease;
+    border-color: #d6b15d;
+}

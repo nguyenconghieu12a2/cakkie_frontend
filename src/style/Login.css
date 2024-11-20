@@ -1,0 +1,141 @@
+/* Container and layout styling */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height for vertical centering */
+  max-width: 1300px;
+  margin: auto;
+  gap: 2rem; /* Space between form and image sections */
+}
+
+/* Form section styling */
+.login-form-section {
+  width: 70%; /* Allocate 70% width to the form */
+  max-width: 700px; /* Max width to control the form size on large screens */
+  padding: 2.5rem;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Title styling */
+.login-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #4A3B2C;
+}
+
+/* Form group styling */
+.login-form-group {
+  position: relative;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+/* Increase input field width */
+.login-input {
+  padding: 0.8rem 1rem;
+  padding-left: 2.5rem; /* Leave space for the icon */
+  width: 130%; /* Make input fields 90% of the form group width */
+  max-width: 600px; /* Set max width to control size on larger screens */
+  border-radius: 25px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1);
+  font-size: 1rem;
+  text-indent: 1.5rem;
+}
+
+/* Icon styling inside input fields */
+.login-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: #a79a78;
+  pointer-events: none;
+}
+
+/* Options section for remember me and forgot password link */
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.login-form-check-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #4A3B2C;
+}
+
+.login-forgot-password {
+  text-decoration: none;
+  color: #a79a78;
+}
+
+.login-forgot-password:hover {
+  color: #4A3B2C;
+}
+
+/* Login button styling */
+.login-btn {
+  max-width: 600px;
+  padding: 0.9rem;
+  background-color: #4A3B2C;
+  color: #E1C16E;
+  font-weight: bold;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.login-btn:hover {
+  background-color: #E1C16E;
+  color: #4A3B2C;
+}
+
+/* Register section styling */
+.login-register-section {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.login-register-section a {
+  color: #a79a78;
+  text-decoration: none;
+}
+
+.login-register-section a:hover {
+  color: #4A3B2C;
+}
+
+/* Image section styling */
+.login-image-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30%; /* Allocate 30% width to the image */
+}
+
+.login-logo {
+  width: 100%;
+  max-width: 200px; /* Control the maximum size of the image */
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
