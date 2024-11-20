@@ -23,7 +23,7 @@
 .profile-page-sidebar {
     width: 250px;
     height: calc(100vh - 80px); /* Adjusts height based on header */
-    position: fixed; /* Keeps sidebar fixed on the left */
+    /* position: fixed;  */
     top: 80px; /* Space from top to align with header */
     left: 0;
     background-color: #ffffff;
