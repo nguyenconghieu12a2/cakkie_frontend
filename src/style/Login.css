@@ -1,5 +1,5 @@
 /* Container and layout styling */
-.login-container {
+.login-containerrr {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -28,7 +28,7 @@
   font-weight: bold;
   margin-bottom: 1.5rem;
   text-align: center;
-  color: #4A3B2C;
+  color: #4a3b2c;
 }
 
 /* Form group styling */
@@ -64,7 +64,7 @@
 }
 
 /* Options section for remember me and forgot password link */
-.login-options {
+.login-optionss {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -77,7 +77,7 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  color: #4A3B2C;
+  color: #4a3b2c;
 }
 
 .login-forgot-password {
@@ -86,15 +86,15 @@
 }
 
 .login-forgot-password:hover {
-  color: #4A3B2C;
+  color: #4a3b2c;
 }
 
 /* Login button styling */
-.login-btn {
+.login-btnn {
   max-width: 600px;
   padding: 0.9rem;
-  background-color: #4A3B2C;
-  color: #E1C16E;
+  background-color: #4a3b2c;
+  color: #e1c16e;
   font-weight: bold;
   font-size: 1.2rem;
   border: none;
@@ -105,8 +105,8 @@
 }
 
 .login-btn:hover {
-  background-color: #E1C16E;
-  color: #4A3B2C;
+  background-color: #e1c16e;
+  color: #4a3b2c;
 }
 
 /* Register section styling */
@@ -122,7 +122,7 @@
 }
 
 .login-register-section a:hover {
-  color: #4A3B2C;
+  color: #4a3b2c;
 }
 
 /* Image section styling */

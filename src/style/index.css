@@ -5,8 +5,8 @@
 /* Reset margin and ensure smooth font rendering */
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -29,7 +29,7 @@ header {
   position: sticky;
   top: 0;
   width: 100%;
-  z-index: 1;
+  z-index: 100;
 }
 
 /* Navbar flexbox layout */
@@ -130,4 +130,18 @@ footer {
   position: relative;
   bottom: 0;
   margin-top: auto;
+}
+
+img.scalable {
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out; /* Smooth scaling effect */
+}
+
+img.scalable:hover {
+  transform: scale(1.1); /* Scale image to 110% on hover */
+}
+.image-container {
+  overflow: hidden; /* Ensures the scaled part of the image is clipped */
+  display: inline-block; /* Keeps the container size based on the image */
+  position: relative; /* Ensures scaling doesn’t affect surrounding elements */
 }

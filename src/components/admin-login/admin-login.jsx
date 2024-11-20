@@ -69,7 +69,7 @@ const AdminLogin = () => {
 
   return (
     <div
-      className="login-container"
+      className="login-containerr"
       style={{ maxWidth: "100%", padding: "0px" }}
     >
       <div className="login-left">

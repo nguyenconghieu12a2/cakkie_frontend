@@ -85,7 +85,7 @@ const Login = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div className="login-container container d-flex flex-lg-row flex-column align-items-center justify-content-center">
+    <div className="login-containerrr container d-flex flex-lg-row flex-column align-items-center justify-content-center">
       <div className="login-form-section col-lg-6 col-12">
         <h1 className="login-title text-center mb-4">WELCOME BACK!</h1>
         <form onSubmit={handleSubmit}>
@@ -117,8 +117,8 @@ const Login = ({ onLoginSuccess }) => {
               />
             </label>
           </div>
-          <div className="login-options d-flex justify-content-between align-items-center mb-3">
-            <label className="login-form-check-label">
+          <div className="login-optionss d-flex justify-content-between align-items-center mb-3">
+            <label className="login-form-check-label mr-5 font-normal text-sm">
               <input
                 type="checkbox"
                 name="rememberMe"
@@ -135,7 +135,7 @@ const Login = ({ onLoginSuccess }) => {
           {message && (
             <p className="login-message text-center text-danger">{message}</p>
           )}
-          <button type="submit" className="login-btn w-100">
+          <button type="submit" className="login-btnn w-100">
             LOGIN
           </button>
         </form>

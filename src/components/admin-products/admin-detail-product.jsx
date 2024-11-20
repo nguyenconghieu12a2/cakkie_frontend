@@ -172,9 +172,13 @@ const ProductDetail = () => {
         setTimeout(() => setDesError(""), 3000);
       }
     } catch (error) {
-      console.error("Error adding description info:", error);
-      setDesError("Failed to add description. Please try again.");
-      setTimeout(() => setDesError(""), 3000);
+      if (error.response && error.response.status === 400) {
+        setDesError(error.response.data);
+        setTimeout(() => setDesError(), 3000);
+      } else {
+        setDesError("Failed to add description. Please try again.");
+        setTimeout(() => setDesError(""), 3000);
+      }
     }
   };
 

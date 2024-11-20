@@ -87,7 +87,7 @@ const CanceledOrder = () => {
       setBanReason("");
       loadCancel();
     } catch (error) {
-      if (error.response && error.response.status === 400) {
+      if (error.response && error.response.status === 409) {
         setBanError(error.response.data);
         setTimeout(() => setBanError(), 5000);
       } else {

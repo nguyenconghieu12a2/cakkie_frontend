@@ -237,7 +237,7 @@ function Sidebar({ onLogout }) {
               {openMenu === "sales" && (
                 <div className="list__subitems">
                   <Link
-                    to={"/order"}
+                    to={"/admin-order"}
                     className={`sidebar__link ${
                       selected === "order" ? "active" : ""
                     }`}

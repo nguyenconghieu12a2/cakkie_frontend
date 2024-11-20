@@ -78,7 +78,7 @@ const AdminProfile = () => {
                 </div>
               </div>
             </div>
-            <div className="profile-actions">
+            <div className="flex flex-row justify-start">
               <button className="edit-btn" onClick={() => handleEditProfile()}>
                 Edit Profile
               </button>

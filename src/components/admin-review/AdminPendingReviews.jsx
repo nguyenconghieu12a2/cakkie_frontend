@@ -42,6 +42,15 @@ const AdminPendingReviews = () => {
     fetchPendingReviews();
   }, []);
 
+  // Adjust current page when reviews or total pages change
+  useEffect(() => {
+    const newTotalPages = Math.ceil(reviews.length / itemPerPage);
+
+    if (currentPage > newTotalPages) {
+      setCurrentPage(Math.max(newTotalPages, 1)); // Adjust to the new last page if needed
+    }
+  }, [reviews, currentPage, itemPerPage]);
+
   // Update review status
   const updateReviewStatus = async (reviewId, status) => {
     if (!reviewId) {
@@ -80,6 +89,27 @@ const AdminPendingReviews = () => {
     currentPage * itemPerPage
   );
 
+  // Pagination navigation
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const goToFirstPage = () => {
+    setCurrentPage(1); // Set to the first page (1)
+  };
+
+  const goToLastPage = () => {
+    setCurrentPage(totalPages); // Set to the last page
+  };
+
   // Action handlers for approval and rejection
   const handleApproveClick = (reviewId) => {
     setReviewIdToUpdate(reviewId);
@@ -103,17 +133,6 @@ const AdminPendingReviews = () => {
   const closeModal = () => {
     setShowModal(false);
   };
-
-  const goToNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-  };
-
-  const goToPreviousPage = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
-  };
-
-  const goToFirstPage = () => setCurrentPage(1);
-  const goToLastPage = () => setCurrentPage(totalPages);
 
   return (
     <div className="review-table-container">

@@ -269,7 +269,7 @@ const Product = () => {
         <div className="product-info">
           <h2>{selectedProduct.name}</h2>
           <div className="product-rating">
-            <p className="text-yellow-500">
+            <p className="text-yellow-500 mr-1 mb-0">
               {"★".repeat(Math.round(selectedProduct.averageRating))}
               {"☆".repeat(5 - Math.round(selectedProduct.averageRating))}
             </p>
@@ -281,29 +281,31 @@ const Product = () => {
           <div className="product-sizes">
             <p>Size:</p>
             <div className="size-options">
-              {productList.map((product) => {
-                const productInCart = cart.find(
-                  (item) => item.productItemId === product.productItemId
-                );
-                const isDisabled =
-                  productInCart && productInCart.qty >= product.quantityStock;
+              {productList
+                .filter((product) => product.isDeleted === 1)
+                .map((product) => {
+                  const productInCart = cart.find(
+                    (item) => item.productItemId === product.productItemId
+                  );
+                  const isDisabled =
+                    productInCart && productInCart.qty >= product.quantityStock;
 
-                return (
-                  <button
-                    key={product}
-                    className={`size-button ${
-                      selectedSize === product.size && !isDisabled
-                        ? "selected"
-                        : ""
-                    }
+                  return (
+                    <button
+                      key={product}
+                      className={`size-button ${
+                        selectedSize === product.size && !isDisabled
+                          ? "selected"
+                          : ""
+                      }
                     ${isDisabled ? "disabled" : ""}`}
-                    onClick={() => chooseSize(product.size)}
-                    disabled={isDisabled}
-                  >
-                    {product.size}
-                  </button>
-                );
-              })}
+                      onClick={() => chooseSize(product.size)}
+                      disabled={isDisabled}
+                    >
+                      {product.size}
+                    </button>
+                  );
+                })}
             </div>
           </div>
 

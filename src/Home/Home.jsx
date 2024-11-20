@@ -171,11 +171,13 @@ function Home() {
                   }
                   className="p-2 hover:bg-gray-100 cursor-pointer flex items-center space-x-4"
                 >
-                  <img
-                    src={`./${product.productImage}.jpg`}
-                    alt={product.name}
-                    className="w-12 h-12 object-cover rounded-md"
-                  />
+                  <div className="image-container">
+                    <img
+                      src={`./${product.productImage}.jpg`}
+                      alt={product.name}
+                      className="w-12 h-12 object-cover rounded-md scalable"
+                    />
+                  </div>
                   <div>
                     <p className="font-semibold">{product.name}</p>
                     <p className="text-gray-500 text-sm">
@@ -312,7 +314,7 @@ function Home() {
                 <img
                   src={`./${product.productImage}.jpg`} // Correctly formatted like your old code
                   alt={product.name}
-                  className="w-full h-48 object-cover"
+                  className="w-full h-48 object-cover scalable"
                 />
                 <div className="p-4 flex-grow flex flex-col justify-between">
                   <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 overflow-hidden">

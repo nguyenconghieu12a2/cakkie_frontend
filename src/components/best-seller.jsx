@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { div, Row, Col, Card } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
@@ -30,7 +30,7 @@ const BestSeller = () => {
       <div className="bs-title-div">
         <h2 style={{ marginBottom: "0px" }}>Best Seller</h2>
       </div>
-      <Container>
+      <div>
         <Row>
           {bestSeller.map((bs, i) => (
             <Col xl={3} md={6} sm={12}>
@@ -42,12 +42,14 @@ const BestSeller = () => {
                 className="flex flex-col items-center w-full h-full p-2"
               >
                 <Card style={{ width: "100%", marginBottom: "20px" }}>
-                  <Card.Img
-                    variant="top"
-                    src={`./${bs.productImage}.jpg`}
-                    alt="image"
-                    className="image"
-                  />
+                  <div className="image-container">
+                    <Card.Img
+                      variant="top"
+                      src={`./${bs.productImage}.jpg`}
+                      alt="image"
+                      className="image scalable"
+                    />
+                  </div>
                   <Card.Body>
                     <Card.Title className="bs-title text-truncate">
                       {bs.productName}
@@ -72,7 +74,7 @@ const BestSeller = () => {
             </Col>
           ))}
         </Row>
-      </Container>
+      </div>
     </div>
   );
 };

@@ -136,7 +136,7 @@ const AdminApprovedReviews = () => {
                   </td>
                   <td>
                     {review.approvedDate
-                      ? new Date(review.rejectDate).toLocaleString("en-US", {
+                      ? new Date(review.approvedDate).toLocaleString("en-US", {
                           year: "numeric",
                           month: "long",
                           day: "numeric",
