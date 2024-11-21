@@ -120,7 +120,7 @@ const Checkout = () => {
       shippingMethodId: shippingId,
       shippingAddress: addressId,
       paymentMethodId: paymentMethodId,
-      orderStatus: 2,
+      orderStatus: 1,
       couponsId: discountId || 0,
       orderTotal: calculateOrderTotal(cart),
       orderLineList: orderLineList,

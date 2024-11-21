@@ -17,6 +17,7 @@ const Order = () => {
     imageFile: null,
     isHide: -1,
   });
+  const [orderLineId, setOrderLineId] = useState(null);
   const [orderToCancel, setOrderToCancel] = useState(null);
   const [cancelReason, setCancelReason] = useState("");
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
@@ -24,15 +25,15 @@ const Order = () => {
   const navigate = useNavigate();
   const statusMapping = {
     All: null,
-    Pending: 2,
-    Confirm: 1,
+    Pending: 1,
+    Confirm: 2,
     Shipping: 3,
     Received: 4,
     Cancelled: 5,
   };
   const statusNames = {
-    1: "Confirmed",
-    2: "Pending",
+    1: "Pending",
+    2: "Confirmed",
     3: "Shipping",
     4: "Received",
     5: "Cancelled",
@@ -116,6 +117,8 @@ const Order = () => {
     if (reviewData.imageFile) {
       formData.append("imageFile", reviewData.imageFile);
     }
+    formData.append("isHide", reviewData.isHide);
+    formData.append("orderLineId", orderLineId);
 
     try {
       await axios.post("/api/review/add", formData, {
@@ -238,9 +241,10 @@ const Order = () => {
                       {item.reviewId === 0 ? (
                         <button
                           className="text-decoration-none px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                          onClick={() =>
-                            handleReviewButtonClick(item.productItemId)
-                          }
+                          onClick={() => {
+                            handleReviewButtonClick(item.productItemId);
+                            setOrderLineId(item.orderLineId);
+                          }}
                         >
                           Add Review
                         </button>
@@ -259,7 +263,7 @@ const Order = () => {
                 </div>
               ))}
             </div>
-            {order.orderStatus === 2 && (
+            {order.orderStatus === 1 && (
               <div className="text-right mt-4">
                 <button
                   className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"

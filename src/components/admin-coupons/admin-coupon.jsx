@@ -76,13 +76,28 @@ const Coupon = () => {
   }, []);
 
   // Helper function to format dates to YYYY-MM-DD
-  const formatDate = (dateString) => {
+  const formatDateForBackend = (dateString) => {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  };
+
+  // Helper function to convert API dates for datetime-local input
+  const formatToDateTimeLocal = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
 
   // Create a new coupon
@@ -150,8 +165,19 @@ const Coupon = () => {
       return;
     }
 
+    const formattedCoupon = {
+      ...newCoupon,
+      startDate: formatDateForBackend(newCoupon.startDate),
+      endDate: formatDateForBackend(newCoupon.endDate),
+    };
+
     try {
-      await axios.post(`${addCou}`, newCoupon);
+      // console.log(
+      //   "check start date:",
+      //   formatDateForBackend(newCoupon.startDate)
+      // );
+      // console.log("check end date:", formatDateForBackend(newCoupon.endDate));
+      await axios.post(`${addCou}`, formattedCoupon);
       // handleClose();
       loadCoupons();
       setNewCoupon({
@@ -233,15 +259,14 @@ const Coupon = () => {
       }, 3000);
       return;
     }
-
-    const updatedCoupon = {
+    const formattedCoupon = {
       ...editCoupon,
-      startDate: new Date(editCoupon.startDate).toISOString(),
-      endDate: new Date(editCoupon.endDate).toISOString(),
+      startDate: formatDateForBackend(editCoupon.startDate),
+      endDate: formatDateForBackend(editCoupon.endDate),
     };
 
     try {
-      await axios.put(`${updateCou}/${couponIdEdit}`, updatedCoupon);
+      await axios.put(`${updateCou}/${couponIdEdit}`, formattedCoupon);
       // handleCloseEdit();
       loadCoupons();
       setEditSuccess("Update coupons successfully!");
@@ -294,17 +319,6 @@ const Coupon = () => {
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
-  //FORMAT DATETIME
-  const formatToDateTimeLocal = (dateString) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  };
 
   //Format Price
   const formatCurrency = (value) => {
@@ -335,16 +349,19 @@ const Coupon = () => {
       <div className="main__wrap">
         <Sidebar onLogout={handleLogoutClick} />
         <div className="coupon__wrap">
-          <div className="upper-title">
-            <div className="profile-header1">
-              <h2 style={{ paddingTop: "0px" }}>Coupons</h2>
+          <div className="coupon__head">
+            <div className="coupon__head--main">
+              <h3 className="coupon__title">Coupon</h3>
+              <AvatarHeader />
+            </div>
+
+            <div className="coupon__breadcrumb">
               <p>
                 <Link to="/dashboard">Home</Link> / Sales / Coupon
               </p>
             </div>
-            <AvatarHeader />
+            <hr />
           </div>
-          <hr className="hrr" />
 
           <div className="search__bar">
             <Container>
