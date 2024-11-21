@@ -97,10 +97,10 @@ const AdminReports = () => {
             <Col md={12}>
               {/* Report Selection */}
               <div className="card mt-3">
-                <h5 className="card-title">
+                <div className="flex flex-row justify-start items-center pl-2 bg-gray-200">
                   <FaChartBar style={{ marginRight: "5px" }} />
-                  Choose the report type
-                </h5>
+                  <h5 className="card-title">Choose the report type</h5>
+                </div>
                 <div className="card-body">
                   <div className="input-group">
                     <select
@@ -122,14 +122,16 @@ const AdminReports = () => {
                         Product Review Report
                       </option>
                     </select>
-                    <button
-                      className="btn btn-outline-secondary"
-                      type="button"
-                      onClick={applyFilter}
-                    >
-                      <FaFilter style={{ marginRight: "5px" }} />
-                      Filter
-                    </button>
+                    <div className="btn-outline-secondary flex flex-row justify-center items-center border rounded-r-md">
+                      <FaFilter className="ml-2" />
+                      <button
+                        className="btn"
+                        type="button"
+                        onClick={applyFilter}
+                      >
+                        Filter
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -139,29 +141,34 @@ const AdminReports = () => {
             <Col md={9}>
               {/* Customer Activity Report */}
               <div className="card mt-4">
-                <h5 className="card-title">
+                <div className="flex flex-row justify-start items-center pl-2 bg-gray-200">
                   <FaChartColumn style={{ marginRight: "5px" }} />
-                  {selectedReports === "CustomerOrder" &&
-                    "Customer Order Report"}
-                  {selectedReports === "Orders" && "Orders Report"}
-                  {selectedReports === "Shipping" && "Shipping Method Report"}
-                  {selectedReports === "CancelOrder" && "Cancel Orders Report"}
-                  {selectedReports === "Sales" && "Sales Report"}
-                  {selectedReports === "Coupons" && "Coupons Report"}
-                  {selectedReports === "ProductSales" && "Product Sales Report"}
-                  {selectedReports === "ProductReview" &&
-                    "Product Review Report"}
-                </h5>
+                  <h5 className="card-title">
+                    {selectedReports === "CustomerOrder" &&
+                      "Customer Order Report"}
+                    {selectedReports === "Orders" && "Orders Report"}
+                    {selectedReports === "Shipping" && "Shipping Method Report"}
+                    {selectedReports === "CancelOrder" &&
+                      "Cancel Orders Report"}
+                    {selectedReports === "Sales" && "Sales Report"}
+                    {selectedReports === "Coupons" && "Coupons Report"}
+                    {selectedReports === "ProductSales" &&
+                      "Product Sales Report"}
+                    {selectedReports === "ProductReview" &&
+                      "Product Review Report"}
+                  </h5>
+                </div>
                 {renderReport()}
               </div>
             </Col>
             <Col md={3}>
               {/* Filter Section */}
               <div className="card mt-4">
-                <h5 className="card-title">
-                  <FaFilter style={{ marginRight: "5px" }} />
-                  Filter
-                </h5>
+                <div className="flex flex-row justify-start items-center pl-2 bg-gray-200">
+                  <FaFilter />
+                  <h5 className="card-title ">Filter</h5>
+                </div>
+
                 <div className="card-body">
                   <div className="mb-3">
                     <label htmlFor="input-date-start">Date Start</label>
@@ -187,10 +194,10 @@ const AdminReports = () => {
                     />
                   </div>
                   {/* onClick={applyFilter} */}
-                  <button className="btn btn-outline-secondary w-100">
-                    <FaFilter style={{ marginRight: "5px" }} />
-                    Filter
-                  </button>
+                  <div className="btn-outline-secondary flex flex-row justify-center items-center">
+                    <FaFilter />
+                    <button className="btn">Filter</button>
+                  </div>
                 </div>
               </div>
             </Col>

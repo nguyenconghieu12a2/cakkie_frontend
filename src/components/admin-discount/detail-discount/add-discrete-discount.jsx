@@ -148,10 +148,10 @@ const AddDiscreteDiscount = ({ show, handleClose, handleSave }) => {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
+        <Button variant="secondary" onClick={handleClose} className="px-2 py-2">
           Cancel
         </Button>
-        <Button variant="primary" onClick={handleSubmit}>
+        <Button variant="primary" onClick={handleSubmit} className="px-4 py-2">
           Save
         </Button>
       </Modal.Footer>

@@ -28,6 +28,12 @@ const AdminRejectedReviews = () => {
       navigate("/admin-login");
     }
   }, [navigate]);
+  const handleLogoutClick = () => {
+    console.log("Logging out...");
+    sessionStorage.removeItem("jwtAdmin");
+    // onLogout();
+    navigate("/admin-login");
+  };
 
   // Fetch rejected reviews
   const fetchRejectedReviews = async () => {
@@ -101,7 +107,7 @@ const AdminRejectedReviews = () => {
 
   return (
     <div className="review-table-container">
-      <Sidebar />
+      <Sidebar onLogout={handleLogoutClick} />
       <div className="review-subtable-container">
         <div>
           <div className="upper-title">

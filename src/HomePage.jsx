@@ -24,14 +24,18 @@ const HomePage = () => {
 
   return (
     <div>
-      <section className="banner">
-        <h1>Welcome to CAKKIE</h1>
-        <p>Your one-stop shop for all things cool!</p>
+      <section className="banner pt-10 pb-10">
+        {/* <h1 className="text-4xl mt-3">Welcome to CAKKIE</h1>
+        <div className="w-full">
+          <p className="flex justify-center text-xl mt-3">
+            Your one-stop shop for all things cool!
+          </p>
+        </div> */}
         <Banner />
       </section>
 
-      <section className="coupons">
-        <h2>Exclusive Coupons</h2>
+      <section className="coupons pb-10">
+        <h2 className="mt-3">Exclusive Coupons</h2>
         <Coupon coupons={coupons} />
       </section>
 

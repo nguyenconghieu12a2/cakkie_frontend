@@ -220,7 +220,7 @@ const Product = () => {
   return (
     <div className="product-detail-page">
       {showSuccessPopup && (
-        <div className="fixed inset-0 flex items-start justify-center z-50">
+        <div className="fixed inset-0 flex items-start justify-center z-[200]">
           <div className="bg-white w-96 p-6 rounded-lg shadow-lg">
             <p className="text-green-600 font-semibold text-lg">
               Product added to cart!
@@ -235,7 +235,7 @@ const Product = () => {
         </div>
       )}
       {showOutStockPopup && (
-        <div className="fixed inset-0 flex items-start justify-center z-50">
+        <div className="fixed inset-0 flex items-start justify-center z-[200]">
           <div className="bg-white w-96 p-6 rounded-lg shadow-lg">
             <p className="text-green-600 font-semibold text-lg">
               You already have{" "}
@@ -260,7 +260,7 @@ const Product = () => {
         <div className="product-gallery">
           <div className="main-image">
             <img
-              src={`./${selectedProduct.productImage}.jpg`}
+              src={`/images/${selectedProduct.productImage}`}
               alt="Main Product"
             />
           </div>
@@ -378,7 +378,13 @@ const Product = () => {
           <button onClick={selectedReviews}>Reviews</button>
         </div>
         <div className="tab-content">
-          {toogle === "description" && <p>{selectedProduct.description}</p>}
+          {toogle === "description" && (
+            <p>
+              {" "}
+              <p className="font-bold text-xl">Product Description:</p>{" "}
+              {selectedProduct.description}
+            </p>
+          )}
 
           {toogle === "specification" && (
             <div className="flex justify-center mt-8">

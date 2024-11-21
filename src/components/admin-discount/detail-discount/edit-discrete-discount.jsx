@@ -231,10 +231,10 @@ const EditDiscreteDiscount = ({ show, handleClose, discount, fetchData }) => {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
+        <Button variant="secondary" onClick={handleClose} className="px-4 py-2">
           Cancel
         </Button>
-        <Button variant="primary" onClick={handleSave}>
+        <Button variant="primary" onClick={handleSave} className="px-4 py-2">
           Save
         </Button>
       </Modal.Footer>

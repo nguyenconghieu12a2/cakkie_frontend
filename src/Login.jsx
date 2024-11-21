@@ -61,14 +61,11 @@ const Login = ({ onLoginSuccess }) => {
             break;
           case 403:
             // Check for specific messages regarding account status
-            if (
-              error.response.data.message ===
-              "Your account has been banned from this shop!"
-            ) {
-              setMessage("Your account has been banned from this shop.");
+            const errorMessage = error.response.data.message || "";
+            if (errorMessage.startsWith("Your account has been banned")) {
+              setMessage(errorMessage); // Display full banned reason
             } else if (
-              error.response.data.message ===
-              "Your account has been removed from this shop!"
+              errorMessage === "Your account has been removed from this shop!"
             ) {
               setMessage("Your account has been removed from this shop.");
             } else {

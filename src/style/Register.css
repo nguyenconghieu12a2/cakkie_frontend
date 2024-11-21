@@ -1,132 +1,159 @@
+/* Reset and Box Sizing */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f5f5f5;
+  font-family: "Poppins", sans-serif;
+  background-color: #f5f5f5;
 }
 
+/* Main Container */
 .register-container {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 1200px;
-    margin: 40px auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Left Form Section */
 .register-form-section {
-    width: 50%;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
+  width: 50%;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
 }
 
 .register-heading {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #4a3d33;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #4a3d33;
+  text-align: center;
 }
 
 .register-message {
-    color: #d9534f;
-    font-size: 1rem;
-    margin-bottom: 20px;
-    text-align: center;
+  color: #d9534f;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
+/* Form Group Styling */
 .register-form-group {
-    margin-bottom: 20px;
-    position: relative;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.register-form-group label {
+  display: block;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #4a3d33;
 }
 
 .register-form-group .register-icon {
-    position: absolute;
-    top: 50%;
-    left: 10px;
-    transform: translateY(-50%);
-    color: #4a4a4a;
-    font-size: 1.2rem;
+  position: absolute;
+  top: 65%; /* Centers the icon vertically */
+  left: 15px; /* Adjust the horizontal position as needed */
+  transform: translateY(-50%); /* Ensures the icon is perfectly centered */
+  color: #4a4a4a;
+  font-size: 1.2rem;
+  pointer-events: none;
+}
+
+.register-form-group .fix-height {
+  top: 50%;
+}
+
+.register-form-group .fix-height2 {
+  top: 60%;
 }
 
 .register-form-group input,
 .register-form-group select {
-    width: 100%;
-    padding: 15px 15px 15px 40px;
-    border-radius: 30px;
-    border: 2px solid #ccc;
-    background-color: #f8f8f8;
-    font-size: 1rem;
-    outline: none;
-    transition: all 0.3s ease;
+  width: 100%;
+  padding: 15px 15px 15px 45px; /* Adjusted for icon spacing */
+  border-radius: 30px;
+  border: 2px solid #ccc;
+  background-color: #f8f8f8;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
 }
 
 .register-form-group input:focus,
 .register-form-group select:focus {
-    border-color: #d6b15d;
+  border-color: #d6b15d;
 }
 
+/* Gender and Birthday Section */
 .register-gender-birthday {
-    display: flex;
-    gap: 10px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
 }
 
+/* Submit Button */
 .register-btn {
-    width: 100%;
-    padding: 15px;
-    background-color: #4A3B2C;
-    color: #E1C16E;
-    font-weight: bold;
-    font-size: 1.3rem;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    margin-top: 25px;
-    transition: background-color 0.3s ease;
+  width: 100%;
+  padding: 15px;
+  background-color: #4a3b2c;
+  color: #e1c16e;
+  font-weight: bold;
+  font-size: 1.3rem;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  margin-top: 25px;
+  transition: background-color 0.3s ease;
 }
 
 .register-btn:hover {
-    background-color: #E1C16E;
-    color: #4A3B2C;
+  background-color: #e1c16e;
+  color: #4a3b2c;
 }
 
+/* Back to Login Link */
 .register-back-to-login {
-    margin-top: 10px;
-    text-align: center;
+  margin-top: 10px;
+  text-align: center;
 }
 
 .register-back-to-login a {
-    text-decoration: none;
-    color: #a79a78;
+  text-decoration: none;
+  color: #a79a78;
 }
 
 .register-back-to-login a:hover {
-    color: #4A3B2C;
+  color: #4a3b2c;
 }
 
+/* Right Section for Image */
 .register-right-section {
-    width: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f8f8f8;
-    border-radius: 8px;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8f8f8;
+  border-radius: 8px;
 }
 
 .register-image-section img {
-    width: 100%;
-    max-width: 300px;
-    border-radius: 50%;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    object-fit: cover;
-    border: 5px solid transparent;
-    transition: border 0.3s ease;
-    border-color: #d6b15d;
+  width: 100%;
+  max-width: 300px;
+  border-radius: 50%;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  object-fit: cover;
+  border: 5px solid transparent;
+  transition: border 0.3s ease;
+  border-color: #d6b15d;
 }

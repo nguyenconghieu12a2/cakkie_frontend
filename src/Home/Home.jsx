@@ -75,18 +75,21 @@ function Home() {
       });
     }
 
-    if (filterCriteria.rating) {
+    const { minRating, maxRating } = filterCriteria;
+    if (minRating || maxRating) {
       products = products.filter(
-        (product) => Math.round(product.averageRating) >= filterCriteria.rating
+        (product) =>
+          (!minRating || product.averageRating >= minRating) &&
+          (!maxRating || product.averageRating <= maxRating)
       );
     }
 
-    if (filterCriteria.price) {
-      const [minPrice, maxPrice] = filterCriteria.price.split("-");
+    const { minPrice, maxPrice } = filterCriteria;
+    if (minPrice || maxPrice) {
       products = products.filter(
         (product) =>
-          product.price >= parseInt(minPrice) &&
-          product.price <= parseInt(maxPrice)
+          (!minPrice || product.price >= minPrice) &&
+          (!maxPrice || product.price <= maxPrice)
       );
     }
 
@@ -142,6 +145,40 @@ function Home() {
     setFilteredSearchResults([]);
   };
 
+  const handleRatingRangeChange = (key, value) => {
+    setFilterCriteria((prevCriteria) => {
+      const updatedCriteria = { ...prevCriteria, [key]: value };
+
+      // Ensure minRating is less than or equal to maxRating
+      if (key === "minRating" && value > (updatedCriteria.maxRating || 0)) {
+        updatedCriteria.maxRating = value; // Update maxRating if minRating > maxRating
+      }
+      if (key === "maxRating" && value < (updatedCriteria.minRating || 0)) {
+        updatedCriteria.minRating = value; // Update minRating if maxRating < minRating
+      }
+
+      return updatedCriteria;
+    });
+    setCurrentPage(1);
+  };
+
+  const handlePriceRangeChange = (key, value) => {
+    setFilterCriteria((prevCriteria) => {
+      const updatedCriteria = { ...prevCriteria, [key]: value };
+
+      // Ensure minPrice is less than or equal to maxPrice
+      if (key === "minPrice" && value > (updatedCriteria.maxPrice || 0)) {
+        updatedCriteria.maxPrice = value; // Update maxPrice if minPrice > maxPrice
+      }
+      if (key === "maxPrice" && value < (updatedCriteria.minPrice || 0)) {
+        updatedCriteria.minPrice = value; // Update minPrice if maxPrice < minPrice
+      }
+
+      return updatedCriteria;
+    });
+    setCurrentPage(1);
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen font-sans">
       <div className="bg-white px-8 py-4 flex justify-center relative border-b">
@@ -173,13 +210,13 @@ function Home() {
                 >
                   <div className="image-container">
                     <img
-                      src={`./${product.productImage}.jpg`}
+                      src={`/images/${product.productImage}`}
                       alt={product.name}
                       className="w-12 h-12 object-cover rounded-md scalable"
                     />
                   </div>
                   <div>
-                    <p className="font-semibold">{product.name}</p>
+                    <p className="font-semibold text-black">{product.name}</p>
                     <p className="text-gray-500 text-sm">
                       {product.price.toLocaleString("vi-VN")} VND
                     </p>
@@ -255,47 +292,103 @@ function Home() {
           ))}
         </div>
       )}
-      <div>
-        <p className="font-semibold mb-2">Filter by Rating:</p>
-        <div className="flex space-x-2">
-          {[5, 4, 3, 2, 1].map((rating) => (
-            <button
-              key={rating}
-              onClick={() => handleFilterChange("rating", rating)}
-              className={`px-3 py-1 rounded-full font-semibold ${
-                filterCriteria.rating === rating
-                  ? "bg-yellow-400 text-white"
-                  : "bg-gray-200 text-gray-700"
-              }`}
+      <div className="ml-10 mb-3">
+        <p className="font-semibold mb-2 text-xl mt-3">
+          Filter by Rating Range:
+        </p>
+        <div className="flex space-x-4 items-center">
+          <div>
+            <label htmlFor="minRating" className="block mb-1 text-gray-700">
+              Min Rating
+            </label>
+            <select
+              id="minRating"
+              value={filterCriteria.minRating || ""}
+              onChange={(e) =>
+                handleRatingRangeChange("minRating", Number(e.target.value))
+              }
+              className="p-2 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
-              {rating} stars
-            </button>
-          ))}
+              <option value="">Select</option>
+              {[1, 2, 3, 4, 5].map((rating) => (
+                <option key={rating} value={rating}>
+                  {rating} Stars
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="maxRating" className="block mb-1 text-gray-700">
+              Max Rating
+            </label>
+            <select
+              id="maxRating"
+              value={filterCriteria.maxRating || ""}
+              onChange={(e) =>
+                handleRatingRangeChange("maxRating", Number(e.target.value))
+              }
+              className="p-2 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
+              <option value="">Select</option>
+              {[1, 2, 3, 4, 5].map((rating) => (
+                <option key={rating} value={rating}>
+                  {rating} Stars
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
-      <div>
-        <p className="font-semibold mb-2">Filter by Price:</p>
-        <div className="flex space-x-2">
-          {[
-            "0-100000",
-            "100000-200000",
-            "200000-300000",
-            "300000-400000",
-            "400000-10000000",
-          ].map((priceRange) => (
-            <button
-              key={priceRange}
-              onClick={() => handleFilterChange("price", priceRange)}
-              className={`px-3 py-1 rounded-full font-semibold ${
-                filterCriteria.price === priceRange
-                  ? "bg-green-400 text-white"
-                  : "bg-gray-200 text-gray-700"
-              }`}
+      <div className="ml-10 mb-3">
+        <p className="font-semibold mb-2 text-xl">Filter by Price Range:</p>
+        <div className="flex space-x-4 items-center">
+          <div>
+            <label htmlFor="minPrice" className="block mb-1 text-gray-700">
+              Min Price
+            </label>
+            <select
+              id="minPrice"
+              value={filterCriteria.minPrice || ""}
+              onChange={(e) =>
+                handlePriceRangeChange("minPrice", Number(e.target.value))
+              }
+              className="p-2 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
-              {priceRange} VND
-            </button>
-          ))}
+              <option value="">Select</option>
+              {[0, 100000, 200000, 300000, 400000, 500000, 1000000].map(
+                (price) => (
+                  <option key={price} value={price}>
+                    {price.toLocaleString("vi-VN")} VND
+                  </option>
+                )
+              )}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="maxPrice" className="block mb-1 text-gray-700">
+              Max Price
+            </label>
+            <select
+              id="maxPrice"
+              value={filterCriteria.maxPrice || ""}
+              onChange={(e) =>
+                handlePriceRangeChange("maxPrice", Number(e.target.value))
+              }
+              className="p-2 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
+              <option value="">Select</option>
+              {[100000, 200000, 300000, 400000, 500000, 1000000, 2000000].map(
+                (price) => (
+                  <option key={price} value={price}>
+                    {price.toLocaleString("vi-VN")} VND
+                  </option>
+                )
+              )}
+            </select>
+          </div>
         </div>
       </div>
 
@@ -312,7 +405,7 @@ function Home() {
             >
               <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 w-full h-full flex flex-col">
                 <img
-                  src={`./${product.productImage}.jpg`} // Correctly formatted like your old code
+                  src={`/images/${product.productImage}`} // Correctly formatted like your old code
                   alt={product.name}
                   className="w-full h-48 object-cover scalable"
                 />

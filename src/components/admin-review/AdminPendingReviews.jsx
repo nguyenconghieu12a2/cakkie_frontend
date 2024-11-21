@@ -28,6 +28,13 @@ const AdminPendingReviews = () => {
     }
   }, [navigate]);
 
+  const handleLogoutClick = () => {
+    console.log("Logging out...");
+    sessionStorage.removeItem("jwtAdmin");
+    // onLogout();
+    navigate("/admin-login");
+  };
+
   // Fetch pending reviews
   const fetchPendingReviews = async () => {
     try {
@@ -136,7 +143,7 @@ const AdminPendingReviews = () => {
 
   return (
     <div className="review-table-container">
-      <Sidebar />
+      <Sidebar onLogout={handleLogoutClick} />
       <div className="review-subtable-container">
         <div>
           <div className="upper-title">

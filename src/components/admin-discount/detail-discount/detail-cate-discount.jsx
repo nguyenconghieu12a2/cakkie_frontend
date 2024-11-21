@@ -121,10 +121,14 @@ const DetailCateDiscount = () => {
   };
 
   const parseDate = (dateString) => {
-    // Expected format: "DD-MM-YYYY HH:mm:ss"
-    const [datePart, timePart] = dateString.split(" ");
-    const [day, month, year] = datePart.split("-");
-    return new Date(`${year}-${month}-${day}T${timePart}`);
+    // console.log("Parsing date:", dateString);
+    if (!dateString) return null; // Handle null or undefined
+
+    // Replace space between date and time with 'T'
+    const isoFormattedString = dateString.replace(" ", "T");
+
+    // Return a new Date object
+    return new Date(isoFormattedString);
   };
 
   const handleReplaceClick = (discountCateId) => {
@@ -134,8 +138,13 @@ const DetailCateDiscount = () => {
     }
     const currentDate = new Date();
     const endDate = parseDate(discountCateId.endDate);
+    // console.log("check data: ", currentDate);
+    // console.log("check data: ", endDate);
 
-    // console.log("check data: ", discountCateId);
+    if (!endDate || isNaN(endDate.getTime())) {
+      console.error("Failed to parse endDate:", discount.endDate);
+      return;
+    }
 
     if (endDate < currentDate) {
       setShowExpiredModal(true);
@@ -545,17 +554,21 @@ const DetailCateDiscount = () => {
                         <td>{disComIct.startDate}</td>
                         <td>{disComIct.endDate}</td>
                         <td>
-                          <button
-                            className="btn btn-outline-secondary btn-sm mx-1"
-                            onClick={() => handleReplaceClick(disComIct)}
-                          >
-                            🔼
-                          </button>
-                          <Link
-                            to={`/admin-common-discount/${disComIct.discountId}`}
-                          >
-                            <BsFillForwardFill className="forward-button-discount" />
-                          </Link>
+                          <div className="w-full ">
+                            <div className="flex flex-row justify-center items-center">
+                              <button
+                                className="btn btn-outline-secondary btn-sm mx-1"
+                                onClick={() => handleReplaceClick(disComIct)}
+                              >
+                                🔼
+                              </button>
+                              <Link
+                                to={`/admin-common-discount/${disComIct.discountId}`}
+                              >
+                                <BsFillForwardFill className="forward-button-discount" />
+                              </Link>
+                            </div>
+                          </div>
                         </td>
                       </tr>
                     ))

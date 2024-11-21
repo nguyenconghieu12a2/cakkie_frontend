@@ -27,9 +27,9 @@ const BestSeller = () => {
 
   return (
     <div>
-      <div className="bs-title-div">
+      {/* <div className="bs-title-div">
         <h2 style={{ marginBottom: "0px" }}>Best Seller</h2>
-      </div>
+      </div> */}
       <div>
         <Row>
           {bestSeller.map((bs, i) => (
@@ -45,7 +45,7 @@ const BestSeller = () => {
                   <div className="image-container">
                     <Card.Img
                       variant="top"
-                      src={`./${bs.productImage}.jpg`}
+                      src={`/images/${bs.productImage}`}
                       alt="image"
                       className="image scalable"
                     />

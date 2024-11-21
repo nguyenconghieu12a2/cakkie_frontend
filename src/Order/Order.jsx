@@ -17,6 +17,10 @@ const Order = () => {
     imageFile: null,
     isHide: -1,
   });
+  const [orderToCancel, setOrderToCancel] = useState(null);
+  const [cancelReason, setCancelReason] = useState("");
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+
   const navigate = useNavigate();
   const statusMapping = {
     All: null,
@@ -44,6 +48,7 @@ const Order = () => {
       const order = response.data;
       setOrderList(order);
       fetchAllOrderItems(order);
+      console.log(order);
     } catch (error) {
       console.error("Error fetching orders:", error);
     }
@@ -85,6 +90,7 @@ const Order = () => {
       );
 
       setOrderItems(formattedItemsData);
+      console.log(formattedItemsData);
     } catch (error) {
       console.error("Error fetching order items:", error);
     }
@@ -117,6 +123,7 @@ const Order = () => {
       });
       alert("Review added successfully!");
       setIsReviewModalOpen(false);
+      fetchOrder();
     } catch (error) {
       console.error("Error adding review:", error);
       alert("Failed to add review. Please try again.");
@@ -127,8 +134,8 @@ const Order = () => {
     selectedTab === "All"
       ? orderList
       : orderList.filter(
-        (order) => order.orderStatus === statusMapping[selectedTab]
-      );
+          (order) => order.orderStatus === statusMapping[selectedTab]
+        );
 
   const tabs = [
     "All",
@@ -139,16 +146,52 @@ const Order = () => {
     "Cancelled",
   ];
 
+  const getStatusDate = (order) => {
+    switch (order.orderStatus) {
+      case 4: // Received
+        return `Received Date: ${order.arrivedDate}`;
+      case 5: // Canceled
+        return `Canceled Date: ${order.canceledDate || "N/A"}`;
+      case 3: // Shipping
+        return `Shipping Date: ${order.shippingDate}`;
+      default:
+        return `Order Date: ${order.orderDate}`;
+    }
+  };
+
+  const handleCancelButtonClick = (orderId) => {
+    setOrderToCancel(orderId);
+    setIsCancelModalOpen(true);
+  };
+
+  const handleCancelOrder = async () => {
+    if (!cancelReason.trim()) {
+      alert("Please provide a reason for canceling the order.");
+      return;
+    }
+
+    try {
+      await axios.post(`/order/cancel/${orderToCancel}`, { cancelReason });
+      alert("Order canceled successfully!");
+      setIsCancelModalOpen(false);
+      setCancelReason("");
+      fetchOrder();
+    } catch (error) {
+      console.error("Error canceling order:", error);
+      alert("Failed to cancel order. Please try again.");
+    }
+  };
   return (
     <div className="order-list-page">
       <div className="tabs flex gap-4 justify-center py-4 bg-gray-100 dark:bg-gray-800">
         {tabs.map((tab) => (
           <button
             key={tab}
-            className={`tab-button px-4 py-2 rounded-md font-medium ${selectedTab === tab
-              ? "active"
-              : "bg-gray-500 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
-              }`}
+            className={`tab-button px-4 py-2 rounded-md font-medium ${
+              selectedTab === tab
+                ? "active"
+                : "bg-gray-500 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+            }`}
             onClick={() => setSelectedTab(tab)}
           >
             {tab}
@@ -162,11 +205,12 @@ const Order = () => {
             key={order.orderId}
           >
             <h3 className="text-lg font-semibold mb-4 text-gray-900">
-              Order {order.orderId} -{" "}
+              Order Status -{" "}
               <span className="font-bold text-gray-800">
                 {statusNames[order.orderStatus] || "Unknown Status"}
               </span>
             </h3>
+            <p>{getStatusDate(order)}</p>
             <div className="products-in-order">
               {orderItems[order.orderId]?.map((item, index) => (
                 <div
@@ -174,32 +218,94 @@ const Order = () => {
                   key={`${item.productItemId}-${index}`}
                 >
                   <img
-                    src={`./${item.productDetails[0]?.productImage}.jpg`}
+                    src={`/images/${item.productDetails[0]?.productImage}`}
                     alt={item.productDetails[0]?.name || "Product"}
-                    className="w-16 h-16 rounded-md object-cover"
+                    className="w-28 h-28 rounded-md object-cover"
                   />
                   <div className="product-info">
-                    <p className="font-medium text-black dark:text-white">
+                    <p className="font-medium text-black dark:text-white m-0">
                       {item.productDetails[0]?.name}
                     </p>
-                    <p className="text-sm text-gray-900 dark:text-gray-400 p-2">
+                    <p className="text-sm text-gray-900 dark:text-gray-400 py-2 m-0">
                       Quantity: {item.quantity}
                     </p>
+                    <p className="text-sm text-gray-900 dark:text-gray-400 py-2 m-0">
+                      Size: {item.productDetails[0]?.size || "size"}
+                    </p>
                   </div>
-                  <div className="ml-auto text-right">
-                    <button
-                      className="text-decoration-none px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                      onClick={() => handleReviewButtonClick(item.productItemId)}
-                    >
-                      Add Review
-                    </button>
-                  </div>
+                  {order.orderStatus === 4 ? (
+                    <div className="ml-auto text-right">
+                      {item.reviewId === 0 ? (
+                        <button
+                          className="text-decoration-none px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                          onClick={() =>
+                            handleReviewButtonClick(item.productItemId)
+                          }
+                        >
+                          Add Review
+                        </button>
+                      ) : (
+                        <button
+                          className="text-decoration-none px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                          onClick={() => navigate(`/product/${item.id}`)}
+                        >
+                          View Review
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <p></p>
+                  )}
                 </div>
               ))}
             </div>
+            {order.orderStatus === 2 && (
+              <div className="text-right mt-4">
+                <button
+                  className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                  onClick={() => handleCancelButtonClick(order.orderId)}
+                >
+                  Cancel Order
+                </button>
+              </div>
+            )}
           </div>
         ))}
       </div>
+
+      {isCancelModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+            <h2 className="text-xl font-bold mb-4">Cancel Order</h2>
+            <label className="block text-gray-700 font-medium mb-2">
+              Reason for cancellation:
+            </label>
+            <textarea
+              className="w-full p-2 border rounded-md mb-4 text-black "
+              value={cancelReason}
+              onChange={(e) => setCancelReason(e.target.value)}
+              placeholder="Provide your reason here..."
+            />
+            <div className="flex justify-end gap-4">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
+                onClick={() => {
+                  setIsCancelModalOpen(false);
+                  setCancelReason("");
+                }}
+              >
+                Close
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                onClick={handleCancelOrder}
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isReviewModalOpen && (
         <div
@@ -207,7 +313,9 @@ const Order = () => {
           style={{ zIndex: 1000 }}
         >
           <div className="custom-modal-content custom-bg-white p-6 rounded-md custom-shadow-lg">
-            <h2 className="custom-title text-lg font-semibold mb-4 text-center">Add Review</h2>
+            <h2 className="custom-title text-lg font-semibold mb-4 text-center">
+              Add Review
+            </h2>
 
             {/* Rating Section */}
             <div className="custom-form-group mb-4">
@@ -221,12 +329,15 @@ const Order = () => {
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     key={star}
-                    className={`custom-star text-3xl transition duration-300 ${hoverRating >= star || reviewData.rating >= star
+                    className={`custom-star text-3xl transition duration-300 ${
+                      hoverRating >= star || reviewData.rating >= star
                         ? "text-yellow-400 scale-110"
                         : "text-gray-300"
-                      } hover:text-yellow-400 hover:scale-125`} // Add hover effect
+                    } hover:text-yellow-400 hover:scale-125`} // Add hover effect
                     onMouseEnter={() => setHoverRating(star)} // Set hover effect
-                    onClick={() => setReviewData({ ...reviewData, rating: star })} // Set rating on click
+                    onClick={() =>
+                      setReviewData({ ...reviewData, rating: star })
+                    } // Set rating on click
                   >
                     ★
                   </button>
@@ -240,7 +351,7 @@ const Order = () => {
                 Feedback:
               </label>
               <textarea
-                className="custom-textarea w-full p-2 custom-border rounded-md"
+                className="custom-textarea w-full custom-padding custom-border rounded-md"
                 value={reviewData.feedback}
                 onChange={(e) =>
                   setReviewData({ ...reviewData, feedback: e.target.value })

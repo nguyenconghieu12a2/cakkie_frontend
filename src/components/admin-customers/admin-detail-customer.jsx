@@ -86,7 +86,7 @@ const AdminDetailCustomer = () => {
       </div>
       <div className="customer-subtable-container">
         <div>
-          <header className="header">
+          <header className="header bg-gray-100">
             <h2>Customers</h2>
             <p>
               <Link to="/dashboard">Home</Link> / Customers / View Detail

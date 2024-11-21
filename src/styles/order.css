@@ -77,7 +77,7 @@ h1 {
   margin: 1rem 0;
   border: 1px solid #ddd;
   border-radius: 8px;
-  background-color: #ffe1c6;
+  /* background-color: #ffe1c6; */
   /* Light orange background for product items */
   color: #333;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -86,7 +86,7 @@ h1 {
 
 .order-list-page .product-info {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   flex: 1;
   flex-direction: column;
   text-align: center;
@@ -261,4 +261,8 @@ h1 {
 
 .custom-submit-button:hover {
   background-color: #45a049;
+}
+
+.custom-padding {
+  padding: 0.5rem; /* Adjust the padding as needed */
 }

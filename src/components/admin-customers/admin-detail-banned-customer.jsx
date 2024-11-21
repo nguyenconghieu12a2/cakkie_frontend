@@ -86,7 +86,7 @@ const AdminDetailBannedCustomer = () => {
       </div>
       <div className="customer-subtable-container">
         <div>
-          <header className="header">
+          <header className="header bg-gray-100">
             <h2>Banned Customers</h2>
             <p>
               <Link to="/dashboard">Home</Link> / Banned Customers / View Detail

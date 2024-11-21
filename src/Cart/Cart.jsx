@@ -5,6 +5,8 @@ import "../styles/cart.css";
 import CartItem from "./CartItem";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { TiMinus } from "react-icons/ti";
+import { FaPlus } from "react-icons/fa6";
 const Cart = ({ setCartData }) => {
   //useState
   const navigate = useNavigate();
@@ -16,6 +18,8 @@ const Cart = ({ setCartData }) => {
   const [cart, setCart] = useState([]);
   const [fetchedProducts, setFetchedProducts] = useState(false);
   const [total, setTotal] = useState(0);
+  const [modalMessage, setModalMessage] = useState("");
+  const [showModal, setShowModal] = useState(false);
   //fetching
 
   const fetchCart = async () => {
@@ -167,11 +171,18 @@ const Cart = ({ setCartData }) => {
           )
         );
       } else {
-        alert(
-          `Quantity exceeds available stock (${stockQuantity} items available)`
-        );
+        showModalAlert("Please select at least one item!");
       }
     }
+  };
+
+  const showModalAlert = (message) => {
+    setModalMessage(message);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
   };
 
   const handleBlur = (id) => {
@@ -260,22 +271,22 @@ const Cart = ({ setCartData }) => {
             <table className="w-full text-left rtl:text-right mt-12 py-5">
               <thead class="text-xs b">
                 <tr>
-                  <th scope="col" class="px-16 py-3 text-center">
+                  <th scope="col" class="px-16 py-3 text-center text-xl">
                     Product
                   </th>
-                  <th scope="col" class="px-16 py-3 text-center">
+                  <th scope="col" class="px-16 py-3 text-center text-xl">
                     Size
                   </th>
-                  <th scope="col" class="px-16 py-3 text-center">
+                  <th scope="col" class="px-16 py-3 text-center text-xl">
                     Quantity
                   </th>
-                  <th scope="col" class="px-6 py-3 text-center">
+                  <th scope="col" class="px-6 py-3 text-center text-xl">
                     Price
                   </th>
-                  <th scope="col" class="px-6 py-3 text-center">
+                  <th scope="col" class="px-6 py-3 text-center text-xl">
                     Total
                   </th>
-                  <th scope="col" class="px-6 py-3 text-center">
+                  <th scope="col" class="px-6 py-3 text-center text-xl">
                     Action
                   </th>
                 </tr>
@@ -301,7 +312,7 @@ const Cart = ({ setCartData }) => {
                     <td class="px-6 py-4">
                       <div class="flex items-center justify-content-center">
                         <button
-                          class="inline-flex items-center justify-center p-1 me-3 text-sm font-medium h-6 w-6 text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                          class="inline-flex items-center justify-center p-1 me-3 pt-0 text-sm font-medium h-6 w-6 text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
                           type="button"
                           onClick={() => decreaseQty(product.productItemId)}
                         >
@@ -313,7 +324,8 @@ const Cart = ({ setCartData }) => {
                             fill="none"
                             viewBox="0 0 18 2"
                           >
-                            <path stroke="currentColor" d="M1 1h16" />
+                            {/* <path stroke="currentColor" d="M1 1h16" /> */}
+                            <TiMinus className="text-black" />
                           </svg>
                         </button>
                         <div>
@@ -343,7 +355,8 @@ const Cart = ({ setCartData }) => {
                             fill="none"
                             viewBox="0 0 18 18"
                           >
-                            <path stroke="currentColor" d="M9 1v16M1 9h16" />
+                            {/* <path stroke="currentColor" d="M9 1v16M1 9h16" /> */}
+                            <FaPlus className="text-black" />
                           </svg>
                         </button>
                       </div>
@@ -376,6 +389,21 @@ const Cart = ({ setCartData }) => {
                 ))}
               </tbody>
             </table>
+
+            {showModal && (
+              <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg shadow p-5">
+                  <h3 className="text-xl font-bold mb-4">Alert</h3>
+                  <p className="text-gray-700 mb-4">{modalMessage}</p>
+                  <button
+                    className="px-4 py-2 bg-blue-500 text-white rounded"
+                    onClick={closeModal}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            )}
 
             <div className="flex justify-between py-4 px-16 bg-slate-50">
               <div className="flex items-center mb-2 px-4">

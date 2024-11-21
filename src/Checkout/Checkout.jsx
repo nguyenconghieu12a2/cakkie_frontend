@@ -23,6 +23,10 @@ const Checkout = () => {
   const location = useLocation();
   const { product } = location.state || {};
   console.log(product);
+
+  const [isPaymentSelected, setIsPaymentSelected] = useState(false);
+  const [isShippingSelected, setIsShippingSelected] = useState(false);
+
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     if (
@@ -126,7 +130,7 @@ const Checkout = () => {
       const response = await axios.post(`/addToOrder`, data);
 
       if (response.status === 200) {
-        alert("that ok!");
+        alert("Your Order Successfully!!");
         removeCart();
         localStorage.removeItem("cart");
         navigate("/");
@@ -167,7 +171,7 @@ const Checkout = () => {
     const selectedShippingMethod = JSON.parse(e.target.value);
     setShippingPrice(selectedShippingMethod.shippingPrice);
     setShippingId(selectedShippingMethod.id);
-
+    setIsShippingSelected(true);
     console.log(e.target.value);
   };
 
@@ -176,6 +180,7 @@ const Checkout = () => {
     setPaymentMethod(selectedPaymentMethod.paymentMethod);
     setPaymentMethodId(selectedPaymentMethod.id);
     console.log(paymentMethod, paymentMethodId);
+    setIsPaymentSelected(true);
   };
 
   const OrderProcess = () => {
@@ -225,7 +230,7 @@ const Checkout = () => {
       {console.log(cart)}
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <div>
-          <label>Select Default Address: </label>
+          <label>Select Shipping Address: </label>
           <select onChange={handleSetDefault} value={addressId || ""}>
             <option value="" disabled>
               Select an address
@@ -261,7 +266,7 @@ const Checkout = () => {
                 </p>
                 {selectedAddress.isDefault && (
                   <p>
-                    <strong>Default Address</strong>
+                    <strong>Shipping Address</strong>
                   </p>
                 )}
               </div>
@@ -296,7 +301,7 @@ const Checkout = () => {
                     <div className="flex flex-row align-items-center">
                       <img
                         className="w-20 h-20"
-                        src={`./${product.productImage}.jpg`}
+                        src={`/images/${product.productImage}`}
                         alt={product.name}
                       />
                       <div className="px-2 align-middle">
@@ -348,7 +353,9 @@ const Checkout = () => {
                 id="shippingMethod"
                 onChange={handleShippingMethodChange}
               >
-                <option value={0}>Select shipping method</option>
+                <option value={0} disabled={isShippingSelected}>
+                  Select shipping method
+                </option>
                 {shippingOption.map((shippingMethod) => (
                   <option
                     key={shippingMethod.id}
@@ -403,6 +410,7 @@ const Checkout = () => {
                     id: 0,
                     paymentMethod: "empty",
                   })}
+                  disabled={isPaymentSelected}
                 >
                   Select Payment Method
                 </option>

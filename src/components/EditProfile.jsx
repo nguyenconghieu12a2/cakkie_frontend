@@ -12,21 +12,17 @@ const EditProfile = ({ profileData = {}, onSave }) => {
     firstname: profileData.firstname || "",
     lastname: profileData.lastname || "",
     username: profileData.username || "",
-    gender: profileData.gender || "",
-    birthday: profileData.birthday ? profileData.birthday.split("T")[0] : "",
+    gender: capitalizeFirstLetter(profileData.gender || ""),
+    birthday: profileData.birthday
+      ? formatDateToInput(profileData.birthday)
+      : "",
     phone: profileData.phone || "",
     email: profileData.email || "",
   });
 
-  const [imagePreview, setImagePreview] = useState(
-    profileData.gender === "Male"
-      ? "/images/male.jpg"
-      : profileData.gender === "Female"
-      ? "/images/female.jpg"
-      : "/images/default.jpg"
-  );
-
+  const [imagePreview, setImagePreview] = useState(profileData.image || "");
   const [errorMessage, setErrorMessage] = useState("");
+  const [validationErrors, setValidationErrors] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,18 +40,21 @@ const EditProfile = ({ profileData = {}, onSave }) => {
           const response = await axios.get(api, {
             headers: { Authorization: `Bearer ${token}` },
           });
+          const data = response.data;
+
           setFormData({
-            ...response.data,
-            birthday: response.data.birthday
-              ? response.data.birthday.split("T")[0]
-              : "",
+            firstname: data.firstname,
+            lastname: data.lastname,
+            username: data.username,
+            gender: capitalizeFirstLetter(data.gender),
+            birthday: data.birthday ? formatDateToInput(data.birthday) : "",
+            phone: data.phone,
+            email: data.email,
           });
 
-          setImagePreview(
-            response.data.gender === "male"
-              ? "/images/male.jpg"
-              : "/images/female.jpg"
-          );
+          if (data.image) {
+            setImagePreview(data.image);
+          }
         } catch (error) {
           console.error("Error fetching profile:", error);
           setErrorMessage("Failed to fetch profile data.");
@@ -73,19 +72,43 @@ const EditProfile = ({ profileData = {}, onSave }) => {
       [name]: value,
     }));
 
+    // Update imagePreview based on gender selection
     if (name === "gender") {
-      setImagePreview(
-        value === "Male"
-          ? "/images/male.jpg"
-          : value === "Female"
-          ? "/images/female.jpg"
-          : "/images/default.jpg"
-      );
+      const updatedImage =
+        value.toLowerCase() === "male"
+          ? "male.jpg"
+          : value.toLowerCase() === "female"
+          ? "female.jpg"
+          : "";
+      setImagePreview(updatedImage);
     }
+    setValidationErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "", // Clear the error message for the field being edited
+    }));
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.firstname.trim())
+      errors.firstname = "First Name is required.";
+    if (!formData.lastname.trim()) errors.lastname = "Last Name is required.";
+    if (!formData.username.trim()) errors.username = "Username is required.";
+    if (!formData.gender.trim()) errors.gender = "Gender is required.";
+    if (!formData.birthday) errors.birthday = "Birthday is required.";
+    if (!formData.phone.trim()) errors.phone = "Phone number is required.";
+    else if (!/^\d{10}$/.test(formData.phone))
+      errors.phone = "Phone number must be 10 digits.";
+    if (!formData.email.trim()) errors.email = "Email is required.";
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0; // Return true if no errors
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return; // Stop submission if validation fails
+
     const token = localStorage.getItem("jwt") || sessionStorage.getItem("jwt");
 
     try {
@@ -99,23 +122,9 @@ const EditProfile = ({ profileData = {}, onSave }) => {
         setErrorMessage("");
         if (onSave) {
           onSave(formData); // Notify Profile component of the saved profile data
-        } else {
-          const updatedResponse = await axios.get(api, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          setImagePreview(
-            updatedResponse.data.gender === "Male"
-              ? "/images/male.jpg"
-              : "/images/female.jpg"
-          );
-          setFormData({
-            ...updatedResponse.data,
-            birthday: updatedResponse.data.birthday
-              ? updatedResponse.data.birthday.split("T")[0]
-              : "",
-          });
-          navigate("/profile", { replace: true });
         }
+        // Reload the current page by setting the href to the current URL
+        window.location.href = window.location.href;
       }
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -125,7 +134,6 @@ const EditProfile = ({ profileData = {}, onSave }) => {
 
   return (
     <div className="edit-profile-containerr">
-      {console.log("tet: ", formData)}
       <div className="edit-profile-form-section">
         <h1 className="edit-profile-title">Edit Profile</h1>
         {errorMessage && (
@@ -137,18 +145,21 @@ const EditProfile = ({ profileData = {}, onSave }) => {
             name="firstname"
             value={formData.firstname}
             onChange={handleChange}
+            error={validationErrors.firstname}
           />
           <FormGroup
             label="Last Name"
             name="lastname"
             value={formData.lastname}
             onChange={handleChange}
+            error={validationErrors.lastname}
           />
           <FormGroup
             label="Username"
             name="username"
             value={formData.username}
             onChange={handleChange}
+            error={validationErrors.username}
           />
           <FormGroup
             label="Gender"
@@ -156,6 +167,7 @@ const EditProfile = ({ profileData = {}, onSave }) => {
             value={formData.gender}
             onChange={handleChange}
             type="select"
+            error={validationErrors.gender}
           />
           <FormGroup
             label="Birthday"
@@ -163,6 +175,7 @@ const EditProfile = ({ profileData = {}, onSave }) => {
             value={formData.birthday}
             onChange={handleChange}
             type="date"
+            error={validationErrors.birthday}
           />
           <FormGroup
             label="Phone"
@@ -170,7 +183,7 @@ const EditProfile = ({ profileData = {}, onSave }) => {
             value={formData.phone}
             onChange={handleChange}
             type="tel"
-            pattern="[0-9]{10}"
+            error={validationErrors.phone}
           />
           <FormGroup
             label="Email"
@@ -179,6 +192,7 @@ const EditProfile = ({ profileData = {}, onSave }) => {
             onChange={handleChange}
             type="email"
             disabled
+            error={validationErrors.email}
           />
           <button type="submit" className="edit-profile-save-btn">
             Save Changes
@@ -186,11 +200,13 @@ const EditProfile = ({ profileData = {}, onSave }) => {
         </form>
       </div>
       <div className="edit-profile-right-section">
-        <img
-          src={imagePreview}
-          alt="Profile"
-          className="edit-profile-image-preview"
-        />
+        {imagePreview && (
+          <img
+            src={`/images/${imagePreview}`}
+            alt="Profile"
+            className="edit-profile-image-preview"
+          />
+        )}
       </div>
     </div>
   );
@@ -203,6 +219,7 @@ const FormGroup = ({
   onChange,
   type = "text",
   disabled = false,
+  error = "",
 }) => (
   <div className="edit-profile-form-group">
     <label>{label}</label>
@@ -230,6 +247,7 @@ const FormGroup = ({
         disabled={disabled}
       />
     )}
+    {error && <p className="edit-profile-error">{error}</p>}
   </div>
 );
 
@@ -240,6 +258,16 @@ FormGroup.propTypes = {
   onChange: PropTypes.func.isRequired,
   type: PropTypes.string,
   disabled: PropTypes.bool,
+  error: PropTypes.string,
+};
+
+// Helper functions
+const capitalizeFirstLetter = (string) =>
+  string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+
+const formatDateToInput = (dateString) => {
+  const date = new Date(dateString);
+  return date.toISOString().split("T")[0]; // Format to yyyy-MM-dd
 };
 
 export default EditProfile;

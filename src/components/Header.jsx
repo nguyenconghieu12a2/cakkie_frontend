@@ -4,7 +4,7 @@ import axios from "axios";
 
 const api = "/api/profile"; // Backend API route
 
-const Header = ({ isLoggedIn, Title }) => {
+const Header = ({ isLoggedIn, Title, refreshProfileKey }) => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
@@ -30,7 +30,7 @@ const Header = ({ isLoggedIn, Title }) => {
     if (isLoggedIn) {
       fetchUserProfile();
     }
-  }, [isLoggedIn, navigate]);
+  }, [isLoggedIn, navigate, refreshProfileKey]);
 
   const handleProfileClick = () => {
     navigate("/profile");
@@ -45,7 +45,7 @@ const Header = ({ isLoggedIn, Title }) => {
           </Link>
         </div>
         <ul className="nav-links">
-          {isLoggedIn && ( 
+          {isLoggedIn && (
             <>
               <li>
                 <Link to="/cart">

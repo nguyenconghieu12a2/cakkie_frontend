@@ -84,33 +84,35 @@ const AdminStatistic = () => {
                     <td>{stat.name}</td>
                     <td>{stat.value}</td>
                     <td>
-                      <button className="refresh-btn" onClick={handleReload}>
-                        <IoReload />
-                      </button>
+                      <div className="flex flex-row h-10">
+                        <button className="refresh-btn" onClick={handleReload}>
+                          <IoReload />
+                        </button>
 
-                      {/* FORWARD TO ORDER MANAGE PROCESSING PAGE */}
-                      {stat.name === "Orders Processing" && (
-                        // Link to Order management
-                        <Link to="/order">
-                          <BsFillForwardFill className="forward-button" />
-                        </Link>
-                      )}
+                        {/* FORWARD TO ORDER MANAGE PROCESSING PAGE */}
+                        {stat.name === "Orders Processing" && (
+                          // Link to Order management
+                          <Link to="/admin-order">
+                            <BsFillForwardFill className="forward-button" />
+                          </Link>
+                        )}
 
-                      {/* FORWARD TO MANAGE OUT OF STOCK PRODUCT PAGE */}
-                      {stat.name === "Out of stock products" && (
-                        // Link to out of stock product site
-                        <Link to="/out-of-stock">
-                          <BsFillForwardFill className="forward-button" />
-                        </Link>
-                      )}
+                        {/* FORWARD TO MANAGE OUT OF STOCK PRODUCT PAGE */}
+                        {stat.name === "Out of stock products" && (
+                          // Link to out of stock product site
+                          <Link to="/out-of-stock">
+                            <BsFillForwardFill className="forward-button" />
+                          </Link>
+                        )}
 
-                      {/* FORWARD TO MANAGE CUSTOMER REVIEW PAGE */}
-                      {stat.name === "Pending Reviews" && (
-                        // Link to pending review site
-                        <Link to="/admin-reviews/pending">
-                          <BsFillForwardFill className="forward-button" />
-                        </Link>
-                      )}
+                        {/* FORWARD TO MANAGE CUSTOMER REVIEW PAGE */}
+                        {stat.name === "Pending Reviews" && (
+                          // Link to pending review site
+                          <Link to="/admin-reviews/pending">
+                            <BsFillForwardFill className="forward-button" />
+                          </Link>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}

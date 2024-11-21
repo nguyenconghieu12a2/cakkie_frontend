@@ -23,6 +23,13 @@ const AdminApprovedReviews = () => {
     }
   }, [navigate]);
 
+  const handleLogoutClick = () => {
+    console.log("Logging out...");
+    sessionStorage.removeItem("jwtAdmin");
+    // onLogout();
+    navigate("/admin-login");
+  };
+
   // Fetch approved reviews
   const fetchApprovedReviews = async () => {
     try {
@@ -58,7 +65,7 @@ const AdminApprovedReviews = () => {
 
   return (
     <div className="review-table-container">
-      <Sidebar />
+      <Sidebar onLogout={handleLogoutClick} />
       <div className="review-subtable-container">
         <div>
           <div className="upper-title">

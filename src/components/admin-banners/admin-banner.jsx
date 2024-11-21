@@ -134,17 +134,7 @@ const AdminBanners = () => {
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>{banner.title}</td>
-                  <td
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      borderTop: "0px",
-                      borderLeft: "0px",
-                      borderRight: "0px",
-                      height: "29vh",
-                    }}
-                  >
+                  <td>
                     <div className="img-containerr">
                       <img
                         className="imagesss"
