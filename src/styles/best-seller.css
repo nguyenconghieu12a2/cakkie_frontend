@@ -1,0 +1,40 @@
+.container{
+    margin: 0px auto;
+    padding: 0;
+}
+
+.bs-title-div{
+    text-align: center;
+    margin: 20px 0px;
+    padding: 15px 0px;
+    background-color: rgb(218, 218, 218);
+}
+
+.rating{
+    color: rgb(235, 235, 22);
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.image{
+    width: 100%;
+    height: 330px;
+}
+
+.bs-title{
+    background-color: white;
+    padding: 10px 0px 10px 0px;
+}
+
+.bs-price{
+    font-size: 18px;
+}
+
+strong{
+    display: inline-block;
+}
+
+.separation{
+    display: flex;
+    justify-content: space-between;
+}

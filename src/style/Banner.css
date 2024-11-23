@@ -1,0 +1,57 @@
+.banner-container {
+    position: relative;
+    width: 100%; /* Full width of the container, no overflow */
+    margin: 0 auto;
+    overflow: hidden;
+    text-align: center;
+  }
+  
+  .banner-slider {
+    display: flex;
+    transition: transform 0.5s ease-in-out; /* Smooth swipe transition */
+  }
+  
+  .banner-image {
+    width: 100%; /* Full width of the container */
+    flex-shrink: 0; /* Prevent images from shrinking */
+    cursor: pointer;
+    height: 400px; /* Set a consistent height */
+    object-fit: cover; /* Ensures the image covers the area */
+  }
+  
+  .banner-controls {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.3s ease;
+  }
+  
+  .banner-container:hover .banner-controls {
+    opacity: 1; /* Show controls on hover */
+  }
+  
+  .banner-button {
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 40px;
+  }
+  
+  .banner-button:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+    transform: scale(1.1); /* Slightly enlarge on hover */
+  }
+  

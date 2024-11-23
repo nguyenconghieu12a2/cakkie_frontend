@@ -1,0 +1,91 @@
+
+.discount-table-container {
+  width: 100%;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+}
+
+.discount-subtable-container{
+  width: 80%;
+  margin-left: 270px;
+}
+
+
+.profile-header1{
+  margin-left: 0px;
+}
+
+.profile-header1 h2 {
+  margin: 0px;
+  padding-top: 10px;
+  text-align: start;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.profile-header1 p {
+  color: gray;
+  margin-top: 5px;
+}
+
+.hrr{
+  margin-top:0rem;
+}
+
+.container {
+  /* max-width: 800px; */
+  margin: 0px;
+  padding: 0px;
+}
+
+.category-title {
+  text-align: start;
+  font-size: 27px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.top-discrete-discount{
+  display: flex;
+  justify-content: space-between;
+}
+
+.add-new-common-discount:hover{
+  cursor: pointer;
+}
+
+.discount-section {
+  background-color: #f7f1e3;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.discount-section h3 {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.table th, .table td {
+  vertical-align: middle;
+}
+
+.pagination .page-link {
+  color: #555;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #555;
+  border-color: #555;
+  color: white;
+}
+
+.forward-button-discount{
+  margin-left: 10px;
+  color: white;
+  background-color: rgb(64, 154, 244);
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+}

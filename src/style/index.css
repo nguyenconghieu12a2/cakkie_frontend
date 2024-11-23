@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Reset margin and ensure smooth font rendering */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  /* Ensure body takes full height of the viewport */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure the whole body stretches the viewport */
+html {
+  height: 100%;
+}
+
+/* Header styling */
+header {
+  background-color: #e1c16e;
+  color: #3b3b3b;
+  padding: 0.5rem;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+/* Navbar flexbox layout */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+}
+
+/* Logo section */
+.logo {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.logo a {
+  margin-bottom: 16px;
+  display: flex;
+  color: #3b3b3b;
+  text-decoration: none;
+  font-size: 1.25rem;
+  font-weight: bold;
+  align-items: center;
+}
+
+.logo a img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+/* Navigation links */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  height: 100%;
+}
+
+.nav-links li {
+  display: flex;
+  align-items: center;
+}
+
+.nav-links li a {
+  color: #3b3b3b;
+  text-decoration: none;
+  font-size: 1.25rem;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  transition: color 0.3s ease;
+}
+
+.nav-links li a:hover {
+  color: #000;
+}
+
+/* Profile icon with hover effect */
+.profile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.profile-icon:hover {
+  transform: scale(1.1);
+}
+
+/* Main content styling */
+main {
+  /* flex-grow: 1; */
+  /* display: flex; */
+  /* Remove or comment out this line */
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100%;
+  /* max-width: 1200px; */
+  /* Sets a maximum width for the main content area */
+  /* margin: 0 auto; */
+  /* Centers the content horizontally */
+  min-height: calc(100vh - 100px);
+  /* Adjust height based on header/footer */
+}
+
+/* Footer styling */
+footer {
+  padding: 1rem;
+  text-align: center;
+  background-color: #333;
+  color: white;
+  width: 100%;
+  position: relative;
+  bottom: 0;
+  margin-top: auto;
+}
+
+img.scalable {
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out; /* Smooth scaling effect */
+}
+
+img.scalable:hover {
+  transform: scale(1.1); /* Scale image to 110% on hover */
+}
+.image-container {
+  overflow: hidden; /* Ensures the scaled part of the image is clipped */
+  display: inline-block; /* Keeps the container size based on the image */
+  position: relative; /* Ensures scaling doesn’t affect surrounding elements */
+}

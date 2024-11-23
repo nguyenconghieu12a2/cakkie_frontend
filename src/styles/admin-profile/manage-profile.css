@@ -1,0 +1,144 @@
+.admin-container{
+    display: flex;
+}
+.contentt {
+    width: 80%;
+    margin-left: 20px;
+  }
+
+
+.profile-header1{
+    margin-left: 0px;
+  }
+  
+  .profile-header1 h2 {
+    margin: 0px;
+    padding-top: 10px;
+    text-align: start;
+    font-size: 30px;
+    font-weight: bold;
+  }
+  
+  .profile-header1 p {
+    color: gray;
+    margin-top: 5px;
+  }
+
+  .hrr{
+    margin-top:0rem;
+  }
+
+/* Container */
+.profile-container {
+    background-color: #fff5c2;
+    padding: 30px;
+    width: 80%;
+    margin: 50px 90px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar {
+    width: 100%;
+    max-width: 250px;
+    color: #222;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+/* Header */
+.profile-header {
+    text-align: left;
+    margin-bottom: 20px;
+    margin-left: 270px;
+    margin-top: 10px;
+}
+
+.profile-header h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.profile-header p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #888;
+}
+
+/* Body */
+.profile-body {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.profile-details {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.profile-details label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.profile-details input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+}
+
+.profile-avatar {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+}
+
+.profile-avatar p {
+    font-size: 16px;
+}
+
+.avatar-circlee {
+    width: 200px;
+    height: 200px;
+    background-color: #ddd;
+    border-radius: 50%;
+    margin-top: 10px;
+}
+.avatar-circlee img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Actions */
+.profile-actions {
+    text-align: center;
+}
+
+.edit-btn,
+.change-password-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 10px;
+}
+
+.edit-btn {
+    background-color: #333;
+    color: white;
+}
+
+.change-password-btn {
+    background-color: #a58d5f;
+    color: white;
+}
